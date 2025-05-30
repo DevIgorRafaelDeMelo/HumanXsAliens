@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useCharacter } from "./useCharacter";
 import ReactHowler from "react-howler";
-import attackSound from "../sounds/attack.mp3";
 import winSound from "../sounds/win.mp3";
 import { FaArrowLeft } from "react-icons/fa";
 import { GiCrossedSwords } from "react-icons/gi";
+import heroSound from "../sounds/attack.mp3";
+import alienSound from "../sounds/alien.mp3";
 
 const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
   const { character, setCharacter } = useCharacter();
@@ -14,6 +15,8 @@ const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
   const [attacker, setAttacker] = useState(character.name);
   const [winner, setWinner] = useState(null);
   const [battleActive, setBattleActive] = useState(true);
+  const [playHeroSound, setPlayHeroSound] = useState(false);
+  const [playAlienSound, setPlayAlienSound] = useState(false);
 
   // Só roda 1 vez ao abrir o modal
   useEffect(() => {
@@ -22,6 +25,12 @@ const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
   }, []); // <== remove o dependency array com character.health
 
   useEffect(() => {
+    if (attacker === character.name) {
+      setPlayAlienSound(true);
+    } else if (attacker === selectedVillain.name) {
+      setPlayHeroSound(true);
+    }
+
     if (!battleActive || !selectedVillain) return;
 
     const interval = setInterval(() => {
@@ -90,7 +99,20 @@ const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
 
       {/* Modal de batalha com efeito metálico */}
       <div className="text-white p-8 rounded-3xl w-[95%] max-w-4xl text-center shadow-2xl relative flex bg-gradient-to-br from-gray-800 to-gray-900 border-none">
-        {attacker && !winner && <ReactHowler src={attackSound} playing />}
+        {playHeroSound && (
+          <ReactHowler
+            src={heroSound}
+            playing={true}
+            onEnd={() => setPlayHeroSound(false)}
+          />
+        )}
+        {playAlienSound && (
+          <ReactHowler
+            src={alienSound}
+            playing={true}
+            onEnd={() => setPlayAlienSound(false)}
+          />
+        )}
         {winner && <ReactHowler src={winSound} playing />}
 
         {/* Painéis de combate */}
@@ -112,7 +134,7 @@ const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
               <img
                 src={character.image}
                 alt={character.name}
-                className="w-32 h-32 rounded-full border-2 border-gray-400 shadow-md"
+                className="w-50 h-50   border-2 border-gray-400 shadow-md"
               />
             </div>
 
@@ -146,7 +168,7 @@ const BattleModal = ({ selectedVillain, closeModal, setVillains }) => {
             <img
               src={selectedVillain.image}
               alt={selectedVillain.name}
-              className="w-32 h-32 rounded-full border-2 border-gray-400 shadow-md transition-transform hover:scale-105"
+              className="w-50 h-50   border-2 border-gray-400 shadow-md transition-transform hover:scale-105"
             />
             <strong className="text-2xl py-10 mt-2 text-red-300">
               {selectedVillain.name}

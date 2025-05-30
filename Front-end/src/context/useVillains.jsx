@@ -1,9 +1,9 @@
 // src/context/useVillains.js
 import { useState } from "react";
-import vilao3 from "../Img/vilao3.jpg";
-import vilao4 from "../Img/vilao4.jpg";
-import vilao5 from "../Img/vilao5.jpg";
-import vilao6 from "../Img/vilao6.jpg";
+import vilao3 from "../Img/alien1.jpg";
+import vilao4 from "../Img/alien2.jpg";
+import vilao5 from "../Img/alien3.jpg";
+import vilao6 from "../Img/alien4.jpg";
 
 const useVillains = () => {
   const [villains, setVillains] = useState([
@@ -13,7 +13,7 @@ const useVillains = () => {
       attack: 14,
       defense: 6,
       critChance: 10,
-      isAlive: false,
+      isAlive: true,
       image: vilao5,
     },
     {
@@ -22,7 +22,7 @@ const useVillains = () => {
       attack: 12,
       defense: 8,
       critChance: 8,
-      isAlive: false,
+      isAlive: true,
       image: vilao3,
     },
     {
@@ -31,7 +31,7 @@ const useVillains = () => {
       attack: 16,
       defense: 7,
       critChance: 9,
-      isAlive: false,
+      isAlive: true,
       image: vilao6,
     },
     {
@@ -42,7 +42,7 @@ const useVillains = () => {
       critChance: 12,
       isAlive: true,
       image: vilao4,
-    },
+    }
   ]);
 
   const [boss, setBoss] = useState({

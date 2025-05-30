@@ -4,8 +4,8 @@ import useVillains from "../context/useVillains";
 import { useCharacter } from "../context/useCharacter";
 import React, { useState } from "react";
 import BattleModal from "../context/BattleModal";
-import img from "../Img/3.png";
-import Mpa from "../Img/Mapa.png"; // Importando a imagem do herói
+import Mpa from "../Img/NewYork.jpg"; // Importando a imagem do herói
+import Img from "../Img/city.png";
 
 const Map = () => {
   const { character } = useCharacter();
@@ -47,32 +47,19 @@ const Map = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center relative">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-blue-950 text-white flex flex-col items-center relative">
+      <img
+        src={Img}
+        alt="Imagem centralizada"
+        className="max-w-full h-[100vh] rounded-lg shadow-lg fixed w-full"
+      />
       <Navbar />
       <div className="h-[10vh]"></div>
       {/* Container principal com Hero + Mapa lado a lado */}
       <div className="flex items-start justify-center gap-12 w-[100%] mx-auto">
-        {/* Card do Herói */}
-        <div className="bg-gradient-to-r from-blue-900 via-gray-800 to-black text-white p-6 rounded w-[40%] h-80 flex items-center gap-6 border-4 border-cyan-500 shadow-2xl">
-          <img
-            src={character.image}
-            alt={character.name}
-            className="w-24 h-24 rounded-full border-4 border-white shadow-md"
-          />
-          <div>
-            <h2 className="text-2xl font-bold text-yellow-400">
-              {character.name}
-            </h2>
-            <p>💖 Vida: {character.health}</p>
-            <p>⚔️ Ataque: {character.attack}</p>
-            <p>🔥 Crítico: {character.critChance}%</p>
-            <p>🛡️ Defesa: {character.defense}</p>
-          </div>
-        </div>
-
         {/* Mapa dos Vilões */}
         <div
-          className="relative w-[50%] h-[80vh] bg-gray-900 border-8 border-cyan-500 rounded shadow-2xl overflow-hidden"
+          className="relative w-[50%] h-[80vh] bg-gray-900 border-8 border-black rounded shadow-2xl overflow-hidden"
           style={{
             backgroundImage: `url(${Mpa})`,
             backgroundSize: "cover",

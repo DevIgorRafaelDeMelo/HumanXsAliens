@@ -15,6 +15,7 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { userLogin, logout } = useUser();
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -24,7 +25,7 @@ const Header = () => {
   };
 
   return (
-    <div  >
+    <div>
       <header className="flex items-center justify-between px-6 py-4 bg-primary text-white shadow-md fixed top-0 w-full h-[10vh]">
         {/* Logo */}
         <h1
@@ -58,7 +59,9 @@ const Header = () => {
             Login / Register
           </Link>
         )}
+        
       </header>
+    
 
       {/* Menu de usuário com animação */}
       <AnimatePresence>

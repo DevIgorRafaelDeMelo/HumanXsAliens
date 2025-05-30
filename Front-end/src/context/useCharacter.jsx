@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import img from "../Img/Militar.png";
+import img from "../Img/Hero1.jpg";
 
 const CharacterContext = createContext();
 
