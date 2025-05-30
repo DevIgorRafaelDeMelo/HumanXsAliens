@@ -1,9 +1,8 @@
 body {
   font-family: Arial, sans-serif;
-  
 }
 
-.container { 
+.container {
   justify-content: space-around;
   margin-top: 50px;
 }

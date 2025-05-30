@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import img from "../Img/baixados.jpg";
+import img from "../Img/Militar.png";
 
 const CharacterContext = createContext();
 
@@ -8,7 +8,7 @@ export const CharacterProvider = ({ children }) => {
     image: img,
     name: "Herói",
     health: 100,
-    attack: 50,
+    attack: 250,
     critChance: 5,
     defense: 8,
   });

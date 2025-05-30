@@ -1,102 +1,156 @@
+// src/pages/Map.jsx
 import Navbar from "../Componets/Navbar";
 import useVillains from "../context/useVillains";
 import { useCharacter } from "../context/useCharacter";
 import React, { useState } from "react";
 import BattleModal from "../context/BattleModal";
+import img from "../Img/3.png";
+import Mpa from "../Img/Mapa.png"; // Importando a imagem do herói
 
 const Map = () => {
-  const { character, attackEnemy, setCharacter } = useCharacter();
-  const [selectedVillain, setSelectedVillain] = useState(null); // Estado para armazenar o vilão selecionado
-  const { villains, setVillains } = useVillains();
+  const { character } = useCharacter();
+  const [selectedVillain, setSelectedVillain] = useState(null);
+  const [selectedVillainBoss, setSelectedVillainBoss] = useState(null);
+  const { villains, setVillains, boss } = useVillains();
 
   const startBattle = (villain) => {
-    setSelectedVillain(villain); // Define o vilão para iniciar a batalha
+    setSelectedVillain(villain);
   };
 
   const closeModal = () => {
-    setSelectedVillain(null); // Fecha o modal
+    setSelectedVillain(null);
+    setSelectedVillainBoss(null);
   };
-  const allVillainsDefeated = villains.every(
-    (villain) => villain.isAlive === false
-  );
+
+  const collisionRadius = 10; // Define a distância mínima entre vilões
+  const placedVillains = []; // Lista para armazenar posições já ocupadas
+
+  const getValidPosition = () => {
+    let randomX, randomY;
+    let validPosition = false;
+
+    while (!validPosition) {
+      randomX = Math.floor(Math.random() * (80 - collisionRadius)) + 10;
+      randomY = Math.floor(Math.random() * (80 - collisionRadius)) + 10;
+
+      // Verificar se a posição gerada está longe de outras já posicionadas
+      validPosition = placedVillains.every(
+        (pos) =>
+          Math.abs(pos.x - randomX) > collisionRadius &&
+          Math.abs(pos.y - randomY) > collisionRadius
+      );
+
+      if (validPosition) placedVillains.push({ x: randomX, y: randomY });
+    }
+
+    return { x: randomX, y: randomY };
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col items-center">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center relative">
       <Navbar />
       <div className="h-[10vh]"></div>
-
-      {/* Container principal com flex */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8  w-[80%] mx-auto">
+      {/* Container principal com Hero + Mapa lado a lado */}
+      <div className="flex items-start justify-center gap-12 w-[100%] mx-auto">
         {/* Card do Herói */}
-        <div className="bg-gray-800  justify-center items-center flex text-white p-6 rounded-md w-full h-80">
+        <div className="bg-gradient-to-r from-blue-900 via-gray-800 to-black text-white p-6 rounded w-[40%] h-80 flex items-center gap-6 border-4 border-cyan-500 shadow-2xl">
           <img
             src={character.image}
             alt={character.name}
-            className="w-24 h-24 rounded-full m-auto"
+            className="w-24 h-24 rounded-full border-4 border-white shadow-md"
           />
-          <div className="justify-center items-center ">
-            <h2 className="text-xl font-bold">{character.name}</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-yellow-400">
+              {character.name}
+            </h2>
             <p>💖 Vida: {character.health}</p>
             <p>⚔️ Ataque: {character.attack}</p>
-            <p>🔥 Chance de crítico: {character.critChance}%</p>
+            <p>🔥 Crítico: {character.critChance}%</p>
             <p>🛡️ Defesa: {character.defense}</p>
           </div>
         </div>
 
-        {/* Lista de Vilões */}
-        <div className="bg-gray-800 text-white p-6 rounded-md w-full relative">
-          <h2 className="text-2xl font-bold text-center">Vilões no Mapa</h2>
-          <ul className="space-y-4 mt-4">
-            {villains.map((villain, index) => (
-              <li
+        {/* Mapa dos Vilões */}
+        <div
+          className="relative w-[50%] h-[80vh] bg-gray-900 border-8 border-cyan-500 rounded shadow-2xl overflow-hidden"
+          style={{
+            backgroundImage: `url(${Mpa})`,
+            backgroundSize: "cover",
+          }}
+        >
+          {/* Camada de opacidade ativada apenas quando o chefe aparecer */}
+          {villains.every((v) => !v.isAlive) && (
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+          )}
+
+          <h2 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl font-extrabold text-yellow-300">
+            New York
+          </h2>
+
+          {/* Vilões */}
+          {villains.map((villain, index) => {
+            const { x, y } = getValidPosition();
+
+            return (
+              <div
                 key={index}
-                className="flex items-center justify-between bg-gray-700 p-3 rounded-md gap-4"
+                onClick={() => villain.isAlive && startBattle(villain)}
+                className="absolute cursor-pointer flex flex-col items-center transform hover:scale-110 transition-all"
+                style={{ left: `${x}%`, top: `${y}%` }}
               >
                 <img
                   src={villain.image}
                   alt={villain.name}
-                  className="w-16 h-16 rounded-full"
+                  className={`w-20 h-20 rounded-full border-2 shadow-md ${
+                    villain.isAlive
+                      ? "border-red-500"
+                      : "border-gray-500 opacity-50"
+                  }`}
                 />
-                <div className="flex-1">
-                  <strong className="text-lg">{villain.name}</strong>
-                  <p>💖 Vida: {villain.health}</p>
-                  <p>⚔️ Ataque: {villain.attack}</p>
-                  <p>🔥 Crítico: {villain.critChance}%</p>
-                  <p>🛡️ Defesa: {villain.defense}</p>
-                </div>
-                {villain.isAlive ? (
-                  <button
-                    onClick={() => startBattle(villain)}
-                    className="bg-red-500 px-4 py-2 rounded hover:bg-red-700 ml-auto"
-                  >
-                    ⚔️ Lutar!
-                  </button>
-                ) : (
-                  <span className="text-gray-400 font-bold">☠️ Derrotado</span>
-                )}
-              </li>
-            ))}
-          </ul>
+                <p className="text-lg font-bold mt-2">
+                  {villain.isAlive ? villain.name : "☠️ Derrotado"}
+                </p>
+              </div>
+            );
+          })}
 
-          {/* Botão do chefe cobrindo toda a área */}
+          {/* Chefe centralizado */}
           {villains.every((v) => !v.isAlive) && (
-            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-md">
-              <button
-                onClick={() =>
-                  alert("Você está pronto para enfrentar o chefe!")
-                }
-                className="bg-purple-600 hover:bg-purple-800 text-white px-6 py-4 rounded text-xl font-bold shadow-lg"
-              >
-                ⚔️ Batalhar com Chefe
-              </button>
+            <div
+              onClick={() => setSelectedVillainBoss(boss)}
+              className="absolute cursor-pointer flex flex-col items-center transform hover:scale-110 transition-all"
+              style={{
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <img
+                src={boss.image}
+                alt={boss.name}
+                className="w-32 h-32 rounded-full border-4 border-purple-500 shadow-xl animate-pulse"
+              />
+              <p className="text-2xl font-extrabold text-purple-400 mt-2">
+                ⚔️ {boss.name}
+              </p>
+              <span className="bg-purple-700 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-lg transform hover:scale-105 transition-all">
+                Desafiar o Chefe!
+              </span>
             </div>
           )}
         </div>
       </div>
-      {/* Modal de batalha */}
+      {/* Modais de batalha */}
       {selectedVillain && (
         <BattleModal
           selectedVillain={selectedVillain}
+          closeModal={closeModal}
+          setVillains={setVillains}
+        />
+      )}
+      {selectedVillainBoss && (
+        <BattleModal
+          selectedVillain={selectedVillainBoss}
           closeModal={closeModal}
           setVillains={setVillains}
         />

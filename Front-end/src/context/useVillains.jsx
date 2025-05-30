@@ -1,3 +1,4 @@
+// src/context/useVillains.js
 import { useState } from "react";
 import vilao3 from "../Img/vilao3.jpg";
 import vilao4 from "../Img/vilao4.jpg";
@@ -10,9 +11,9 @@ const useVillains = () => {
       name: "Rainha da Morte",
       health: 100,
       attack: 14,
-      defense: 6, // Defesa do vilão
+      defense: 6,
       critChance: 10,
-      isAlive: true, // Status de vivo
+      isAlive: false,
       image: vilao5,
     },
     {
@@ -21,7 +22,7 @@ const useVillains = () => {
       attack: 12,
       defense: 8,
       critChance: 8,
-      isAlive: true,
+      isAlive: false,
       image: vilao3,
     },
     {
@@ -30,7 +31,7 @@ const useVillains = () => {
       attack: 16,
       defense: 7,
       critChance: 9,
-      isAlive: true,
+      isAlive: false,
       image: vilao6,
     },
     {
@@ -44,7 +45,17 @@ const useVillains = () => {
     },
   ]);
 
-  return { villains, setVillains };
+  const [boss, setBoss] = useState({
+    name: "Chefão das Sombras",
+    health: 500,
+    attack: 20,
+    defense: 12,
+    critChance: 15,
+    isAlive: true,
+    image: vilao5,
+  });
+
+  return { villains, setVillains, boss, setBoss };
 };
 
 export default useVillains;
