@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import Footer from "../Componets/Footer";
-import Header from "../Componets/Header";
+import Footer from "../Components/Footer";
+import Header from "../Components/Header";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState("igor");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("rafaelmelo765@gmail.com");
   const [password, setPassword] = useState("2289Nnly");
-  const [confirmPassword, setConfirmPassword] = useState("2289Nnly");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { setUserLogin } = useUser();
+  const { login } = useUser(); // Usa a função login do contexto
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -39,14 +40,11 @@ const AuthScreen = () => {
       if (response.ok) {
         alert(isLogin ? "Login realizado com sucesso!" : "Cadastro concluído!");
 
-        // Salvar dados do usuário no localStorage
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // Salva os dados do usuário e o token no contexto e localStorage
+        login(data.user, data.token);
 
-        // Salvar no contexto
-        setUserLogin(data.user);
-
-        // Redirecionar para a home
-        navigate("/Home");
+        // Redireciona para a home
+        navigate("/lobby");
       } else {
         alert(`Erro: ${data.message}`);
       }
@@ -59,8 +57,8 @@ const AuthScreen = () => {
   return (
     <>
       <Header />
-      <div className="grid h-screen   grid-rows-[1fr_auto]">
-        <div className="flex  justify-center bg-white items-center  bg-gray-100">
+      <div className="grid h-screen grid-rows-[1fr_auto]">
+        <div className="flex justify-center bg-gray-100 items-center">
           <div className="bg-white p-8 rounded shadow-md w-[90%]">
             <h2 className="text-2xl text-primary font-bold mb-4 text-center">
               {isLogin ? "Login" : "Cadastro"}
@@ -100,7 +98,7 @@ const AuthScreen = () => {
               )}
               <button
                 type="submit"
-                className="w-full  bg-primary text-white p-2 rounded"
+                className="w-full bg-primary text-white p-2 rounded"
               >
                 {isLogin ? "Entrar" : "Cadastrar"}
               </button>

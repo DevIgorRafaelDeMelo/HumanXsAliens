@@ -1,20 +1,46 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
+
 import Home from "./Pages/Home";
 import Map from "./Pages/Map";
-import { CharacterProvider } from "./context/useCharacter";
 import Torre from "./Pages/Torre";
+import AuthScreen from "./Pages/AuthScreen";
+import PrivateRoute from "./Components/PrivateRoute";
+import Lobby from "./Pages/Lobby";
 
 function App() {
   return (
     <UserProvider>
-      <CharacterProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/map" element={<Map />} /> 
-          <Route path="/torre" element={<Torre />} />
-        </Routes>
-      </CharacterProvider>
+      {" "}
+      {/* Envolve toda a aplicação */}
+      <Routes>
+        <Route path="/" element={<AuthScreen />} />
+        <Route path="/home" element={<Home />} />
+        <Route
+          path="/map"
+          element={
+            <PrivateRoute>
+              <Map />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/torre"
+          element={
+            <PrivateRoute>
+              <Torre />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lobby"
+          element={
+            <PrivateRoute>
+              <Lobby />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
     </UserProvider>
   );
 }

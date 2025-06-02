@@ -1,0 +1,51 @@
+const mysql = require("mysql2/promise");
+require("dotenv").config();
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+const getCharacterById = async (characterId) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM characters WHERE id = ?",
+      [characterId]
+    ); // 🔍 Busca pelo ID no banco
+
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Erro ao buscar personagem:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+const getEnemiesByIds = async (enemyIds) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const placeholders = enemyIds.map(() => "?").join(",");
+
+    const [rows] = await connection.execute(
+      `SELECT * FROM aliens WHERE id IN (${placeholders})`,
+      enemyIds
+    ); // 🔍 Busca múltiplos inimigos
+
+    return rows.length > 0 ? rows : [];
+  } catch (error) {
+    console.error("Erro ao buscar inimigos:", error);
+    return [];
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
+module.exports = { pool, getCharacterById, getEnemiesByIds };
