@@ -6,8 +6,15 @@ import img5 from "../Img/alien5.jpeg";
 import img6 from "../Img/alien6.jpeg";
 import img7 from "../Img/alien7.jpeg";
 import img8 from "../Img/alien8.jpeg";
-import img9 from "../Img/alien1.jpeg";
-import img10 from "../Img/alien2.jpeg";
+import img9 from "../Img/alien9.jpeg";
+import img10 from "../Img/alien10.jpeg";
+import img11 from "../Img/alien11.jpeg";
+import img12 from "../Img/alien12.jpeg";
+import img13 from "../Img/alien13.jpeg";
+import img14 from "../Img/alien14.jpeg";
+import img15 from "../Img/alien15.jpeg";
+import img16 from "../Img/alien16.jpeg";
+import img17 from "../Img/alien17.jpeg";
 
 const aliens = [
   {
@@ -107,7 +114,7 @@ const aliens = [
     velocidade: 20,
     raridade: "Raro",
     boss: 0,
-    img: img2,
+    img: img9,
   },
   {
     nome: "Zyphor",
@@ -118,7 +125,7 @@ const aliens = [
     velocidade: 22.5,
     raridade: "Raro",
     boss: 0,
-    img: img1,
+    img: img10,
   },
   {
     nome: "Omnitor",
@@ -129,7 +136,7 @@ const aliens = [
     velocidade: 25,
     raridade: "Épico",
     boss: 0,
-    img: "img/aliens/omnitor.png",
+    img: img11,
   },
   {
     nome: "Drakonis",
@@ -140,7 +147,7 @@ const aliens = [
     velocidade: 27.5,
     raridade: "Épico",
     boss: 0,
-    img: "img/aliens/drakonis.png",
+    img: img12,
   },
   {
     nome: "Tyrnex",
@@ -151,7 +158,7 @@ const aliens = [
     velocidade: 30,
     raridade: "Épico",
     boss: 0,
-    img: "img/aliens/tyrnex.png",
+    img: img13,
   },
   {
     nome: "Xyrox",
@@ -162,7 +169,7 @@ const aliens = [
     velocidade: 32.5,
     raridade: "Épico",
     boss: 0,
-    img: "img/aliens/xyrox.png",
+    img: img14,
   },
   {
     nome: "Nebulon",
@@ -173,7 +180,7 @@ const aliens = [
     velocidade: 35,
     raridade: "Épico",
     boss: 0,
-    img: "img/aliens/nebulon.png",
+    img: img15,
   },
   {
     nome: "Kragnar",
@@ -184,7 +191,7 @@ const aliens = [
     velocidade: 40,
     raridade: "Lendário",
     boss: 1,
-    img: "img/aliens/kragnar.png",
+    img: img16,
   },
   {
     nome: "Zephyros",
@@ -195,7 +202,7 @@ const aliens = [
     velocidade: 42.5,
     raridade: "Lendário",
     boss: 1,
-    img: "img/aliens/zephyros.png",
+    img: img17,
   },
   {
     nome: "Azorth",
@@ -206,7 +213,7 @@ const aliens = [
     velocidade: 45,
     raridade: "Lendário",
     boss: 1,
-    img: "img/aliens/azorth.png",
+    img: img10,
   },
   {
     nome: "Valtrak",
@@ -217,7 +224,7 @@ const aliens = [
     velocidade: 47.5,
     raridade: "Lendário",
     boss: 1,
-    img: "img/aliens/valtrak.png",
+    img: img10,
   },
   {
     nome: "Droxal",
@@ -228,7 +235,7 @@ const aliens = [
     velocidade: 50,
     raridade: "Lendário",
     boss: 1,
-    img: "img/aliens/droxal.png",
+    img: img10,
   },
   {
     nome: "Oblivion",
@@ -239,7 +246,7 @@ const aliens = [
     velocidade: 60,
     raridade: "Mítico",
     boss: 1,
-    img: "img/aliens/oblivion.png",
+    img: img10,
   },
   {
     nome: "Zornax",
@@ -250,7 +257,7 @@ const aliens = [
     velocidade: 62.5,
     raridade: "Mítico",
     boss: 1,
-    img: "img/aliens/zornax.png",
+    img: img10,
   },
   {
     nome: "Celestior",
@@ -261,7 +268,7 @@ const aliens = [
     velocidade: 65,
     raridade: "Mítico",
     boss: 1,
-    img: "img/aliens/celestior.png",
+    img: img10,
   },
   {
     nome: "Voidborn",
@@ -272,7 +279,7 @@ const aliens = [
     velocidade: 70,
     raridade: "Mítico",
     boss: 1,
-    img: "img/aliens/voidborn.png",
+    img: img10,
   },
   {
     nome: "Endurion",
@@ -283,7 +290,7 @@ const aliens = [
     velocidade: 75,
     raridade: "Mítico",
     boss: 1,
-    img: "img/aliens/endurion.png",
+    img: img10,
   },
 ];
 

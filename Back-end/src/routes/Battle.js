@@ -23,18 +23,18 @@ router.post("/", authMiddleware, async (req, res) => {
 
     // Simulação da batalha no novo formato
     return res.status(200).json({
+      enemies,
       turns,
       winner,
     });
-  } catch (error) {
-    console.error("Erro ao processar batalha:", error);
+  } catch (error) { 
     return res.status(500).json({ message: "Erro interno no servidor" });
   }
 });
 
 const simulateBattle = async (character, enemy) => {
   const initialPlayerHP = character.health_points;
-  const initialEnemyHP = enemy.vida;
+  const initialEnemyHP = enemy.vida; 
 
   let playerHP = initialPlayerHP;
   let enemyHP = initialEnemyHP;
@@ -74,10 +74,10 @@ const simulateBattle = async (character, enemy) => {
   // **Determinar o vencedor**
   let winner;
   if (playerHP > 0) {
-    await updateAlienStatus(enemy.id);
-    winner = character.name;
+       await db.execute("UPDATE characters SET alien_id = alien_id + 1 WHERE id = ?", [character.id]);
+    winner = "player";
   } else if (enemyHP > 0) {
-    winner = enemy.nome;
+    winner = "Enemy";
   } else {
     winner = "Empate!";
   }
@@ -88,9 +88,6 @@ const simulateBattle = async (character, enemy) => {
   };
 };
 
-const updateAlienStatus = async (alienId) => {
-  await db.execute("UPDATE aliens SET live = 0 WHERE id = ?", [alienId]);
-  console.log(`🔥 Alien ${alienId} foi derrotado! Live setado para 0.`);
-};
+ 
 
 module.exports = router;

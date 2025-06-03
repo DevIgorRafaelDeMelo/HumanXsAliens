@@ -8,7 +8,7 @@ router.get("/", authMiddleware, async (req, res) => {
     const userId = req.user.id; // Correção: pegando ID corretamente
 
     const [characters] = await db.query(
-      "SELECT * FROM characters WHERE user_id = ?",
+      "SELECT * FROM characters WHERE  id = ?",
       [userId]
     );
 

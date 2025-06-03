@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import alienImg from "../data/Aliens";
 import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
+import Modal from "../Components/Modal";
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
@@ -13,22 +14,23 @@ const Map = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
-  const [turn, setTurn] = useState();
   const [battleTurns, setBattleTurns] = useState([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [damageInfo, setDamageInfo] = useState(null);
+  const [idAlien, setIdAlien] = useState();
   const [aliens, setAliens] = useState([]);
-  const activeAlien = aliens.find((alien) => alien.live === 1);
+  const activeAlien = aliens.find((alien) => alien.id === idAlien + 1);
   const [playerHP, setPlayerHP] = useState(character?.health_points);
   const [enemyHP, setEnemyHP] = useState(activeAlien?.vida);
+  const [showModal, setShowModal] = useState(false);
+  const [card, setCard] = useState();
+  const [winner, setWinner] = useState(null);
   useEffect(() => {
     if (character) setPlayerHP(character.health_points);
   }, [character]);
-
   useEffect(() => {
     if (activeAlien) setEnemyHP(activeAlien.vida);
   }, [activeAlien]);
-
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -46,7 +48,8 @@ const Map = () => {
         );
 
         const data = await res.json();
-
+        setIdAlien(data.characters[0].alien_id);
+        setCard(data.characters[0].alien_id);
         if (res.ok) {
           setCharacters(data.characters);
         } else {
@@ -54,7 +57,6 @@ const Map = () => {
         }
       } catch (error) {
         alert("Erro ao conectar com o servidor.");
-        console.error("Erro de conexão:", error);
       } finally {
         setLoading(false);
       }
@@ -66,15 +68,22 @@ const Map = () => {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
         const data = await res.json();
+
         if (res.ok) setAliens(data);
       } catch (error) {
         console.error("Erro ao conectar com o servidor");
       }
     }
+
     fetchAliens();
     fetchCharacters();
   }, [userLogin, navigate]);
-  if (loading || !character) return <div>Carregando...</div>;
+  useEffect(() => {
+    if (idAlien !== undefined) {
+      const nextAlien = aliens.find((alien) => alien.id === idAlien + 1);
+      setCard(nextAlien);
+    }
+  }, [idAlien, aliens]);
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -85,7 +94,6 @@ const Map = () => {
   const startBattle = async () => {
     const characterId = character?.id; // Obtém o ID do personagem
     const enemyIds = activeAlien.id;
-    console.log(characterId, enemyIds);
     try {
       const response = await fetch("http://localhost:5000/battle", {
         method: "POST",
@@ -103,8 +111,8 @@ const Map = () => {
       setBattleTurns(data.turns);
       setCurrentTurnIndex(0);
       processTurn(data.turns);
-
-      console.log(data.turns);
+      setCard(data.enemies);
+      setWinner(data.winner);
     } catch (error) {
       console.error("Erro ao iniciar batalha:", error);
     }
@@ -126,20 +134,28 @@ const Map = () => {
 
       setTimeout(() => {
         setDamageInfo(null);
-      }, 1000);
+      }, 500);
 
       index++;
       setCurrentTurnIndex(index);
 
       if (index >= turns.length) {
         clearInterval(interval);
+
+        // Exibir modal e atualizar card
+        setTimeout(() => {
+          setShowModal(true);
+          setIdAlien((prev) => prev + 1);
+        }, 2000);
       }
-    }, 2000);
+    }, 1500);
   };
   const getAlienImage = (tipoId) => {
     const selectAlien = alienImg.find((tipo) => tipo.nome === tipoId);
     return selectAlien ? selectAlien.img : "default.png";
   };
+  
+
   if (loading || !character || !activeAlien) return <div>Carregando...</div>;
   const maxhealth = character.health_points;
   return (
@@ -209,10 +225,14 @@ const Map = () => {
           </div>
         </motion.div>
         {/* Ícone de Batalha */}
-        <div className="text-6xl text-gray-300 animate-pulse">⚔️</div>
-
+        <button
+          onClick={() => startBattle()}
+          className="bg-red-600 text-white text-xl font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700  transition-transform duration-300 ease-in-out"
+        >
+          ⚔️ Iniciar Batalha
+        </button>
         {/* Card do Alien */}
-        {activeAlien && (
+        {card && (
           <motion.div
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
@@ -232,13 +252,13 @@ const Map = () => {
             )}
 
             <h3 className="text-3xl font-extrabold text-red-400 drop-shadow-md">
-              {activeAlien.nome}
+              {card.nome}
             </h3>
 
             {/* Imagem do Alien */}
             <div className="w-80 h-96 mx-auto rounded-lg overflow-hidden shadow-xl">
               <img
-                src={getAlienImage(activeAlien.nome)}
+                src={getAlienImage(card.nome)}
                 alt={activeAlien.nome}
                 className="w-full h-full object-cover"
               />
@@ -271,12 +291,10 @@ const Map = () => {
           </motion.div>
         )}
       </div>
-      <button
-        onClick={() => startBattle()}
-        className="bg-red-600 text-white text-xl font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700  transition-transform duration-300 ease-in-out"
-      >
-        ⚔️ Iniciar Batalha
-      </button>
+
+      {showModal && (
+        <Modal winner={winner} onClose={() => setShowModal(false)} />
+      )}
     </div>
   );
 };
