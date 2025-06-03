@@ -286,25 +286,6 @@ const Torre = () => {
               )}
             </div>
 
-            {/* Log da Batalha por turno */}
-            <div className="bg-black/70 p-4 mt-6 rounded-lg h-48 overflow-y-auto border-[2px] border-cyan-500 text-white text-left">
-              {battleTurns.slice(0, currentTurn + 1).map((entry, index) => (
-                <p key={index} className="mb-1">
-                  🔥 Dano: {entry.dano} | Vida restante: {entry.vida}
-                </p>
-              ))}
-            </div>
-
-            {/* Botão para passar para o próximo turno */}
-            {currentTurn < battleTurns.length - 1 && (
-              <button
-                onClick={() => setCurrentTurn((prev) => prev + 1)}
-                className="mt-4 px-6 py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-500"
-              >
-                Próximo Turno
-              </button>
-            )}
-
             {/* Botão para fechar batalha */}
             <button
               onClick={() => setShowBattleModal(false)}

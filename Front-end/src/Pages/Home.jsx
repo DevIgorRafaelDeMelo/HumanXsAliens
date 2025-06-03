@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import CharacterCard from "../Components/CharacterCard";
+
 import background from "../Img/Home.png";
 
 import { motion } from "framer-motion";
@@ -47,11 +47,6 @@ const Home = () => {
   }, [userLogin, navigate]);
 
   if (loading) return <div>Carregando...</div>;
-
-  if (characters.length === 0) {
-    // Se não tem personagens, redireciona ou mostra botão para criar personagem
-    return <CharacterCard user={userLogin} />;
-  }
 
   // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
   return (

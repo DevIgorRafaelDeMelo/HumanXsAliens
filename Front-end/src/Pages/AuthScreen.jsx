@@ -46,7 +46,6 @@ const AuthScreen = () => {
         // Redireciona para a home
         navigate("/lobby");
       } else {
-        alert(`Erro: ${data.message}`);
       }
     } catch (error) {
       console.error("Erro ao conectar com o servidor", error);

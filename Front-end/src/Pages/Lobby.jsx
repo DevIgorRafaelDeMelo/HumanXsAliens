@@ -8,12 +8,14 @@ import { motion } from "framer-motion";
 import COM from "../Img/COM.png";
 import INF from "../Img/MEN.png";
 import HOS from "../Img/MED.png";
+import CharacterCard from "../Components/CharacterCard";
 
 const Lobby = () => {
   const { userLogin, logout } = useUser();
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -42,8 +44,10 @@ const Lobby = () => {
   }, [userLogin, navigate]);
 
   // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
-
-  const [selectedOption, setSelectedOption] = useState(null);
+  if (characters.length === 0) {
+    // Se não tem personagens, redireciona ou mostra botão para criar personagem
+    return <CharacterCard user={userLogin} />;
+  }
 
   return (
     <div

@@ -7,6 +7,7 @@ import Torre from "./Pages/Torre";
 import AuthScreen from "./Pages/AuthScreen";
 import PrivateRoute from "./Components/PrivateRoute";
 import Lobby from "./Pages/Lobby";
+import Creat from "./Components/CharacterCard";
 
 function App() {
   return (
@@ -37,6 +38,14 @@ function App() {
           element={
             <PrivateRoute>
               <Lobby />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/creat"
+          element={
+            <PrivateRoute>
+              <Creat />
             </PrivateRoute>
           }
         />

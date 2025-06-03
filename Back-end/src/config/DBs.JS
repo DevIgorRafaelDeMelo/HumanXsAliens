@@ -32,17 +32,15 @@ const getEnemiesByIds = async (enemyIds) => {
   let connection;
   try {
     connection = await pool.getConnection();
-    const placeholders = enemyIds.map(() => "?").join(",");
-
     const [rows] = await connection.execute(
-      `SELECT * FROM aliens WHERE id IN (${placeholders})`,
-      enemyIds
-    ); // 🔍 Busca múltiplos inimigos
+      "SELECT * FROM aliens WHERE id = ?",
+      [enemyIds]
+    ); // 🔍 Busca pelo ID no banco
 
-    return rows.length > 0 ? rows : [];
+    return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error("Erro ao buscar inimigos:", error);
-    return [];
+    console.error("Erro ao buscar personagem:", error);
+    return null;
   } finally {
     if (connection) await connection.release();
   }
