@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-
-import background from "../Img/Home.png";
-
-import { motion } from "framer-motion";
+ 
+ 
+ 
 
 const Home = () => {
   const { userLogin, logout } = useUser();
@@ -52,7 +51,7 @@ const Home = () => {
   return (
     <div className="h-full w-full bg-red">
       <Navbar />
-      <>000000000000000000</>
+       
     </div>
   );
 };

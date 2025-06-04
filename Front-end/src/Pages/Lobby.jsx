@@ -7,21 +7,22 @@ import MKT from "../Img/MKT.png";
 import { motion } from "framer-motion";
 import COM from "../Img/COM.png";
 import INF from "../Img/MEN.png";
-import HOS from "../Img/MED.png";
-import CharacterCard from "../Components/CharacterCard";
+import HOS from "../Img/MED.png"; 
+import CharacterCard from "../Components/CharacterCard";  
 
 const Lobby = () => {
   const { userLogin, logout } = useUser();
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [selectedOption, setSelectedOption] = useState(null);
-
+  const [selectedOption, setSelectedOption] = useState("Mercado Negro");
+  
   useEffect(() => {
     if (!userLogin) {
       navigate("/"); // Se não está logado, vai para auth
       return;
     }
+   
     async function fetchCharacters() {
       try {
         const res = await fetch("http://localhost:5000/characters", {

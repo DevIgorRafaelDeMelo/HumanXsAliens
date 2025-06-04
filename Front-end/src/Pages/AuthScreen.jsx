@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import Footer from "../Components/Footer";
-import Header from "../Components/Header";
+import img from "../Img/Guerra.jpeg";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -55,11 +54,18 @@ const AuthScreen = () => {
 
   return (
     <>
-      <Header />
-
-      <div className="grid h-screen grid-rows-[1fr_auto]">
-        <div className="flex justify-center bg-gray-100 items-center">
-          <div className="bg-white p-8 rounded shadow-md w-[90%]">
+      <div className="flex h-screen grid-rows-[1fr_auto] ">
+        <div
+          className="flex bg-black h-[100vh] w-[50%] "
+          style={{
+            backgroundImage: `url(${img})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "100vh",
+          }}
+        ></div>
+        <div className="flex justify-start ps-10 bg-gray-100 items-center bg-white-800 w-[50%]">
+          <div className="bg-white p-8 rounded shadow-md w-[40%] ">
             <h2 className="text-2xl text-primary font-bold mb-4 text-center">
               {isLogin ? "Login" : "Cadastro"}
             </h2>
@@ -111,7 +117,6 @@ const AuthScreen = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </div>
     </>
   );

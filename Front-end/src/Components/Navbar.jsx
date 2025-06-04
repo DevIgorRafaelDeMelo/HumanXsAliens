@@ -13,7 +13,6 @@ import {
   FaHouseUser,
 } from "react-icons/fa";
 import { FaDollarSign } from "react-icons/fa";
-
 import { useUser } from "../context/UserContext";
 
 const Navbar = () => {
@@ -22,6 +21,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
   const [money, setMoney] = useState();
+  const backgroundMusic = new Audio("caminho/da/musica.mp3");
+ 
 
   // Definir `character` depois que os dados forem carregados
   const character = characters.length > 0 ? characters[0] : null;
@@ -32,6 +33,7 @@ const Navbar = () => {
       navigate("/");
       return;
     }
+    
 
     async function fetchCharacters() {
       try {
@@ -84,7 +86,7 @@ const Navbar = () => {
   return (
     <nav className="fixed w-full z-50 flex justify-between items-center ">
       {/* Card animado */}
-      <div className="fixed flex z-1 left-8 top-[19vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
+      <div className="fixed flex z-1 left-8 top-[22vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
         <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}
         <span className="text-white-100">{money}</span>
       </div>
@@ -95,7 +97,7 @@ const Navbar = () => {
         className="bg-gradient-to-br from-gray-800 via-black to-gray-900 text-white p-8 w-[22%] h-48 flex items-center border-[3px] border-cyan-400 rounded-xl shadow-lg m-4 relative"
       >
         {/* Nível do Personagem - Agora maior e destacado */}
-        <div className="absolute -top-4 right-[-100px] bg-cyan-500 text-black text-4xl p-6 py-6 rounded-lg font-extrabold shadow-xl">
+        <div className="absolute -top-4 right-[-10px] bg-cyan-500 text-black text-2xl p-2 py-2 rounded-lg font-extrabold shadow-xl">
           Lvl {character?.level}
         </div>
 
@@ -210,12 +212,12 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/map"
+              to="/base"
               className="flex items-center gap-3 text-white w-44 font-semibold backdrop-blur-lg bg-gradient-to-r from-gray-800 via-blue-500 to-gray-800 shadow-lg border-2 border-blue-500 text-lg tracking-wide hover:scale-110 hover:text-yellow-300 transition-transform duration-300 ease-in-out rounded-lg px-4 py-2"
             >
               <FaHouseUser className="text-yellow-300 text-xl animate-pulse" />{" "}
               {/* Ícone de abrigo com efeito */}
-              Abrigo
+              Base
             </Link>
           </li>
         </ul>

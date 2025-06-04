@@ -8,11 +8,11 @@ import AuthScreen from "./Pages/AuthScreen";
 import PrivateRoute from "./Components/PrivateRoute";
 import Lobby from "./Pages/Lobby";
 import Creat from "./Components/CharacterCard";
+import Base from "./Pages/Base";
 
 function App() {
   return (
     <UserProvider>
-      {" "}
       {/* Envolve toda a aplicação */}
       <Routes>
         <Route path="/" element={<AuthScreen />} />
@@ -46,6 +46,14 @@ function App() {
           element={
             <PrivateRoute>
               <Creat />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/base"
+          element={
+            <PrivateRoute>
+              <Base />
             </PrivateRoute>
           }
         />

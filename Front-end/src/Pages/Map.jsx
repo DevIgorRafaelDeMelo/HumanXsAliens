@@ -8,6 +8,10 @@ import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
 import Modal from "../Components/Modal";
 import x from "../Img/X.png";
+import { Howl } from "howler";
+import AtackHuman from "../sounds/attack.mp3";
+import AtackAlien from "../sounds/alien.mp3";
+import winHuman from "../sounds/win.mp3";
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
@@ -28,14 +32,22 @@ const Map = () => {
   const [disabled, setDisabled] = useState(false);
   const [exp, setExp] = useState();
   const [money, setMoney] = useState();
+  const attackSound = new Howl({
+    src: [AtackHuman],
+  });
+  const attackSoundAlien = new Howl({
+    src: [AtackAlien],
+  });
+  const soundWinnerHuman = new Howl({
+    src: [winHuman],
+  });
+
   useEffect(() => {
     if (character) setPlayerHP(character.health_points);
   }, [character]);
-
   useEffect(() => {
     if (card) setEnemyHP(card.vida);
   }, [card]);
-
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -81,8 +93,6 @@ const Map = () => {
     fetchAliens();
     fetchCharacters();
   }, [userLogin, navigate]);
-
-  if (loading || !character) return <div>Carregando...</div>;
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -129,8 +139,11 @@ const Map = () => {
       setDamageInfo(turnoAtual);
 
       if (turnoAtual.source === "player") {
+        attackSound.play();
+
         setEnemyHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
       } else {
+        attackSoundAlien.play();
         setPlayerHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
       }
 
@@ -146,6 +159,9 @@ const Map = () => {
 
         // **Aguardar 2 segundos antes de exibir o modal**
         setTimeout(() => {
+          if (winner === "player") {
+            soundWinnerHuman.play();
+          }
           setShowModal(true);
           setCard(enemies);
           setPlayerHP(character.health_points);
