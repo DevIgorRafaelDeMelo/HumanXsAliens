@@ -5,6 +5,8 @@ const db = require("../config/db");
 const { getEnemiesByIds, getCharacterById, pool } = require("../config/DBs");
 
 router.post("/", authMiddleware, async (req, res) => {
+  let exp = 100;
+  let money = 1000;
   try {
     const { characterId, enemyIds } = req.body;
 
@@ -16,25 +18,33 @@ router.post("/", authMiddleware, async (req, res) => {
 
     // Buscar jogador e inimigos
     const character = await getCharacterById(characterId);
-    const enemies = await getEnemiesByIds(enemyIds);
+    let enemies = await getEnemiesByIds(enemyIds);
 
-    const battleResult = await simulateBattle(character, enemies);
+    const battleResult = await simulateBattle(character, enemies, exp, money);
     const { turns, winner } = battleResult;
-
-    // Simulação da batalha no novo formato
+    if (winner === "player") {
+      enemies = await getEnemiesByIds(enemyIds + 1);
+      return res.status(200).json({
+        exp,
+        money,
+        enemies,
+        turns,
+        winner,
+      });
+    }
     return res.status(200).json({
       enemies,
       turns,
       winner,
     });
-  } catch (error) { 
+  } catch (error) {
     return res.status(500).json({ message: "Erro interno no servidor" });
   }
 });
 
-const simulateBattle = async (character, enemy) => {
+const simulateBattle = async (character, enemy, exp, money) => {
   const initialPlayerHP = character.health_points;
-  const initialEnemyHP = enemy.vida; 
+  const initialEnemyHP = enemy.vida;
 
   let playerHP = initialPlayerHP;
   let enemyHP = initialEnemyHP;
@@ -74,8 +84,16 @@ const simulateBattle = async (character, enemy) => {
   // **Determinar o vencedor**
   let winner;
   if (playerHP > 0) {
-       await db.execute("UPDATE characters SET alien_id = alien_id + 1 WHERE id = ?", [character.id]);
     winner = "player";
+
+    await db.execute(
+      "UPDATE characters SET alien_id = alien_id + 1 WHERE user_id = ?",
+      [character.id]
+    );
+    await db.execute(
+      "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE id = ?",
+      [exp, money, character.id]
+    );
   } else if (enemyHP > 0) {
     winner = "Enemy";
   } else {
@@ -87,7 +105,5 @@ const simulateBattle = async (character, enemy) => {
     winner,
   };
 };
-
- 
 
 module.exports = router;

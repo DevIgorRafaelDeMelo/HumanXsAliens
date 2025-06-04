@@ -56,6 +56,7 @@ const AuthScreen = () => {
   return (
     <>
       <Header />
+
       <div className="grid h-screen grid-rows-[1fr_auto]">
         <div className="flex justify-center bg-gray-100 items-center">
           <div className="bg-white p-8 rounded shadow-md w-[90%]">

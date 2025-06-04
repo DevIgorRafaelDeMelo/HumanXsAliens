@@ -7,30 +7,35 @@ import alienImg from "../data/Aliens";
 import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
 import Modal from "../Components/Modal";
+import x from "../Img/X.png";
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const character = characters.length > 0 ? characters[0] : null;
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
+  const [turn, setTurn] = useState();
   const [battleTurns, setBattleTurns] = useState([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [damageInfo, setDamageInfo] = useState(null);
-  const [idAlien, setIdAlien] = useState();
   const [aliens, setAliens] = useState([]);
-  const activeAlien = aliens.find((alien) => alien.id === idAlien + 1);
-  const [playerHP, setPlayerHP] = useState(character?.health_points);
-  const [enemyHP, setEnemyHP] = useState(activeAlien?.vida);
-  const [showModal, setShowModal] = useState(false);
   const [card, setCard] = useState();
+  const [playerHP, setPlayerHP] = useState(character?.health_points);
+  const [enemyHP, setEnemyHP] = useState(card?.vida);
   const [winner, setWinner] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+  const [exp, setExp] = useState();
+  const [money, setMoney] = useState();
   useEffect(() => {
     if (character) setPlayerHP(character.health_points);
   }, [character]);
+
   useEffect(() => {
-    if (activeAlien) setEnemyHP(activeAlien.vida);
-  }, [activeAlien]);
+    if (card) setEnemyHP(card.vida);
+  }, [card]);
+
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -48,8 +53,7 @@ const Map = () => {
         );
 
         const data = await res.json();
-        setIdAlien(data.characters[0].alien_id);
-        setCard(data.characters[0].alien_id);
+        setCard(data.enemies);
         if (res.ok) {
           setCharacters(data.characters);
         } else {
@@ -57,6 +61,7 @@ const Map = () => {
         }
       } catch (error) {
         alert("Erro ao conectar com o servidor.");
+        console.error("Erro de conexão:", error);
       } finally {
         setLoading(false);
       }
@@ -68,22 +73,16 @@ const Map = () => {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
         const data = await res.json();
-
         if (res.ok) setAliens(data);
       } catch (error) {
         console.error("Erro ao conectar com o servidor");
       }
     }
-
     fetchAliens();
     fetchCharacters();
   }, [userLogin, navigate]);
-  useEffect(() => {
-    if (idAlien !== undefined) {
-      const nextAlien = aliens.find((alien) => alien.id === idAlien + 1);
-      setCard(nextAlien);
-    }
-  }, [idAlien, aliens]);
+
+  if (loading || !character) return <div>Carregando...</div>;
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -92,8 +91,9 @@ const Map = () => {
     return selectedMilitaryType ? selectedMilitaryType.image : "default.png"; // Fallback caso não encontre
   };
   const startBattle = async () => {
+    setDisabled(true);
     const characterId = character?.id; // Obtém o ID do personagem
-    const enemyIds = activeAlien.id;
+    const enemyIds = card.id;
     try {
       const response = await fetch("http://localhost:5000/battle", {
         method: "POST",
@@ -108,16 +108,18 @@ const Map = () => {
       });
 
       const data = await response.json();
+      console.log(data);
+      setMoney(data.money);
+      setExp(data.exp);
+      setWinner(data.winner);
       setBattleTurns(data.turns);
       setCurrentTurnIndex(0);
-      processTurn(data.turns);
-      setCard(data.enemies);
-      setWinner(data.winner);
+      processTurn(data.turns, data.enemies);
     } catch (error) {
       console.error("Erro ao iniciar batalha:", error);
     }
   };
-  const processTurn = (turns) => {
+  const processTurn = (turns, enemies) => {
     if (!turns.length) return;
 
     let index = 0;
@@ -134,7 +136,7 @@ const Map = () => {
 
       setTimeout(() => {
         setDamageInfo(null);
-      }, 500);
+      }, 1000);
 
       index++;
       setCurrentTurnIndex(index);
@@ -142,21 +144,21 @@ const Map = () => {
       if (index >= turns.length) {
         clearInterval(interval);
 
-        // Exibir modal e atualizar card
+        // **Aguardar 2 segundos antes de exibir o modal**
         setTimeout(() => {
           setShowModal(true);
-          setIdAlien((prev) => prev + 1);
+          setCard(enemies);
+          setPlayerHP(character.health_points);
+          setDisabled(false);
         }, 2000);
       }
-    }, 1500);
+    }, 2000);
   };
   const getAlienImage = (tipoId) => {
     const selectAlien = alienImg.find((tipo) => tipo.nome === tipoId);
     return selectAlien ? selectAlien.img : "default.png";
   };
-  
-
-  if (loading || !character || !activeAlien) return <div>Carregando...</div>;
+  if (loading || !character) return <div>Carregando...</div>;
   const maxhealth = character.health_points;
   return (
     <div
@@ -169,7 +171,17 @@ const Map = () => {
       className="flex flex-col justify-between items-center"
     >
       <Navbar />
-      <div className="flex justify-center    pt-60 ">
+      <div
+        style={{
+          backgroundImage: `url(${x})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "50vh",
+          width: "50vh",
+        }}
+        className="fixed flex flex-col mt-40 justify-between items-center"
+      ></div>
+      <div className="flex justify-center  w-[100%]  pt-60 ">
         {/* Card do Personagem */}
         <motion.div
           initial={{ opacity: 0, x: 100 }}
@@ -225,12 +237,8 @@ const Map = () => {
           </div>
         </motion.div>
         {/* Ícone de Batalha */}
-        <button
-          onClick={() => startBattle()}
-          className="bg-red-600 text-white text-xl font-bold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700  transition-transform duration-300 ease-in-out"
-        >
-          ⚔️ Iniciar Batalha
-        </button>
+        <div className="w-[200px] h-32 flex items-center justify-center"></div>
+
         {/* Card do Alien */}
         {card && (
           <motion.div
@@ -259,7 +267,7 @@ const Map = () => {
             <div className="w-80 h-96 mx-auto rounded-lg overflow-hidden shadow-xl">
               <img
                 src={getAlienImage(card.nome)}
-                alt={activeAlien.nome}
+                alt={card.nome}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -269,31 +277,49 @@ const Map = () => {
               <motion.div
                 initial={{ width: "100%" }}
                 animate={{
-                  width: `${(enemyHP / activeAlien.max_health) * 100}%`,
+                  width: `${(enemyHP / card.max_health) * 100}%`,
                 }}
                 transition={{ duration: 1 }}
                 className="h-5 bg-red-600 rounded-full"
               />
               <p className="text-md font-bold text-white mt-2">
-                {enemyHP} / {activeAlien.max_health} HP
+                {enemyHP} / {card.max_health} HP
               </p>
             </div>
 
             {/* Pontos de Ataque e Defesa */}
             <div className="flex justify-between w-full mt-6 px-8">
               <p className="text-xl font-bold text-orange-400 flex items-center gap-3">
-                ⚔️ Ataque: {activeAlien.ataque}
+                ⚔️ Ataque: {card.ataque}
               </p>
               <p className="text-xl font-bold text-blue-400 flex items-center gap-3">
-                🛡 Defesa: {activeAlien.defesa}
+                🛡 Defesa: {card.defesa}
               </p>
             </div>
           </motion.div>
         )}
       </div>
 
+      <button
+        onClick={startBattle}
+        disabled={disabled}
+        className={`fixed top-[80vh] px-6 py-3 rounded-lg shadow-lg text-xl font-bold ${
+          disabled
+            ? "bg-gray-500 cursor-not-allowed"
+            : "bg-red-600 hover:bg-red-700 text-white transition-transform duration-300 ease-in-out"
+        }`}
+      >
+        Fight
+      </button>
+
       {showModal && (
-        <Modal winner={winner} onClose={() => setShowModal(false)} />
+        <Modal
+          className="z-10"
+          winner={winner}
+          exp={exp}
+          money={money}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   );

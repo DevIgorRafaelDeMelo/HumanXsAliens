@@ -12,6 +12,7 @@ import {
   FaChessRook,
   FaHouseUser,
 } from "react-icons/fa";
+import { FaDollarSign } from "react-icons/fa";
 
 import { useUser } from "../context/UserContext";
 
@@ -20,6 +21,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
+  const [money, setMoney] = useState();
 
   // Definir `character` depois que os dados forem carregados
   const character = characters.length > 0 ? characters[0] : null;
@@ -44,6 +46,8 @@ const Navbar = () => {
 
         if (res.ok) {
           setCharacters(data.characters);
+          console.log(data);
+          setMoney(data.characters[0].money);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -80,6 +84,10 @@ const Navbar = () => {
   return (
     <nav className="fixed w-full z-50 flex justify-between items-center ">
       {/* Card animado */}
+      <div className="fixed flex z-1 left-8 top-[19vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
+        <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}
+        <span className="text-white-100">{money}</span>
+      </div>
       <motion.div
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
@@ -159,7 +167,6 @@ const Navbar = () => {
           </div>
         </div>
       </motion.div>
-
       {/* Menu */}
       <motion.div
         initial={{ opacity: 0, x: 100 }}
