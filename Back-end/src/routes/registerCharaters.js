@@ -14,7 +14,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
   try {
     await db.query(
-      "INSERT INTO characters (name, tipo_id, user_id,alien_id) VALUES (?, ?, ? ,1)",
+      "INSERT INTO characters (name, tipo_id, user_id,alien_id) VALUES (?, ?, ? , 1)",
       [name, tipo_id, user_id] // certifique-se de ter o user.id via token
     );
 

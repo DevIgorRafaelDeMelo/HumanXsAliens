@@ -7,6 +7,7 @@ import { GiShield, GiCrossedSwords } from "react-icons/gi";
 import { tiposMilitares } from "../data/militaryTypes";
 import { useUser } from "../context/UserContext";
 import Navbar from "../Components/Navbar";
+import gunsImg from "../data/Arma";
 
 const Base = () => {
   const [characters, setCharacters] = useState([]);
@@ -14,6 +15,12 @@ const Base = () => {
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
   const character = characters.length > 0 ? characters[0] : null;
+  const [depositoItens, setDepositoItens] = useState([]);
+  const [itens, setItens] = useState([]);
+  const depositoItensArray =
+    typeof depositoItens === "string"
+      ? JSON.parse(depositoItens)
+      : depositoItens;
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -50,6 +57,8 @@ const Base = () => {
 
         if (res.ok) {
           setCharacters(data.characters);
+          setDepositoItens(data.characters[0].DEPOSITO);
+          setItens(data.guns);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -63,26 +72,31 @@ const Base = () => {
 
     fetchCharacters();
   }, [userLogin, navigate]);
+  const selectImgGund = (id) => {
+    console.log(id);
+    const gun = gunsImg.find((g) => g.id === id);
+    return gun ? gun.img : "";
+  };
 
   if (loading) return <div>Carregando...</div>;
 
   // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
   return (
-    <div className="h-full w-full   ">
+    <div className="h-full w-full  bg-gradient-to-br from-gray-800 via-black to-gray-900  ">
       <Navbar />
       <div className="flex justify-center items-center min-h-screen">
         <motion.div
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="bg-gradient-to-br from-gray-800 via-black to-gray-900 text-white p-12 w-[40%] h-64 flex items-center border-[3px] border-cyan-400 rounded-xl shadow-lg m-6 relative"
+          className="text-white  w-[100vh] h-[100vh] flex flex-col items-center p-6  rounded-xl shadow-lg  relative"
         >
-          {/* Nível do Personagem - Agora maior e destacado */}
-          <div className="absolute -top-0 right-[0px]  text-white text-3xl p-3 rounded-lg font-extrabold shadow-xl">
+          {/* Nível */}
+          <div className="absolute -top-0 right-[0px] text-white text-3xl  rounded-lg font-extrabold shadow-xl">
             Lvl {character?.level}
           </div>
 
-          {/* Imagem do Personagem */}
+          {/* Imagem */}
           <div className="relative">
             <div className="relative w-52 h-52 overflow-hidden shadow-xl">
               <img
@@ -91,19 +105,18 @@ const Base = () => {
                 className="w-full h-full object-cover object-top"
               />
             </div>
-
             <div className="absolute -bottom-2 right-0 bg-cyan-500 text-sm px-2 py-1 rounded-lg font-bold shadow-md animate-pulse">
               {getMilitaryName(character.tipo_id)}
             </div>
           </div>
 
-          {/* Detalhes do Personagem */}
+          {/* Detalhes */}
           <div className="flex flex-col gap-3 p-6 w-full">
             <h2 className="text-2xl font-extrabold text-yellow-300 drop-shadow-md text-center">
               {character?.name}
             </h2>
 
-            {/* Barra de Vida */}
+            {/* Barra de vida */}
             <div className="relative w-full bg-gray-700 rounded-full h-6 overflow-hidden mt-3 shadow-md">
               <motion.div
                 initial={{ width: "0%" }}
@@ -129,7 +142,7 @@ const Base = () => {
               </p>
             </div>
 
-            {/* Atributos do Personagem */}
+            {/* Atributos */}
             <div className="grid grid-cols-2 gap-3 mt-4 text-white text-base font-semibold">
               <p className="flex items-center gap-2">
                 <AiFillHeart className="text-red-400" />
@@ -147,6 +160,51 @@ const Base = () => {
                 <GiShield className="text-blue-400" />
                 Defesa: {character?.defense_points}
               </p>
+            </div>
+
+            {/* 🧱 Itens do Depósito */}
+            <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
+              <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">
+                🎒 Itens no Depósito
+              </h3>
+
+              {Array.isArray(depositoItensArray) &&
+              depositoItensArray.length > 0 ? (
+                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 max-h-[40vh] overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
+                  {depositoItensArray.map((id, index) => {
+                    const item = itens.find((i) => i.id === id);
+                    if (!item) return null;
+
+                    return (
+                      <li
+                        key={index}
+                        className="flex items-center bg-black/60 p-3 rounded-xl border border-cyan-400 shadow-lg hover:scale-105 transition-transform duration-200"
+                      >
+                        <img
+                          src={selectImgGund(item.id)}
+                          alt={item.nome}
+                          className="w-14 h-14 object-contain mr-3 border-2 border-cyan-500 rounded-md shadow-md"
+                        />
+                        <div className="space-y-1">
+                          <p className="text-cyan-300 font-bold text-sm">
+                            {item.nome}
+                          </p>
+                          <p className="text-yellow-300 flex items-center text-sm">
+                            <GiCrossedSwords className="text-orange-400 mr-1" />
+                            {item.dano}
+                          </p>
+                          <p className="text-green-300 flex items-center text-sm">
+                            <GiShield className="text-blue-400 mr-1" />
+                            {item.defesa}
+                          </p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-gray-400">Nenhum item no depósito.</p>
+              )}
             </div>
           </div>
         </motion.div>

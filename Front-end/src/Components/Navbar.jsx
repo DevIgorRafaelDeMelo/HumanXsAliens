@@ -22,7 +22,6 @@ const Navbar = () => {
   const { userLogin, logout } = useUser();
   const [money, setMoney] = useState();
   const backgroundMusic = new Audio("caminho/da/musica.mp3");
- 
 
   // Definir `character` depois que os dados forem carregados
   const character = characters.length > 0 ? characters[0] : null;
@@ -33,7 +32,6 @@ const Navbar = () => {
       navigate("/");
       return;
     }
-    
 
     async function fetchCharacters() {
       try {
@@ -48,7 +46,6 @@ const Navbar = () => {
 
         if (res.ok) {
           setCharacters(data.characters);
-          console.log(data);
           setMoney(data.characters[0].money);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);

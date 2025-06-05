@@ -46,4 +46,21 @@ const getEnemiesByIds = async (enemyIds) => {
   }
 };
 
-module.exports = { pool, getCharacterById, getEnemiesByIds };
+const getItenByIds = async (itenIds) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM itens WHERE id = ?",
+      [itenIds]
+    );
+    return rows[0]; // retorna só o primeiro item (ou `rows` se quiser todos)
+  } catch (error) {
+    console.error("Erro ao buscar item:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
+module.exports = { pool, getCharacterById, getEnemiesByIds, getItenByIds };
