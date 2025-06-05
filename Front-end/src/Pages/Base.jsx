@@ -170,7 +170,7 @@ const Base = () => {
 
               {Array.isArray(depositoItensArray) &&
               depositoItensArray.length > 0 ? (
-                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 max-h-[40vh] overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
+                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 max-h-[40vh] overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
                   {depositoItensArray.map((id, index) => {
                     const item = itens.find((i) => i.id === id);
                     if (!item) return null;
@@ -178,7 +178,7 @@ const Base = () => {
                     return (
                       <li
                         key={index}
-                        className="flex items-center bg-black/60 p-3 rounded-xl border border-cyan-400 shadow-lg hover:scale-105 transition-transform duration-200"
+                        className="flex items-center  shadow-lg hover:scale-105 transition-transform duration-200"
                       >
                         <img
                           src={selectImgGund(item.id)}

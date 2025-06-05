@@ -20,6 +20,7 @@ const Lobby = () => {
   const [guns, setGuns] = useState();
   const [selectedGun, setSelectedGun] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
@@ -73,8 +74,17 @@ const Lobby = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Arma selecionada com sucesso!");
-        setShowModal(false);
+        setShowModal(true); // Exibe primeiro modal de confirmação
+
+        // Exibe um segundo modal com a descrição e fecha ambos após 2s
+        setTimeout(() => {
+          setShowModal(false); // Esconde o primeiro modal
+          setShowDescriptionModal(true); // Exibe o modal da descrição
+
+          setTimeout(() => {
+            setShowDescriptionModal(false); // Esconde o segundo modal
+          }, 1000);
+        }, 1000);
       } else {
         alert(data.message || "Erro ao selecionar a arma.");
       }
@@ -129,24 +139,35 @@ const Lobby = () => {
                       className="w-16 h-16 object-contain mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
                     />
                     <div className="absolute top-0 right-0 bg-cyan-500 text-black text-xs px-1 rounded-bl-md font-bold shadow-sm">
-                      Lv. {gun.nivel}
+                      Lv. {gun.nível}
                     </div>
                   </div>
-                  <div>
-                    <p className="text font-extrabold text-cyan-400 tracking-wide">
+                  <div className="ps-2">
+                    <p className=" font-extrabold text-cyan-400 tracking-wide">
                       {gun.nome}
                     </p>
                     <p className="text-sm text-yellow-400 font-semibold">
-                      ⚔️ Dano: {gun.dano}
+                      ATK: {gun.dano}
+                    </p>
+                    <p className="text-sm text-yellow-400 font-semibold">
+                      DEF: {gun.defesa}
                     </p>
                     <p className="text-sm text-green-400 font-semibold">
-                      💰 Valor: ${gun.valor}
+                      R$: {gun.valor}
                     </p>
                   </div>
                 </li>
               ))}
             </ul>
-
+            {showDescriptionModal && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <p className="text-green-600 font-bold">
+                    Você adquiriu equipamanento!
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
 
             {/* Texto com melhor espaçamento e leitura */}

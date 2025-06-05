@@ -12,11 +12,7 @@ router.post("/", authMiddleware, async (req, res) => {
     const character = await getCharacterById(userId);
     const iten = await getItenByIds(gunId);
 
-    if (!character || !iten) {
-      return res
-        .status(404)
-        .json({ message: "Personagem ou item não encontrado." });
-    }
+    
 
     if (character.money < iten.valor) {
       return res.status(400).json({ message: "Dinheiro insuficiente." });
@@ -24,17 +20,20 @@ router.post("/", authMiddleware, async (req, res) => {
 
     // Se for a primeira vez, certifique-se que `deposito` seja um array
     const [rows] = await db.query(
-      "SELECT deposito, money FROM characters WHERE id = ?",
+      "SELECT DEPOSITO, money FROM characters WHERE id = ?",
       [userId]
     );
 
     const characters = rows[0];
-    const depositoAtual = JSON.parse(characters.deposito || "[]"); // se for null, vira array vazio
+
+    const depositoAtual = characters.DEPOSITO
+      ? JSON.parse(characters.DEPOSITO)
+      : [];
 
     // Adiciona o novo item (arma)
     depositoAtual.push(gunId);
 
-    const novoSaldo = character.money - iten.valor;
+    const novoSaldo = characters.money - iten.valor;
 
     // Atualiza no banco de dados
     await db.query(

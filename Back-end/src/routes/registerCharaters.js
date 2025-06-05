@@ -14,8 +14,8 @@ router.post("/", authMiddleware, async (req, res) => {
 
   try {
     await db.query(
-      "INSERT INTO characters (name, tipo_id, user_id,alien_id) VALUES (?, ?, ? , 1)",
-      [name, tipo_id, user_id] // certifique-se de ter o user.id via token
+      "INSERT INTO characters (name, tipo_id, user_id, alien_id, DEPOSITO) VALUES (?, ?, ?, ?, ?)",
+      [name, tipo_id, user_id, 1, JSON.stringify([])] // Corrigido: '1' agora está corretamente inserido
     );
 
     return res.status(200).json({
