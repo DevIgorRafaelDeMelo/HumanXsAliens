@@ -11,6 +11,10 @@ import img10 from "../Img/alien10.jpeg";
 
 const guns = [
   {
+    id: 0,
+    img: "",
+  },
+  {
     id: 1,
     img: img1,
   },

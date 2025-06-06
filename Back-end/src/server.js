@@ -12,6 +12,7 @@ const aliens = require("./routes/aliens");
 const Battle = require("./routes/Battle");
 const StartBattle = require("./routes/StartBattle");
 const Buy = require("./routes/Buy");
+const Equip = require("./routes/Equip");
 
 dotenv.config(); // carrega variáveis do .env
 
@@ -31,6 +32,7 @@ app.use("/aliens", aliens);
 app.use("/start-battle", StartBattle);
 app.use("/battle", Battle);
 app.use("/buy", Buy);
+app.use("/equipar", Equip);
 
 // Rota protegida para teste
 app.get("/profile", authMiddleware, (req, res) => {

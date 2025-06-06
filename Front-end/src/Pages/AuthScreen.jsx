@@ -2,15 +2,13 @@ import { useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import img from "../Img/Guerra.jpeg";
- 
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState(" ");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
- 
+  const [email, setEmail] = useState("rafaelmelo72265@gmail.com");
+  const [password, setPassword] = useState("2289Nnly");
+  const [confirmPassword, setConfirmPassword] = useState("2289Nnly");
 
   const { login } = useUser(); // Usa a função login do contexto
   const navigate = useNavigate();

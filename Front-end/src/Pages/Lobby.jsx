@@ -50,7 +50,6 @@ const Lobby = () => {
     fetchCharacters();
   }, [userLogin, navigate]);
   const selectImgGund = (id) => {
-    console.log(id);
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
@@ -139,7 +138,7 @@ const Lobby = () => {
                       className="w-16 h-16 object-contain mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
                     />
                     <div className="absolute top-0 right-0 bg-cyan-500 text-black text-xs px-1 rounded-bl-md font-bold shadow-sm">
-                      Lv. {gun.nível}
+                      Lv. {gun.nivel}
                     </div>
                   </div>
                   <div className="ps-2">
