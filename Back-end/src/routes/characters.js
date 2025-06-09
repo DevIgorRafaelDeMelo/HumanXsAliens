@@ -9,14 +9,17 @@ router.get("/", authMiddleware, async (req, res) => {
     const userId = req.user.id; // Correção: pegando ID corretamente
 
     const [characters] = await db.query(
-      "SELECT * FROM characters WHERE  user_id = ?",
+      "SELECT * FROM characters WHERE user_id = ?",
       [userId]
     );
     const [guns] = await db.query("SELECT * FROM itens ");
 
+
     if (characters.length === 0) {
       return res.status(404).json({ message: "Nenhum personagem encontrado." });
     }
+
+
     const alienIds =
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);

@@ -7,11 +7,7 @@ import alienImg from "../data/Aliens";
 import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
 import Modal from "../Components/Modal";
-import x from "../Img/X.png";
-import { Howl } from "howler";
-import AtackHuman from "../sounds/attack.mp3";
-import AtackAlien from "../sounds/alien.mp3";
-import winHuman from "../sounds/win.mp3";
+import x from "../Img/X.png"; 
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
@@ -19,8 +15,7 @@ const Map = () => {
   const character = characters.length > 0 ? characters[0] : null;
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { userLogin, logout } = useUser();
-  const [turn, setTurn] = useState();
+  const { userLogin, logout } = useUser(); 
   const [battleTurns, setBattleTurns] = useState([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [damageInfo, setDamageInfo] = useState(null);
@@ -32,16 +27,6 @@ const Map = () => {
   const [disabled, setDisabled] = useState(false);
   const [exp, setExp] = useState();
   const [money, setMoney] = useState();
-  const attackSound = new Howl({
-    src: [AtackHuman],
-  });
-  const attackSoundAlien = new Howl({
-    src: [AtackAlien],
-  });
-  const soundWinnerHuman = new Howl({
-    src: [winHuman],
-  });
-
   useEffect(() => {
     if (character) setPlayerHP(character.health_points);
   }, [character]);
@@ -98,11 +83,11 @@ const Map = () => {
       (tipo) => tipo.id === tipoId
     );
 
-    return selectedMilitaryType ? selectedMilitaryType.image : "default.png"; // Fallback caso não encontre
+    return selectedMilitaryType ? selectedMilitaryType.image : "default.png";  
   };
   const startBattle = async () => {
     setDisabled(true);
-    const characterId = character?.id; // Obtém o ID do personagem
+    const characterId = character?.id; 
     const enemyIds = card.id;
     try {
       const response = await fetch("http://localhost:5000/battle", {
@@ -138,14 +123,14 @@ const Map = () => {
 
       setDamageInfo(turnoAtual);
 
-      if (turnoAtual.source === "player") {
+      /*if (turnoAtual.source === "player") {
         attackSound.play();
 
         setEnemyHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
       } else {
         attackSoundAlien.play();
         setPlayerHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
-      }
+      }*/
 
       setTimeout(() => {
         setDamageInfo(null);
@@ -159,9 +144,9 @@ const Map = () => {
 
         // **Aguardar 2 segundos antes de exibir o modal**
         setTimeout(() => {
-          if (winner === "player") {
+         /* if (winner === "player") {
             soundWinnerHuman.play();
-          }
+          }*/
           setShowModal(true);
           setCard(enemies);
           setPlayerHP(character.health_points);

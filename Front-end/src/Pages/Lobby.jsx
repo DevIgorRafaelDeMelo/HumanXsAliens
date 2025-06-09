@@ -21,7 +21,6 @@ const Lobby = () => {
   const [selectedGun, setSelectedGun] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
-
   useEffect(() => {
     if (!userLogin) {
       navigate("/"); // Se não está logado, vai para auth
@@ -53,12 +52,6 @@ const Lobby = () => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
-  if (characters.length === 0) {
-    // Se não tem personagens, redireciona ou mostra botão para criar personagem
-    return <CharacterCard user={userLogin} />;
-  }
-
   const handleConfirmPurchase = async (gunId) => {
     try {
       const response = await fetch("http://localhost:5000/buy", {
@@ -95,7 +88,9 @@ const Lobby = () => {
     setSelectedGun(gun); // salva os dados da arma
     setShowModal(true); // mostra o modal
   };
-
+  if (characters.length === 0) {
+    return <CharacterCard user={userLogin} />;
+  }
   return (
     <div
       style={{

@@ -18,7 +18,7 @@ const getCharacterById = async (characterId) => {
     const [rows] = await connection.execute(
       "SELECT * FROM characters WHERE id = ?",
       [characterId]
-    ); // 🔍 Busca pelo ID no banco
+    );  
 
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
@@ -35,7 +35,7 @@ const getEnemiesByIds = async (enemyIds) => {
     const [rows] = await connection.execute(
       "SELECT * FROM aliens WHERE id = ?",
       [enemyIds]
-    ); // 🔍 Busca pelo ID no banco
+    );  
 
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
@@ -54,7 +54,7 @@ const getItenByIds = async (itenIds) => {
       "SELECT * FROM itens WHERE id = ?",
       [itenIds]
     );
-    return rows[0]; // retorna só o primeiro item (ou `rows` se quiser todos)
+    return rows[0];  
   } catch (error) {
     console.error("Erro ao buscar item:", error);
     return null;

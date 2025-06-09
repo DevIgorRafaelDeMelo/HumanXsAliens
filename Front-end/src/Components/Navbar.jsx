@@ -22,6 +22,11 @@ const Navbar = () => {
   const { userLogin, logout } = useUser();
   const [money, setMoney] = useState();
   const backgroundMusic = new Audio("caminho/da/musica.mp3");
+  const [dano, setDano] = useState();
+  const [defessa, setDefessa] = useState();
+  const [crit, setCrit] = useState();
+  const [vida, setVida] = useState();
+  const [critMultiplo, setCritMultiplo] = useState();
 
   // Definir `character` depois que os dados forem carregados
   const character = characters.length > 0 ? characters[0] : null;
@@ -47,6 +52,52 @@ const Navbar = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setMoney(data.characters[0].money);
+
+          setVida(
+            data.characters[0].health_points +
+              data.characters[0].BOOT_SPELL[0] +
+              data.characters[0].CAPA_SPELL[0] +
+              data.characters[0].TORSO_SPELL[0] +
+              data.characters[0].GUN_SPELL[0]
+          );
+          setDano(
+            data.characters[0].attack_points +
+              data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
+          );
+          setCrit(
+            [
+              data.characters[0].crit_chance,
+              data.characters[0].BOOT_SPELL[2],
+              data.characters[0].CAPA_SPELL[2],
+              data.characters[0].TORSO_SPELL[2],
+              data.characters[0].GUN_SPELL[2],
+            ]
+              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
+              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+          );
+          setCritMultiplo(
+            [
+              data.characters[0].crit_multiplier,
+              data.characters[0].BOOT_SPELL[3],
+              data.characters[0].CAPA_SPELL[3],
+              data.characters[0].TORSO_SPELL[3],
+              data.characters[0].GUN_SPELL[3],
+            ]
+              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
+              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+              .toFixed(2) // Mantém apenas duas casas decimais
+          );
+
+          setDefessa(
+            data.characters[0].defessa +
+              data.characters[0].BOOT_SPELL[4] +
+              data.characters[0].CAPA_SPELL[4] +
+              data.characters[0].TORSO_SPELL[4] +
+              data.characters[0].GUN_SPELL[4]
+          );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -59,7 +110,7 @@ const Navbar = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate, character , characters]);
+  }, [userLogin, navigate, character, characters]);
 
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
@@ -166,6 +217,7 @@ const Navbar = () => {
           </div>
         </div>
       </motion.div>
+
       {/* Menu */}
       <motion.div
         initial={{ opacity: 0, x: 100 }}

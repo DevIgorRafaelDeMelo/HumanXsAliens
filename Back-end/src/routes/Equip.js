@@ -23,34 +23,65 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(404).json({ error: "Item não encontrado." });
     }
 
-    let query = "";
-    let values = [];
+    let queryUpdate = "";
+    let valuesUpdate = [];
+    let querySpell = "";
+    let valuesSpell = [];
 
     // Atualizar a coluna correta
     switch (itemUpdate.categoria) {
       case "Arma":
-        query = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-        values = [itemUpdate.id, userId];
+        queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
+        valuesUpdate = [itemUpdate.id, userId];
+        querySpell =
+          "UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         break;
+
       case "Capa":
-        query = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
-        values = [itemUpdate.id, userId];
+        queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
+        valuesUpdate = [itemUpdate.id, userId];
+        querySpell =
+          "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         break;
+
       case "Armadura":
-        query = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
-        values = [itemUpdate.id, userId];
+        queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
+        valuesUpdate = [itemUpdate.id, userId];
+        querySpell =
+          "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         break;
+
       case "Buts":
-        query = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
-        values = [itemUpdate.id, userId];
+        queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
+        valuesUpdate = [itemUpdate.id, userId];
+        querySpell =
+          "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         break;
+
       default:
         return res.status(400).json({ error: "Categoria inválida." });
     }
 
-    await db.query(query, values);
+    // Executa a atualização do item equipado
+    await db.query(queryUpdate, valuesUpdate);
 
-    res.json({ message: `Item ${itemUpdate.id} equipado com sucesso!`, user });
+    // Atualiza o spell corretamente
+    if (querySpell) {
+      valuesSpell = [
+        itemUpdate.dano || 0,
+        itemUpdate.defesa || 0,
+        itemUpdate.chance_critico || 0,
+        itemUpdate.multiplicador_critico || 0,
+        itemUpdate.vida || 0,
+        userId,
+      ];
+      await db.query(querySpell, valuesSpell);
+    }
+
+    res.json({
+      message: `Item ${itemUpdate.id} equipado com sucesso!`,
+      characters: user,
+    });
   } catch (error) {
     console.error("Erro na consulta:", error);
     res.status(500).json({ error: "Erro ao equipar item." });

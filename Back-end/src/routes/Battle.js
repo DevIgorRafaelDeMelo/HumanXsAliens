@@ -16,7 +16,6 @@ router.post("/", authMiddleware, async (req, res) => {
         .json({ error: "Character ID ou Enemy IDs estão indefinidos!" });
     }
 
-    // Buscar jogador e inimigos
     const character = await getCharacterById(characterId);
     let enemies = await getEnemiesByIds(enemyIds);
 
@@ -43,23 +42,52 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 const simulateBattle = async (character, enemy, exp, money) => {
-  const initialPlayerHP = character.health_points;
   const initialEnemyHP = enemy.vida;
+  const lifeTotal =
+    character.health_points +
+    character.BOOT_SPELL[0] +
+    character.CAPA_SPELL[0] +
+    character.TORSO_SPELL[0] +
+    character.GUN_SPELL[0];
+  const danoTotal =
+    character.attack_points +
+    character.BOOT_SPELL[1] +
+    character.CAPA_SPELL[1] +
+    character.TORSO_SPELL[1] +
+    character.GUN_SPELL[1];
+  const danoCrit =
+    parseFloat(character.crit_chance) +
+    parseFloat(character.BOOT_SPELL[2]) +
+    parseFloat(character.CAPA_SPELL[2]) +
+    parseFloat(character.TORSO_SPELL[2]) +
+    parseFloat(character.GUN_SPELL[2]);
 
-  let playerHP = initialPlayerHP;
+  const danoCritMultiplo =
+    parseFloat(character.crit_multiplier) +
+    parseFloat(character.BOOT_SPELL[3]) +
+    parseFloat(character.CAPA_SPELL[3]) +
+    parseFloat(character.TORSO_SPELL[3]) +
+    parseFloat(character.GUN_SPELL[3]);
+  const defessa =
+    character.defense_points +
+    character.BOOT_SPELL[4] +
+    character.CAPA_SPELL[4] +
+    character.TORSO_SPELL[4] +
+    character.GUN_SPELL[4];
+
+  console.log(defessa, danoCrit, danoCritMultiplo, danoTotal);
+  let playerHP = lifeTotal;
   let enemyHP = initialEnemyHP;
   const turns = [];
 
   while (playerHP > 0 && enemyHP > 0) {
-    // Gera variação de -10% a +10%
     const variationFactor = Math.random() * 0.2 - 0.1;
 
-    // **Turno do personagem** (Chance de crítico)
-    let danoJogador = Math.max(character.attack_points - enemy.defesa, 0);
+    let danoJogador = Math.max(danoTotal - enemy.defesa, 0);
     danoJogador = Math.round(danoJogador * (1 + variationFactor));
 
-    if (Math.random() < character.crit_chance) {
-      danoJogador = Math.round(danoJogador * character.crit_multiplier); // Multiplica o dano crítico em 50%
+    if (Math.random() < danoCrit) {
+      danoJogador = Math.round(danoJogador * danoCritMultiplo);
     }
 
     enemyHP -= danoJogador;
@@ -67,8 +95,7 @@ const simulateBattle = async (character, enemy, exp, money) => {
 
     if (enemyHP <= 0) break;
 
-    // **Turno do inimigo** (25% de aumento em golpes críticos)
-    let danoInimigo = Math.max(enemy.ataque - character.defense_points, 0);
+    let danoInimigo = Math.max(enemy.ataque - defessa, 0);
     danoInimigo = Math.round(danoInimigo * (1 + variationFactor));
 
     if (Math.random() < 0.25) {
@@ -81,7 +108,6 @@ const simulateBattle = async (character, enemy, exp, money) => {
     if (playerHP <= 0) break;
   }
 
-  // **Determinar o vencedor**
   let winner;
   if (playerHP > 0) {
     winner = "player";

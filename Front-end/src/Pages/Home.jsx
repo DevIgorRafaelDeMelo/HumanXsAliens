@@ -2,16 +2,12 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
- 
- 
- 
 
 const Home = () => {
   const { userLogin, logout } = useUser();
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -46,8 +42,7 @@ const Home = () => {
   }, [userLogin, navigate]);
 
   if (loading) return <div>Carregando...</div>;
-
-  // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
+ 
   return (
     <div className="h-full w-full bg-red">
       <Navbar />
