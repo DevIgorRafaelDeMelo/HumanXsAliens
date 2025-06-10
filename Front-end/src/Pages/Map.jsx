@@ -21,8 +21,8 @@ const Map = () => {
   const [damageInfo, setDamageInfo] = useState(null);
   const [aliens, setAliens] = useState([]);
   const [card, setCard] = useState();
-  const [playerHP, setPlayerHP] = useState(character?.health_points);
-  const [enemyHP, setEnemyHP] = useState(card?.vida);
+  const [playerHP, setPlayerHP] = useState();
+  const [enemyHP, setEnemyHP] = useState();
   const [winner, setWinner] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [exp, setExp] = useState();
@@ -32,13 +32,6 @@ const Map = () => {
   const [crit, setCrit] = useState();
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
-
-  useEffect(() => {
-    if (character) setPlayerHP(character.health_points);
-  }, [character]);
-  useEffect(() => {
-    if (card) setEnemyHP(card.vida);
-  }, [card]);
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -60,44 +53,56 @@ const Map = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setVida(
-            data.characters[0].BOOT_SPELL[4] +
+            data.characters[0].health_points +
+              data.characters[0].BOOT_SPELL[4] +
               data.characters[0].CAPA_SPELL[4] +
               data.characters[0].TORSO_SPELL[4] +
               data.characters[0].GUN_SPELL[4]
           );
           setDano(
-            data.characters[0].BOOT_SPELL[0] +
+            data.characters[0].attack_points +
+              data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
               data.characters[0].GUN_SPELL[0]
           );
           setCrit(
             [
+              data.characters[0].crit_chance,
               data.characters[0].BOOT_SPELL[2],
               data.characters[0].CAPA_SPELL[2],
               data.characters[0].TORSO_SPELL[2],
               data.characters[0].GUN_SPELL[2],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
           );
           setCritMultiplo(
             [
+              data.characters[0].crit_multiplier,
               data.characters[0].BOOT_SPELL[3],
               data.characters[0].CAPA_SPELL[3],
               data.characters[0].TORSO_SPELL[3],
               data.characters[0].GUN_SPELL[3],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
-              .toFixed(2) // Mantém apenas duas casas decimais
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
+              .toFixed(2)
           );
 
           setDefessa(
-            data.characters[0].BOOT_SPELL[1] +
+            data.characters[0].defense_points +
+              data.characters[0].BOOT_SPELL[1] +
               data.characters[0].CAPA_SPELL[1] +
               data.characters[0].TORSO_SPELL[1] +
               data.characters[0].GUN_SPELL[1]
+          );
+          setPlayerHP(
+            data.characters[0].health_points +
+              data.characters[0].BOOT_SPELL[4] +
+              data.characters[0].CAPA_SPELL[4] +
+              data.characters[0].TORSO_SPELL[4] +
+              data.characters[0].GUN_SPELL[4]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
@@ -116,11 +121,13 @@ const Map = () => {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
         const data = await res.json();
+        setEnemyHP(data[0].vida);
         if (res.ok) setAliens(data);
       } catch (error) {
         console.error("Erro ao conectar com o servidor");
       }
     }
+
     fetchAliens();
     fetchCharacters();
   }, [userLogin, navigate]);
@@ -176,10 +183,11 @@ const Map = () => {
       index++;
 
       setCurrentTurnIndex(index);
+
       if (turnoAtual.source === "enemy") {
-        setPlayerHP(playerHP - turnoAtual.dano);
+        setPlayerHP((prevHP) => prevHP - turnoAtual.dano);
       } else {
-        setEnemyHP(enemyHP - turnoAtual.dano);
+        setEnemyHP((prevHP) => prevHP - turnoAtual.dano);
       }
 
       if (index >= turns.length) {
@@ -187,7 +195,8 @@ const Map = () => {
         setTimeout(() => {
           setShowModal(true);
           setCard(enemies);
-          setPlayerHP(character.health_points);
+          setEnemyHP(enemies.vida);
+          setPlayerHP(vida);
           setDisabled(false);
         }, 2000);
       }
@@ -197,8 +206,10 @@ const Map = () => {
     const selectAlien = alienImg.find((tipo) => tipo.nome === tipoId);
     return selectAlien ? selectAlien.img : "default.png";
   };
+
   if (loading || !character) return <div>Carregando...</div>;
-  const maxhealth = character.health_points;
+  const maxhealth = vida;
+
   return (
     <div
       style={{
@@ -320,17 +331,18 @@ const Map = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            {console.log(card.vida)}
+
             {/* Barra de Vida */}
             <div className="w-full bg-gray-700 rounded-full h-5 shadow-md mt-5">
               <motion.div
                 initial={{ width: "100%" }}
                 animate={{
-                  width: `${(enemyHP / card.vida) * 100}%`,
+                  width: `${Math.max((enemyHP / card.vida) * 100, 0)}%`,
                 }}
                 transition={{ duration: 1 }}
                 className="h-5 bg-red-600 rounded-full"
               />
+
               <p className="text-md font-bold text-white mt-2">
                 {enemyHP} / {card.vida} HP
               </p>

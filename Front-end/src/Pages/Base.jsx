@@ -2,12 +2,12 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { AiFillHeart, AiOutlineThunderbolt } from "react-icons/ai";
 import { GiShield, GiCrossedSwords } from "react-icons/gi";
 import { tiposMilitares } from "../data/militaryTypes";
 import { useUser } from "../context/UserContext";
 import Navbar from "../Components/Navbar";
 import gunsImg from "../data/Arma";
+import ItemModal from "../Components/ItenModal";
 
 const Base = () => {
   const [characters, setCharacters] = useState([]);
@@ -27,33 +27,12 @@ const Base = () => {
   const [crit, setCrit] = useState();
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
+  const [selectedItem, setSelectedItem] = useState(null);
+
   const handleVender = (index) => {
     console.log(`Item ${index} vendido!`);
   };
-  const handleEquipar = async (itemId) => {
-    try {
-      const res = await fetch("http://localhost:5000/equipar", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${userLogin.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: itemId }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Erro ao equipar o item!");
-      }
-
-      const data = await res.json();
-      setArma(data.characters.GUN);
-      setBoot(data.characters.BOOT);
-      setTorso(data.characters.TORSO);
-      setCapa(data.characters.CAPA);
-    } catch (error) {
-      console.error("Erro ao enviar para o back-end:", error);
-    }
-  };
+  
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -221,75 +200,50 @@ const Base = () => {
             </div>
           </div>
           {/* Detalhes */}
-          <div className="flex flex-col gap-3 p-6 w-full">
-            {/* 🧱 Itens do Depósito */}
-            <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
-              <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">
-                🎒 Itens no Depósito
-              </h3>
-              {Array.isArray(depositoItensArray) &&
-              depositoItensArray.length > 0 ? (
-                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 max-h-[40vh] overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
-                  {depositoItensArray.map((id, index) => {
-                    const item = itens.find((i) => i.id === id);
-                    if (!item) return null;
+          <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
+            <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">
+              🎒 Itens no Depósito
+            </h3>
 
-                    return (
-                      <li
-                        key={index}
-                        className="relative flex items-center shadow-lg transition-transform duration-200 p-3"
-                        onMouseEnter={() => setMenuAbertoIndex(index)}
-                        onMouseLeave={() => setMenuAbertoIndex(null)}
-                      >
-                        {/* Imagem do item */}
-                        <div className="relative">
-                          <img
-                            src={selectImgGund(item.id)}
-                            alt={item.nome}
-                            className="w-14 h-14 object-contain border-4 border-cyan-500 rounded shadow-md"
-                          />
+            {Array.isArray(depositoItensArray) &&
+            depositoItensArray.length > 0 ? (
+              <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4 h-auto overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
+                {depositoItensArray.map((id, index) => {
+                  const item = itens.find((i) => i.id === id);
+                  if (!item) return null;
 
-                          {/* Menu lateral estilizado */}
-                          {menuAbertoIndex === index && (
-                            <div className="absolute top-1/2 left-full ml-3 -translate-y-1/2 bg-gray-900 text-white p-2 rounded-md shadow-lg w-28 space-y-1 border border-cyan-500">
-                              <button
-                                className="block w-full text-left px-3 py-1 bg-gray-700 rounded-md hover:bg-gray-600 transition"
-                                onClick={() => handleEquipar(item.id)}
-                              >
-                                Equipar
-                              </button>
-                              <button
-                                className="block w-full text-left px-3 py-1 bg-gray-700 rounded-md hover:bg-gray-600 transition"
-                                onClick={() => handleVender(index)}
-                              >
-                                Vender
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                  return (
+                    <li
+                      key={index}
+                      className="relative flex flex-col items-center justify-center shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer"
+                      onClick={() => setSelectedItem(item)}
+                    >
+                      <div className="relative w-20 h-20 flex items-center justify-center bg-gray-700 rounded-md p-2 shadow-md">
+                        <img
+                          src={selectImgGund(item.id)}
+                          alt={item.nome}
+                          className="w-full h-full object-contain rounded"
+                        />
+                      </div>
 
-                        {/* Informações do item */}
-                        <div className="ml-3 space-y-1">
-                          <p className="text-cyan-300 font-bold text-sm">
-                            {item.nome}
-                          </p>
-                          <p className="text-yellow-300 flex items-center text-sm">
-                            <GiCrossedSwords className="text-orange-400 mr-1" />
-                            {item.dano}
-                          </p>
-                          <p className="text-green-300 flex items-center text-sm">
-                            <GiShield className="text-blue-400 mr-1" />
-                            {item.defesa}
-                          </p>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-gray-400">Nenhum item no depósito.</p>
-              )}
-            </div>
+                      <p className="mt-2 text-cyan-300 text-lg font-semibold text-center">
+                        {item.nome}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-gray-400">Nenhum item no depósito.</p>
+            )}
+
+            {/* Exibe o modal quando um item for selecionado */}
+            {selectedItem && (
+              <ItemModal
+                item={selectedItem}
+                onClose={() => setSelectedItem(null)}
+              />
+            )}
           </div>
         </motion.div>
       </div>
