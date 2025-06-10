@@ -23,7 +23,7 @@ const Lobby = () => {
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   useEffect(() => {
     if (!userLogin) {
-      navigate("/"); // Se não está logado, vai para auth
+      navigate("/");
       return;
     }
 
@@ -31,7 +31,7 @@ const Lobby = () => {
       try {
         const res = await fetch("http://localhost:5000/characters", {
           headers: {
-            Authorization: `Bearer ${userLogin.token}`, // assumindo que o token veio na resposta do login
+            Authorization: `Bearer ${userLogin.token}`,
           },
         });
         const data = await res.json();
@@ -58,7 +58,7 @@ const Lobby = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${userLogin.token}`, // se estiver autenticado
+          Authorization: `Bearer ${userLogin.token}`,
         },
         body: JSON.stringify({ gunId }),
       });
@@ -66,15 +66,13 @@ const Lobby = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setShowModal(true); // Exibe primeiro modal de confirmação
+        setShowModal(true);
 
-        // Exibe um segundo modal com a descrição e fecha ambos após 2s
         setTimeout(() => {
-          setShowModal(false); // Esconde o primeiro modal
-          setShowDescriptionModal(true); // Exibe o modal da descrição
-
+          setShowModal(false);
+          setShowDescriptionModal(true);
           setTimeout(() => {
-            setShowDescriptionModal(false); // Esconde o segundo modal
+            setShowDescriptionModal(false);
           }, 1000);
         }, 1000);
       } else {
@@ -85,8 +83,8 @@ const Lobby = () => {
     }
   };
   const handleSelectGun = (gun) => {
-    setSelectedGun(gun); // salva os dados da arma
-    setShowModal(true); // mostra o modal
+    setSelectedGun(gun);
+    setShowModal(true);
   };
   if (characters.length === 0) {
     return <CharacterCard user={userLogin} />;

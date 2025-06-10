@@ -4,11 +4,13 @@ const { getEnemiesByIds, getCharacterById, pool } = require("../config/DBs");
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/", authMiddleware, async (req, res) => {
+  console.log(req);
   try {
     const { characterId, enemyIds } = req.body;
 
     // Buscar jogador e inimigos
     const character = await getCharacterById(characterId);
+
     const enemies = await getEnemiesByIds(enemyIds);
     if (!character || enemies.length === 0) {
       return res

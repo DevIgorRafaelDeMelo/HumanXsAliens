@@ -18,7 +18,7 @@ const getCharacterById = async (characterId) => {
     const [rows] = await connection.execute(
       "SELECT * FROM characters WHERE id = ?",
       [characterId]
-    );  
+    );
 
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
@@ -28,6 +28,25 @@ const getCharacterById = async (characterId) => {
     if (connection) await connection.release();
   }
 };
+
+const getUserById = async (characterId) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM characters WHERE user_id = ?",
+      [characterId]
+    );
+
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Erro ao buscar personagem:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
 const getEnemiesByIds = async (enemyIds) => {
   let connection;
   try {
@@ -35,7 +54,7 @@ const getEnemiesByIds = async (enemyIds) => {
     const [rows] = await connection.execute(
       "SELECT * FROM aliens WHERE id = ?",
       [enemyIds]
-    );  
+    );
 
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
@@ -54,7 +73,7 @@ const getItenByIds = async (itenIds) => {
       "SELECT * FROM itens WHERE id = ?",
       [itenIds]
     );
-    return rows[0];  
+    return rows[0];
   } catch (error) {
     console.error("Erro ao buscar item:", error);
     return null;
@@ -63,4 +82,10 @@ const getItenByIds = async (itenIds) => {
   }
 };
 
-module.exports = { pool, getCharacterById, getEnemiesByIds, getItenByIds };
+module.exports = {
+  pool,
+  getCharacterById,
+  getEnemiesByIds,
+  getItenByIds,
+  getUserById,
+};

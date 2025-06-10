@@ -50,7 +50,6 @@ const Base = () => {
       setBoot(data.characters.BOOT);
       setTorso(data.characters.TORSO);
       setCapa(data.characters.CAPA);
-      console.log(data);
     } catch (error) {
       console.error("Erro ao enviar para o back-end:", error);
     }
@@ -102,16 +101,16 @@ const Base = () => {
           setBoot(data.characters[0].BOOT);
           setArma(data.characters[0].GUN);
           setVida(
+            data.characters[0].BOOT_SPELL[4] +
+              data.characters[0].CAPA_SPELL[4] +
+              data.characters[0].TORSO_SPELL[4] +
+              data.characters[0].GUN_SPELL[4]
+          );
+          setDano(
             data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
               data.characters[0].GUN_SPELL[0]
-          );
-          setDano(
-            data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
           );
           setCrit(
             [
@@ -136,10 +135,10 @@ const Base = () => {
           );
 
           setDefessa(
-            data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
+            data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
@@ -153,12 +152,11 @@ const Base = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate]);
+  }, [userLogin, navigate, character, characters]);
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  useEffect(() => {}, [arma, boot, torso, capa, dano]);
 
   if (loading) return <div>Carregando...</div>;
 
@@ -181,13 +179,13 @@ const Base = () => {
               <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
                 <img
                   src={selectImgGund(arma)}
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top rounded-xl"
                 />
               </div>
               <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
                 <img
                   src={selectImgGund(capa)}
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top rounded-xl"
                 />
               </div>
             </div>
@@ -198,7 +196,7 @@ const Base = () => {
                 <img
                   src={getMilitaryImage(character.tipo_id)}
                   alt={character?.name}
-                  className="w-full h-full object-cover object-top rounded-xl border-4 border-cyan-500 shadow-[0_0_25px_#00ffff55]"
+                  className="w-full h-full object-cover object-top rounded-x2 border-4 border-cyan-500 shadow-[0_0_25px_#00ffff55]"
                 />
               </div>
               <div className="absolute -bottom-2 right-0 bg-cyan-500 text-sm px-2 py-1 rounded-lg font-bold shadow-md animate-pulse">
@@ -211,13 +209,13 @@ const Base = () => {
               <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
                 <img
                   src={selectImgGund(torso)}
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top rounded-xl"
                 />
               </div>
               <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
                 <img
                   src={selectImgGund(boot)}
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top rounded-xl"
                 />
               </div>
             </div>
@@ -248,7 +246,7 @@ const Base = () => {
                           <img
                             src={selectImgGund(item.id)}
                             alt={item.nome}
-                            className="w-14 h-14 object-contain border-2 border-cyan-500 rounded-md shadow-md"
+                            className="w-14 h-14 object-contain border-4 border-cyan-500 rounded shadow-md"
                           />
 
                           {/* Menu lateral estilizado */}
@@ -296,31 +294,40 @@ const Base = () => {
         </motion.div>
       </div>
 
-      <div className="fixed top-[50vh] left-10 p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 border-4 border-cyan-500  ">
+      <div className="fixed top-[50vh] left-10 p-4   w-[20%] rounded-lg shadow-lg  ">
         {/* Atributos */}
-        <div className="  gap-3 mt-4 text-white text-lg font-semibold">
-          <p className="flex items-center gap-2">
-            <AiFillHeart className="text-red-500 shadow-md" />
-            Vida: {character?.health_points} + {vida}
-          </p>
-          <p className="flex items-center gap-2">
-            <GiCrossedSwords className="text-orange-500 shadow-md" />
-            Ataque: {character?.attack_points} + {dano}
-          </p>
-          <p className="flex items-center gap-2">
-            <AiOutlineThunderbolt className="text-yellow-500 shadow-md" />
-            Crítico chance: {character?.crit_chance}% + {crit}
-          </p>
-          <p className="flex items-center gap-2">
-            <AiOutlineThunderbolt className="text-yellow-500 shadow-md" />
-            Crítico multiplicador: {character?.crit_multiplier}% +{" "}
-            {critMultiplo}
-          </p>
-          <p className="flex items-center gap-2">
-            <GiShield className="text-blue-500 shadow-md" />
-            Defesa: {character?.defense_points} + {defessa}
-          </p>
-        </div>
+        <ul className="bg-gradient-to-br from-gray-800 via-black to-gray-900 p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55] w-full space-y-4 text-gray-300">
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Vida</span>
+            <span>
+              {character?.health_points} + {vida}
+            </span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Ataque</span>
+            <span>
+              {character?.attack_points} + {dano}
+            </span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Chance Crítico</span>
+            <span>
+              {character?.crit_chance}% + {crit}
+            </span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Multiplicador Crítico</span>
+            <span>
+              {character?.crit_multiplier}% + {critMultiplo}
+            </span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Defesa</span>
+            <span>
+              {character?.defense_points} + {defessa}
+            </span>
+          </li>
+        </ul>
       </div>
       {/* Barra de XP */}
       <div className="fixed top-0 w-full bg-gray-900  h-5 overflow-hidden  shadow-md border border-yellow-500">

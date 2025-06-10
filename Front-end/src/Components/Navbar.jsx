@@ -6,12 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AiFillHeart, AiOutlineThunderbolt } from "react-icons/ai";
 import { GiShield, GiCrossedSwords } from "react-icons/gi";
 import { tiposMilitares } from "../data/militaryTypes";
-import {
-  FaHome,
-  FaMapMarkedAlt,
-  FaChessRook,
-  FaHouseUser,
-} from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { FaDollarSign } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
 
@@ -21,7 +16,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { userLogin, logout } = useUser();
   const [money, setMoney] = useState();
-  const backgroundMusic = new Audio("caminho/da/musica.mp3");
   const [dano, setDano] = useState();
   const [defessa, setDefessa] = useState();
   const [crit, setCrit] = useState();
@@ -52,24 +46,20 @@ const Navbar = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setMoney(data.characters[0].money);
-
           setVida(
-            data.characters[0].health_points +
-              data.characters[0].BOOT_SPELL[0] +
+            data.characters[0].BOOT_SPELL[4] +
+              data.characters[0].CAPA_SPELL[4] +
+              data.characters[0].TORSO_SPELL[4] +
+              data.characters[0].GUN_SPELL[4]
+          );
+          setDano(
+            data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
               data.characters[0].GUN_SPELL[0]
           );
-          setDano(
-            data.characters[0].attack_points +
-              data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
-          );
           setCrit(
             [
-              data.characters[0].crit_chance,
               data.characters[0].BOOT_SPELL[2],
               data.characters[0].CAPA_SPELL[2],
               data.characters[0].TORSO_SPELL[2],
@@ -80,7 +70,6 @@ const Navbar = () => {
           );
           setCritMultiplo(
             [
-              data.characters[0].crit_multiplier,
               data.characters[0].BOOT_SPELL[3],
               data.characters[0].CAPA_SPELL[3],
               data.characters[0].TORSO_SPELL[3],
@@ -92,11 +81,10 @@ const Navbar = () => {
           );
 
           setDefessa(
-            data.characters[0].defessa +
-              data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
+            data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
@@ -110,7 +98,7 @@ const Navbar = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate, character, characters]);
+  }, [userLogin, navigate, characters]);
 
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
@@ -138,11 +126,20 @@ const Navbar = () => {
         <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}
         <span className="text-white-100">{money}</span>
       </div>
+      <div className="fixed top-5 right-5">
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-gray-300  border-2  transition-all 
+      duration-300 ease-in-out  hover:text-white hover:bg-red-800 bg-black"
+        >
+          <FaSignOutAlt className="text-white text-xl animate-pulse" />
+        </button>
+      </div>
       <motion.div
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, type: "spring" }}
-        className="bg-gradient-to-br from-gray-800 via-black to-gray-900 text-white p-8 w-[22%] h-48 flex items-center border-[3px] border-cyan-400 rounded-xl shadow-lg m-4 relative"
+        className="bg-gradient-to-br from-gray-800 via-black to-gray-900 text-white p-2 w-[20%] h-48 flex items-center border-[3px] border-cyan-400 rounded-xl shadow-lg m-4 relative"
       >
         {/* Nível do Personagem - Agora maior e destacado */}
         <div className="absolute -top-4 right-[-10px] bg-cyan-500 text-black text-2xl p-2 py-2 rounded-lg font-extrabold shadow-xl">
@@ -174,12 +171,13 @@ const Navbar = () => {
           <div className="relative w-full bg-gray-700 rounded-full h-4 overflow-hidden mt-2 shadow-md">
             <motion.div
               initial={{ width: "0%" }}
-              animate={{ width: `${character.health_points}%` }}
+              animate={{ width: `${vida + character?.health_points}%` }}
               transition={{ duration: 1 }}
               className="h-4 bg-red-500 rounded-full"
             />
             <p className="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
-              {character?.health_points} / {character?.max_health_points} HP
+              {vida + character?.health_points} /
+              {vida + character?.health_points} HP
             </p>
           </div>
 
@@ -187,7 +185,7 @@ const Navbar = () => {
           <div className="relative w-full bg-gray-700 rounded-full h-3 overflow-hidden mt-2 shadow-md">
             <motion.div
               initial={{ width: "0%" }}
-              animate={{ width: `${character.health_points}%` }}
+              animate={{ width: `${vida}%` }}
               transition={{ duration: 1 }}
               className="h-3 bg-yellow-500 rounded-full"
             />
@@ -199,20 +197,21 @@ const Navbar = () => {
           {/* Atributos do Personagem */}
           <div className="grid grid-cols-2 gap-2 mt-3 text-white text-sm font-semibold">
             <p className="flex items-center gap-2">
-              <AiFillHeart className="text-red-400" />
-              Vida: {character?.health_points}
+              <AiOutlineThunderbolt className="text-red-400" />
+              MC:
+              {critMultiplo}
             </p>
             <p className="flex items-center gap-2">
               <GiCrossedSwords className="text-orange-400" />
-              Ataque: {character?.attack_points}
+              ATK: {dano}
             </p>
             <p className="flex items-center gap-2">
               <AiOutlineThunderbolt className="text-yellow-400" />
-              Crítico: {character?.crit_chance}%
+              CC: {crit}%
             </p>
             <p className="flex items-center gap-2">
               <GiShield className="text-blue-400" />
-              Defesa: {character?.defense_points}
+              DEF: {defessa}
             </p>
           </div>
         </div>
@@ -222,50 +221,49 @@ const Navbar = () => {
       <motion.div
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
-        className="relative top-40 px-10 justify-end items-center rounded-bl-xl  "
+        transition={{
+          duration: 0.8,
+          delay: 0.3,
+          type: "spring",
+          stiffness: 120,
+        }}
+        className="relative top-40 px-10 justify-end items-center  "
       >
-        <ul className="space-x-6">
+        {" "}
+        {/* Primeira lista de links */}
+        <ul className="space-y-4">
           <li>
             <Link
               to="/lobby"
-              className="flex  my-4 items-center gap-3 text-white w-44 font-semibold backdrop-blur-lg bg-gradient-to-r from-blue-900 via-cyan-500 to-blue-900 shadow-lg border-2 border-cyan-500 text-lg tracking-wide hover:scale-110 hover:text-yellow-300 transition-transform duration-300 ease-in-out rounded-lg px-4 py-2"
+              className="flex items-center justify-between w-44 font-semibold text-gray-300 bg-gradient-to-r from-blue-900 via-cyan-500 to-blue-900 shadow-[0_4px_15px_#00ffff55] border-2 border-cyan-500 text-lg tracking-wide hover:scale-105 hover:text-yellow-300 transition-all duration-300 ease-in-out rounded-lg px-4 py-3"
             >
-              <FaHome className="text-yellow-300 text-xl animate-pulse" />{" "}
-              {/* Ícone de casa com efeito */}
               Início
             </Link>
           </li>
           <li>
             <Link
               to="/map"
-              className="flex items-center gap-3 text-white w-44 font-semibold backdrop-blur-lg bg-gradient-to-r from-blue-900 via-cyan-500 to-blue-900 shadow-lg border-2 border-cyan-500 text-lg tracking-wide hover:scale-110 hover:text-yellow-300 transition-transform duration-300 ease-in-out rounded-lg px-4 py-2"
+              className="flex items-center justify-between w-44 font-semibold text-gray-300 bg-gradient-to-r from-blue-900 via-cyan-500 to-blue-900 shadow-[0_4px_15px_#00ffff55] border-2 border-cyan-500 text-lg tracking-wide hover:scale-105 hover:text-yellow-300 transition-all duration-300 ease-in-out rounded-lg px-4 py-3"
             >
-              <FaMapMarkedAlt className="text-yellow-300 text-xl animate-pulse" />{" "}
-              {/* Ícone de mapa com efeito */}
               Mapa
             </Link>
           </li>
         </ul>
-
-        <ul className="space-x-6">
+        {/* Segunda lista de links */}
+        <ul className="space-y-4 mt-4">
           <li>
             <Link
               to="/torre"
-              className="flex  my-4 items-center gap-3 text-white w-44 font-semibold backdrop-blur-lg bg-gradient-to-r from-gray-800 via-blue-500 to-gray-800 shadow-lg border-2 border-blue-500 text-lg tracking-wide hover:scale-110 hover:text-yellow-300 transition-transform duration-300 ease-in-out rounded-lg px-4 py-2"
+              className="flex items-center justify-between w-44 font-semibold text-gray-300 bg-gradient-to-r from-gray-800 via-blue-500 to-gray-800 shadow-[0_4px_15px_#0084ff55] border-2 border-blue-500 text-lg tracking-wide hover:scale-105 hover:text-yellow-300 transition-all duration-300 ease-in-out rounded-lg px-4 py-3"
             >
-              <FaChessRook className="text-yellow-300 text-xl animate-pulse" />{" "}
-              {/* Ícone de torre com efeito */}
               Torre
             </Link>
           </li>
           <li>
             <Link
               to="/base"
-              className="flex items-center gap-3 text-white w-44 font-semibold backdrop-blur-lg bg-gradient-to-r from-gray-800 via-blue-500 to-gray-800 shadow-lg border-2 border-blue-500 text-lg tracking-wide hover:scale-110 hover:text-yellow-300 transition-transform duration-300 ease-in-out rounded-lg px-4 py-2"
+              className="flex items-center justify-between w-44 font-semibold text-gray-300 bg-gradient-to-r from-gray-800 via-blue-500 to-gray-800 shadow-[0_4px_15px_#0084ff55] border-2 border-blue-500 text-lg tracking-wide hover:scale-105 hover:text-yellow-300 transition-all duration-300 ease-in-out rounded-lg px-4 py-3"
             >
-              <FaHouseUser className="text-yellow-300 text-xl animate-pulse" />{" "}
-              {/* Ícone de abrigo com efeito */}
               Base
             </Link>
           </li>

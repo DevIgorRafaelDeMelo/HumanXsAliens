@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
-const { getItenByIds, getCharacterById } = require("../config/DBs");
+const { getItenByIds, getUserById } = require("../config/DBs");
 
 router.post("/", authMiddleware, async (req, res) => {
   try {
@@ -17,7 +17,7 @@ router.post("/", authMiddleware, async (req, res) => {
     }
 
     const itemUpdate = await getItenByIds(id);
-    const user = await getCharacterById(userId);
+    const user = await getUserById(userId);
 
     if (!itemUpdate) {
       return res.status(404).json({ error: "Item não encontrado." });

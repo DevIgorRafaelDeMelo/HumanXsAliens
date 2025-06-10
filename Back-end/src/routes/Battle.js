@@ -9,7 +9,7 @@ router.post("/", authMiddleware, async (req, res) => {
   let money = 1000;
   try {
     const { characterId, enemyIds } = req.body;
-
+    console.log(characterId);
     if (!characterId || !enemyIds) {
       return res
         .status(400)
@@ -45,16 +45,16 @@ const simulateBattle = async (character, enemy, exp, money) => {
   const initialEnemyHP = enemy.vida;
   const lifeTotal =
     character.health_points +
+    character.BOOT_SPELL[4] +
+    character.CAPA_SPELL[4] +
+    character.TORSO_SPELL[4] +
+    character.GUN_SPELL[4];
+  const danoTotal =
+    character.attack_points +
     character.BOOT_SPELL[0] +
     character.CAPA_SPELL[0] +
     character.TORSO_SPELL[0] +
     character.GUN_SPELL[0];
-  const danoTotal =
-    character.attack_points +
-    character.BOOT_SPELL[1] +
-    character.CAPA_SPELL[1] +
-    character.TORSO_SPELL[1] +
-    character.GUN_SPELL[1];
   const danoCrit =
     parseFloat(character.crit_chance) +
     parseFloat(character.BOOT_SPELL[2]) +
@@ -70,12 +70,11 @@ const simulateBattle = async (character, enemy, exp, money) => {
     parseFloat(character.GUN_SPELL[3]);
   const defessa =
     character.defense_points +
-    character.BOOT_SPELL[4] +
-    character.CAPA_SPELL[4] +
-    character.TORSO_SPELL[4] +
-    character.GUN_SPELL[4];
+    character.BOOT_SPELL[1] +
+    character.CAPA_SPELL[1] +
+    character.TORSO_SPELL[1] +
+    character.GUN_SPELL[1];
 
-  console.log(defessa, danoCrit, danoCritMultiplo, danoTotal);
   let playerHP = lifeTotal;
   let enemyHP = initialEnemyHP;
   const turns = [];

@@ -7,7 +7,7 @@ import alienImg from "../data/Aliens";
 import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
 import Modal from "../Components/Modal";
-import x from "../Img/X.png"; 
+import x from "../Img/X.png";
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
@@ -15,7 +15,7 @@ const Map = () => {
   const character = characters.length > 0 ? characters[0] : null;
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { userLogin, logout } = useUser(); 
+  const { userLogin, logout } = useUser();
   const [battleTurns, setBattleTurns] = useState([]);
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [damageInfo, setDamageInfo] = useState(null);
@@ -27,6 +27,12 @@ const Map = () => {
   const [disabled, setDisabled] = useState(false);
   const [exp, setExp] = useState();
   const [money, setMoney] = useState();
+  const [dano, setDano] = useState();
+  const [defessa, setDefessa] = useState();
+  const [crit, setCrit] = useState();
+  const [vida, setVida] = useState();
+  const [critMultiplo, setCritMultiplo] = useState();
+
   useEffect(() => {
     if (character) setPlayerHP(character.health_points);
   }, [character]);
@@ -53,6 +59,46 @@ const Map = () => {
         setCard(data.enemies);
         if (res.ok) {
           setCharacters(data.characters);
+          setVida(
+            data.characters[0].BOOT_SPELL[4] +
+              data.characters[0].CAPA_SPELL[4] +
+              data.characters[0].TORSO_SPELL[4] +
+              data.characters[0].GUN_SPELL[4]
+          );
+          setDano(
+            data.characters[0].BOOT_SPELL[0] +
+              data.characters[0].CAPA_SPELL[0] +
+              data.characters[0].TORSO_SPELL[0] +
+              data.characters[0].GUN_SPELL[0]
+          );
+          setCrit(
+            [
+              data.characters[0].BOOT_SPELL[2],
+              data.characters[0].CAPA_SPELL[2],
+              data.characters[0].TORSO_SPELL[2],
+              data.characters[0].GUN_SPELL[2],
+            ]
+              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
+              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+          );
+          setCritMultiplo(
+            [
+              data.characters[0].BOOT_SPELL[3],
+              data.characters[0].CAPA_SPELL[3],
+              data.characters[0].TORSO_SPELL[3],
+              data.characters[0].GUN_SPELL[3],
+            ]
+              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
+              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+              .toFixed(2) // Mantém apenas duas casas decimais
+          );
+
+          setDefessa(
+            data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
+          );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -83,11 +129,11 @@ const Map = () => {
       (tipo) => tipo.id === tipoId
     );
 
-    return selectedMilitaryType ? selectedMilitaryType.image : "default.png";  
+    return selectedMilitaryType ? selectedMilitaryType.image : "default.png";
   };
   const startBattle = async () => {
     setDisabled(true);
-    const characterId = character?.id; 
+    const characterId = character?.id;
     const enemyIds = card.id;
     try {
       const response = await fetch("http://localhost:5000/battle", {
@@ -103,7 +149,7 @@ const Map = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+
       setMoney(data.money);
       setExp(data.exp);
       setWinner(data.winner);
@@ -123,30 +169,22 @@ const Map = () => {
 
       setDamageInfo(turnoAtual);
 
-      /*if (turnoAtual.source === "player") {
-        attackSound.play();
-
-        setEnemyHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
-      } else {
-        attackSoundAlien.play();
-        setPlayerHP((prevHP) => Math.max(prevHP - turnoAtual.dano, 0));
-      }*/
-
       setTimeout(() => {
         setDamageInfo(null);
       }, 1000);
 
       index++;
+
       setCurrentTurnIndex(index);
+      if (turnoAtual.source === "enemy") {
+        setPlayerHP(playerHP - turnoAtual.dano);
+      } else {
+        setEnemyHP(enemyHP - turnoAtual.dano);
+      }
 
       if (index >= turns.length) {
         clearInterval(interval);
-
-        // **Aguardar 2 segundos antes de exibir o modal**
         setTimeout(() => {
-         /* if (winner === "player") {
-            soundWinnerHuman.play();
-          }*/
           setShowModal(true);
           setCard(enemies);
           setPlayerHP(character.health_points);
@@ -185,7 +223,7 @@ const Map = () => {
       <div className="flex justify-center  w-[100%]  pt-60 ">
         {/* Card do Personagem */}
         <motion.div
-          initial={{ opacity: 0, x: 100 }}
+          initial={{ opacity: 0, x: -2000 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
           className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8 w-full max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
@@ -228,14 +266,24 @@ const Map = () => {
           </div>
 
           {/* Pontos de Ataque e Defesa */}
-          <div className="flex justify-between w-full mt-6 px-8">
-            <p className="text-xl font-bold text-orange-400 flex items-center gap-3 ">
-              ⚔️ Ataque: {character.attack_points}
-            </p>
-            <p className="text-xl font-bold text-blue-400 flex items-center gap-3">
-              🛡 Defesa: {character.defense_points}
-            </p>
-          </div>
+          <ul className="w-full mt-6 px-8 space-y-4 text-gray-400">
+            <li className="flex justify-between border-b border-gray-600 pb-2">
+              <span className=" font-bold">Ataque</span>
+              <span>{dano}</span>
+            </li>
+            <li className="flex justify-between border-b border-gray-600 pb-2">
+              <span className="  font-bold">Defesa</span>
+              <span>{defessa}</span>
+            </li>
+            <li className="flex justify-between border-b border-gray-600 pb-2">
+              <span className="  font-bold">Chance Crítico</span>
+              <span>{crit}%</span>
+            </li>
+            <li className="flex justify-between border-b border-gray-600 pb-2">
+              <span className="  font-bold">Múltiplo Crítico</span>
+              <span>{critMultiplo}</span>
+            </li>
+          </ul>
         </motion.div>
         {/* Ícone de Batalha */}
         <div className="w-[200px] h-32 flex items-center justify-center"></div>
@@ -243,7 +291,7 @@ const Map = () => {
         {/* Card do Alien */}
         {card && (
           <motion.div
-            initial={{ opacity: 0, x: 100 }}
+            initial={{ opacity: 0, x: 2000 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
             className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8 w-full max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
@@ -272,31 +320,34 @@ const Map = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-
+            {console.log(card.vida)}
             {/* Barra de Vida */}
             <div className="w-full bg-gray-700 rounded-full h-5 shadow-md mt-5">
               <motion.div
                 initial={{ width: "100%" }}
                 animate={{
-                  width: `${(enemyHP / card.max_health) * 100}%`,
+                  width: `${(enemyHP / card.vida) * 100}%`,
                 }}
                 transition={{ duration: 1 }}
                 className="h-5 bg-red-600 rounded-full"
               />
               <p className="text-md font-bold text-white mt-2">
-                {enemyHP} / {card.max_health} HP
+                {enemyHP} / {card.vida} HP
               </p>
             </div>
 
             {/* Pontos de Ataque e Defesa */}
-            <div className="flex justify-between w-full mt-6 px-8">
-              <p className="text-xl font-bold text-orange-400 flex items-center gap-3">
-                ⚔️ Ataque: {card.ataque}
-              </p>
-              <p className="text-xl font-bold text-blue-400 flex items-center gap-3">
-                🛡 Defesa: {card.defesa}
-              </p>
-            </div>
+
+            <ul className="w-full mt-6 px-8 space-y-4 text-gray-400">
+              <li className="flex justify-between border-b border-gray-600 pb-2">
+                <span className=" font-bold">Ataque</span>
+                <span>{card.ataque}</span>
+              </li>
+              <li className="flex justify-between border-b border-gray-600 pb-2">
+                <span className="  font-bold">Defesa</span>
+                <span>{card.defesa}</span>
+              </li>
+            </ul>
           </motion.div>
         )}
       </div>
@@ -304,13 +355,14 @@ const Map = () => {
       <button
         onClick={startBattle}
         disabled={disabled}
-        className={`fixed top-[80vh] px-6 py-3 rounded-lg shadow-lg text-xl font-bold ${
-          disabled
-            ? "bg-gray-500 cursor-not-allowed"
-            : "bg-red-600 hover:bg-red-700 text-white transition-transform duration-300 ease-in-out"
-        }`}
+        className={`fixed top-[80vh] px-6 py-4 rounded-lg shadow-[0_0_25px_#ff000055] text-xl font-bold tracking-wide
+  ${
+    disabled
+      ? "bg-gray-500 cursor-not-allowed"
+      : "bg-red-600 hover:bg-red-700 text-white transition-all duration-300 ease-in-out  aborder-2 border-red-500 shadow-lg hover:shadow-[0_0_40px_#ff0000aa]"
+  }`}
       >
-        Fight
+        FIGHT!
       </button>
 
       {showModal && (

@@ -55,7 +55,6 @@ const Torre = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log("Batalha iniciada com sucesso:", data);
         setShowBattleModal(true); // Abre o modal de batalha
       } else {
         console.error("Erro ao iniciar batalha:", data.message);
