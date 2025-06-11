@@ -120,7 +120,7 @@ const Navbar = () => {
   if (loading) return <div>Carregando...</div>;
 
   return (
-    <nav className="fixed w-full z-50 flex justify-between items-center ">
+    <nav className="fixed w-full   flex justify-between items-center ">
       {/* Card animado */}
       <div className="fixed flex z-1 left-8 top-[22vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
         <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}

@@ -28,11 +28,14 @@ const Base = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
-
+  const [showInfoArma, setShowInfoArma] = useState(false);
+  const [showInfoTorso, setShowInfoTorso] = useState(false);
+  const [showInfoCapa, setShowInfoCapa] = useState(false);
+  const [showInfoBoot, setShowInfoBoot] = useState(false);
+  const [guns, setGuns] = useState();
   const handleVender = (index) => {
     console.log(`Item ${index} vendido!`);
   };
-
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -70,13 +73,14 @@ const Base = () => {
           },
         });
         const data = await res.json();
-
+        setGuns(data.guns);
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
           setItens(data.guns);
           setCapa(data.characters[0].CAPA);
           setTorso(data.characters[0].TORSO);
+
           setBoot(data.characters[0].BOOT);
           setArma(data.characters[0].GUN);
           setVida(
@@ -98,8 +102,8 @@ const Base = () => {
               data.characters[0].TORSO_SPELL[2],
               data.characters[0].GUN_SPELL[2],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
           );
           setCritMultiplo(
             [
@@ -108,11 +112,10 @@ const Base = () => {
               data.characters[0].TORSO_SPELL[3],
               data.characters[0].GUN_SPELL[3],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
-              .toFixed(2) // Mantém apenas duas casas decimais
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
+              .toFixed(2)
           );
-
           setDefessa(
             data.characters[0].BOOT_SPELL[1] +
               data.characters[0].CAPA_SPELL[1] +
@@ -131,10 +134,47 @@ const Base = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate, character, characters]);
+  }, [userLogin, navigate, character, characters, guns]);
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
+  };
+  const ItemComponent = ({ id, handleVender }) => {
+    const item = guns.find((gun) => gun.id === id);
+
+    if (!item) {
+      return <p className="text-red-500 font-bold">Item não encontrado!</p>;
+    }
+
+    return (
+      <div className="p-3 bg-gray-900 text-white rounded-lg shadow-lg border-2 border-cyan-500 w-48 font-bold text-sm tracking-wide">
+        <p className="text-lg font-bold text-cyan-400">{item.nome}</p>
+        <p>
+          🗡️ Dano: <span className="text-red-500">{item.dano}</span>
+        </p>
+        <p>
+          ❤️ Vida: <span className="text-green-500">{item.vida}</span>
+        </p>
+        <p>
+          🛡️ Defesa: <span className="text-blue-500">{item.defesa}</span>
+        </p>
+        <p>
+          🎯 Chance Crítico:{" "}
+          <span className="text-yellow-500">{item.chance_critico}%</span>
+        </p>
+        <p>
+          🔥 Multiplicador Crítico:{" "}
+          <span className="text-purple-500">x{item.multiplicador_critico}</span>
+        </p>
+
+        <button
+          onClick={() => handleVender(id)}
+          className="mt-3 bg-red-500 px-3 py-1 rounded-md font-bold hover:bg-red-400 transition"
+        >
+          Vender Item
+        </button>
+      </div>
+    );
   };
 
   if (loading) return <div>Carregando...</div>;
@@ -154,22 +194,40 @@ const Base = () => {
           </h2>
 
           <div className="flex items-center justify-center space-x-10">
+            {/* Caixa à esquerda */}
             <div className="flex flex-col space-y-6">
-              <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
+              {/* Arma */}
+              <div
+                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                onMouseEnter={() => setShowInfoArma(true)}
+                onMouseLeave={() => setShowInfoArma(false)}
+              >
                 <img
                   src={selectImgGund(arma)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
+                {showInfoArma && (
+                  <ItemComponent id={arma}   />
+                )}
               </div>
-              <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
+
+              {/* Capa */}
+              <div
+                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                onMouseEnter={() => setShowInfoCapa(true)}
+                onMouseLeave={() => setShowInfoCapa(false)}
+              >
                 <img
                   src={selectImgGund(capa)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
+                {showInfoCapa && (
+                  <ItemComponent id={capa}   />
+                )}
               </div>
             </div>
 
-            {/* Imagem */}
+            {/* Imagem principal */}
             <div className="relative">
               <div className="relative w-52 h-52 overflow-hidden shadow-xl">
                 <img
@@ -183,22 +241,40 @@ const Base = () => {
               </div>
             </div>
 
-            {/* Caixa à direita da imagem */}
+            {/* Caixa à direita */}
             <div className="flex flex-col space-y-6">
-              <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
+              {/* Torso */}
+              <div
+                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                onMouseEnter={() => setShowInfoTorso(true)}
+                onMouseLeave={() => setShowInfoTorso(false)}
+              >
                 <img
                   src={selectImgGund(torso)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
+                {showInfoTorso && (
+                 <ItemComponent id={torso}   />
+                )}
               </div>
-              <div className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md">
+
+              {/* Bota */}
+              <div
+                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                onMouseEnter={() => setShowInfoBoot(true)}
+                onMouseLeave={() => setShowInfoBoot(false)}
+              >
                 <img
                   src={selectImgGund(boot)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
+                {showInfoBoot && (
+                  <ItemComponent id={boot}   />
+                )}
               </div>
             </div>
           </div>
+
           {/* Detalhes */}
           <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
             <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">

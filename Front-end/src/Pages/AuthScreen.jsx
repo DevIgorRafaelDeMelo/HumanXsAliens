@@ -6,7 +6,7 @@ import img from "../Img/Guerra.jpeg";
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("rafaelmelo72265@gmail.com");
+  const [email, setEmail] = useState("rafaelmelo765@gmail.com");
   const [password, setPassword] = useState("2289Nnly");
   const [confirmPassword, setConfirmPassword] = useState("2289Nnly");
 
