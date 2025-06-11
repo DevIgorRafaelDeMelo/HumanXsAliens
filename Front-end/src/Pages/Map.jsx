@@ -52,6 +52,7 @@ const Map = () => {
         setCard(data.enemies);
         if (res.ok) {
           setCharacters(data.characters);
+          setEnemyHP(data.enemies.vida);
           setVida(
             data.characters[0].health_points +
               data.characters[0].BOOT_SPELL[4] +
@@ -121,7 +122,7 @@ const Map = () => {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
         const data = await res.json();
-        setEnemyHP(data[0].vida);
+        
         if (res.ok) setAliens(data);
       } catch (error) {
         console.error("Erro ao conectar com o servidor");
@@ -231,7 +232,7 @@ const Map = () => {
         }}
         className="fixed flex flex-col mt-40 justify-between items-center"
       ></div>
-      <div className="flex justify-center  w-[100%]  pt-60 ">
+      <div className="flex justify-center  w-[100%]  pt-40 ">
         {/* Card do Personagem */}
         <motion.div
           initial={{ opacity: 0, x: -2000 }}

@@ -32,7 +32,7 @@ const Base = () => {
   const handleVender = (index) => {
     console.log(`Item ${index} vendido!`);
   };
-  
+
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -207,7 +207,7 @@ const Base = () => {
 
             {Array.isArray(depositoItensArray) &&
             depositoItensArray.length > 0 ? (
-              <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4 h-auto overflow-y-auto custom-scroll pr-2 scroll-fade-mask">
+              <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4   max-h-[50vh] overflow-y-auto py-8 custom-scroll pr-2 scroll-fade-mask">
                 {depositoItensArray.map((id, index) => {
                   const item = itens.find((i) => i.id === id);
                   if (!item) return null;
@@ -215,10 +215,10 @@ const Base = () => {
                   return (
                     <li
                       key={index}
-                      className="relative flex flex-col items-center justify-center shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer"
+                      className="relative flex flex-col items-center  shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer h-40"
                       onClick={() => setSelectedItem(item)}
                     >
-                      <div className="relative w-20 h-20 flex items-center justify-center bg-gray-700 rounded-md p-2 shadow-md">
+                      <div className="relative w-20 h-20 flex items-center   bg-gray-700 rounded-md p-2 shadow-md">
                         <img
                           src={selectImgGund(item.id)}
                           alt={item.nome}

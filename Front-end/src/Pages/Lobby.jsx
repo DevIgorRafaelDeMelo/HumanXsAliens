@@ -122,29 +122,24 @@ const Lobby = () => {
                 <li
                   onClick={() => handleSelectGun(gun)}
                   key={gun.id}
-                  className="flex items-center  bg-gradient-to-br mx-4 from-black/80 via-blue-950 to-black/80 text-white px-4 py-3 rounded-xl border-[2px] border-cyan-400 shadow-[0_0_15px_#00ffff80] transition-transform transform  hover:shadow-[0_0_30px_#00ffffcc] duration-300"
+                  className="flex   bg-gradient-to-br mx-4 from-black/80 via-blue-950 to-black/80 text-white px-4 py-3 rounded-xl border-[2px] border-cyan-400 shadow-[0_0_15px_#00ffff80] transition-transform transform  hover:shadow-[0_0_30px_#00ffffcc] duration-300"
                 >
                   <div className="relative">
                     <img
                       src={selectImgGund(gun.id)}
                       alt={gun.nome}
-                      className="w-16 h-16 object-contain mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
+                      className="w-16 h-16 min-w-16 min-h-16 flex-shrink-0 object-contain rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
                     />
                     <div className="absolute top-0 right-0 bg-cyan-500 text-black text-xs px-1 rounded-bl-md font-bold shadow-sm">
-                      Lv. {gun.nivel}
+                      Lv. {gun.nível}
                     </div>
                   </div>
-                  <div className="ps-2">
-                    <p className=" font-extrabold text-cyan-400 tracking-wide">
+                  <div className=" ">
+                    <p className="font-extrabold ms-2 text-cyan-400 tracking-wide">
                       {gun.nome}
                     </p>
-                    <p className="text-sm text-yellow-400 font-semibold">
-                      ATK: {gun.dano}
-                    </p>
-                    <p className="text-sm text-yellow-400 font-semibold">
-                      DEF: {gun.defesa}
-                    </p>
-                    <p className="text-sm text-green-400 font-semibold">
+
+                    <p className="text-sm absolute bottom-2 right-4  text-green-400 font-semibold">
                       R$: {gun.valor}
                     </p>
                   </div>

@@ -33,36 +33,55 @@ const ItemModal = ({ item, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-gray-800 text-white p-8 rounded-xl shadow-2xl w-[450px] flex flex-col items-center space-y-4">
-        <h2 className="text-cyan-300 text-2xl font-bold">{item.nome}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+      <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 rounded-xl shadow-2xl w-[500px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
+        <h2 className="text-cyan-300 text-3xl font-extrabold tracking-wider shadow-md">
+          {item.nome}
+        </h2>
 
         <img
           src={selectImgGund(item.id)}
           alt={item.nome}
-          className="w-32 h-32 border-4 border-cyan-500 rounded-lg shadow-md"
+          className="w-40 h-40 border-4 border-cyan-500 rounded-lg shadow-lg transform hover:scale-105 transition duration-300"
         />
 
-        <div className="w-full text-center space-y-2">
-          <p className="text-yellow-300 flex items-center text-lg">
-            <GiCrossedSwords className="text-orange-400 mr-2" /> {item.dano}
-          </p>
-          <p className="text-green-300 flex items-center text-lg">
-            <GiShield className="text-blue-400 mr-2" /> {item.defesa}
-          </p>
-        </div>
+        <ul className="  from-gray-800 via-black to-gray-900 p-6 rounded-xl w-full space-y-4 text-gray-300">
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Vida</span>
+            <span>{item.vida}</span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Ataque</span>
+            <span>{item.dano}</span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Chance Crítico</span>
+            <span>{item.defesa}</span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Multiplicador Crítico</span>
+            <span>{item.chance_critico}</span>
+          </li>
+          <li className="flex justify-between border-b border-gray-600 pb-2">
+            <span className="font-bold">Multiplicador Crítico</span>
+            <span>{item.multiplicador_critico}</span>
+          </li>
+        </ul>
 
         <button
-          className="w-full mt-4 bg-red-500 hover:bg-red-600 text-lg font-semibold p-3 rounded-md shadow-md"
+          className="w-full mt-4 bg-red-600 hover:bg-red-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
           onClick={onClose}
         >
           Fechar
         </button>
         <button
-          className="w-full mt-4 bg-red-500 hover:bg-red-600 text-lg font-semibold p-3 rounded-md shadow-md"
-          onClick={()=> handleEquipar(item.id)  }
+          className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
+          onClick={() => {
+            handleEquipar(item.id);
+            onClose();
+          }}
         >
-          Equipar
+          Equipar Agora!
         </button>
       </div>
     </div>
