@@ -66,7 +66,7 @@ const Base = () => {
 
     async function fetchCharacters() {
       try {
-        const res = await fetch(`http://localhost:5000/characters`, {
+        const res = await fetch(`http://192.168.20.198:5000/characters`, {
           headers: {
             Authorization: `Bearer ${userLogin.token}`,
             "Content-Type": "application/json",
@@ -199,31 +199,27 @@ const Base = () => {
               {/* Arma */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onMouseEnter={() => setShowInfoArma(true)}
-                onMouseLeave={() => setShowInfoArma(false)}
+                onPointerEnter={() => setShowInfoArma(true)}
+                onMouseOut={() => setShowInfoArma(false)}
               >
                 <img
                   src={selectImgGund(arma)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
-                {showInfoArma && (
-                  <ItemComponent id={arma}   />
-                )}
+                {showInfoArma && <ItemComponent id={arma} />}
               </div>
 
               {/* Capa */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onMouseEnter={() => setShowInfoCapa(true)}
-                onMouseLeave={() => setShowInfoCapa(false)}
+                onPointerEnter={() => setShowInfoCapa(true)}
+                onMouseOut={() => setShowInfoCapa(false)}
               >
                 <img
                   src={selectImgGund(capa)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
-                {showInfoCapa && (
-                  <ItemComponent id={capa}   />
-                )}
+                {showInfoCapa && <ItemComponent id={capa} />}
               </div>
             </div>
 
@@ -246,37 +242,33 @@ const Base = () => {
               {/* Torso */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onMouseEnter={() => setShowInfoTorso(true)}
-                onMouseLeave={() => setShowInfoTorso(false)}
+                onPointerEnter={() => setShowInfoTorso(true)}
+                onMouseOut={() => setShowInfoTorso(false)}
               >
                 <img
                   src={selectImgGund(torso)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
-                {showInfoTorso && (
-                 <ItemComponent id={torso}   />
-                )}
+                {showInfoTorso && <ItemComponent id={torso} />}
               </div>
 
               {/* Bota */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onMouseEnter={() => setShowInfoBoot(true)}
-                onMouseLeave={() => setShowInfoBoot(false)}
+                onPointerEnter={() => setShowInfoBoot(true)}
+                onMouseOut={() => setShowInfoBoot(false)}
               >
                 <img
                   src={selectImgGund(boot)}
                   className="w-full h-full object-cover object-top rounded-xl"
                 />
-                {showInfoBoot && (
-                  <ItemComponent id={boot}   />
-                )}
+                {showInfoBoot && <ItemComponent id={boot} />}
               </div>
             </div>
           </div>
 
           {/* Detalhes */}
-          <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
+          <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] w-[100vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
             <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">
               🎒 Itens no Depósito
             </h3>
@@ -296,14 +288,14 @@ const Base = () => {
                     >
                       <div className="relative w-20 h-20 flex items-center   bg-gray-700 rounded-md p-2 shadow-md">
                         <img
-                          src={selectImgGund(item.id)}
-                          alt={item.nome}
+                          src={selectImgGund(item.ID)}
+                          alt={item.NOME}
                           className="w-full h-full object-contain rounded"
                         />
                       </div>
 
                       <p className="mt-2 text-cyan-300 text-lg font-semibold text-center">
-                        {item.nome}
+                        {item.NOME}
                       </p>
                     </li>
                   );

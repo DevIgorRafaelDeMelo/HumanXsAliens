@@ -6,9 +6,9 @@ import img from "../Img/Guerra.jpeg";
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("rafaelmelo765@gmail.com");
-  const [password, setPassword] = useState("2289Nnly");
-  const [confirmPassword, setConfirmPassword] = useState("2289Nnly");
+  const [email, setEmail] = useState(" ");
+  const [password, setPassword] = useState(" ");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { login } = useUser(); // Usa a função login do contexto
   const navigate = useNavigate();
@@ -22,8 +22,8 @@ const AuthScreen = () => {
     }
 
     const endpoint = isLogin
-      ? "http://localhost:5000/auth/login"
-      : "http://localhost:5000/auth/register";
+      ? "http://192.168.20.198:5000/auth/login"
+      : "http://192.168.20.198:5000/auth/register";
 
     const payload = isLogin ? { email, password } : { name, email, password };
 

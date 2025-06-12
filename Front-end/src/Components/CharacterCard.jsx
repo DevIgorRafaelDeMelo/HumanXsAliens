@@ -98,7 +98,7 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
 
     try {
       // pegar token do localStorage
-      const response = await fetch("http://localhost:5000/registerCharater", {
+      const response = await fetch("http://192.168.20.198:5000/registerCharater", {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // ✅ ESSENCIAL

@@ -42,7 +42,7 @@ const Map = () => {
     async function fetchCharacters() {
       try {
         const res = await fetch(
-          `http://localhost:5000/characters?user_id=${userLogin.id}`,
+          `http://192.168.20.198:5000/characters?user_id=${userLogin.id}`,
           {
             headers: { Authorization: `Bearer ${userLogin.token}` },
           }
@@ -118,7 +118,7 @@ const Map = () => {
 
     async function fetchAliens() {
       try {
-        const res = await fetch("http://localhost:5000/aliens", {
+        const res = await fetch("http://192.168.20.198:5000/aliens", {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
         const data = await res.json();
@@ -144,7 +144,7 @@ const Map = () => {
     const characterId = character?.id;
     const enemyIds = card.id;
     try {
-      const response = await fetch("http://localhost:5000/battle", {
+      const response = await fetch("http://192.168.20.198:5000/battle", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +238,7 @@ const Map = () => {
           initial={{ opacity: 0, x: -2000 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
-          className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8 w-full max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
+          className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8  max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
         >
           {/* Dano recebido - Correto na parte superior */}
           {damageInfo?.source === "enemy" && (
@@ -257,10 +257,10 @@ const Map = () => {
           </h3>
 
           {/* Imagem do Personagem */}
-          <div className="w-80 h-96 mx-auto rounded-lg overflow-hidden shadow-xl">
+          <div className="w-80 h-80 mx-auto rounded-lg overflow-hidden shadow-xl">
             <img
               src={getMilitaryImage(character.tipo_id)}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
             />
           </div>
 
@@ -306,7 +306,7 @@ const Map = () => {
             initial={{ opacity: 0, x: 2000 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
-            className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8 w-full max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
+            className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8   max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
           >
             {/* Dano recebido - Correto na parte superior */}
             {damageInfo?.source === "player" && (
@@ -325,11 +325,11 @@ const Map = () => {
             </h3>
 
             {/* Imagem do Alien */}
-            <div className="w-80 h-96 mx-auto rounded-lg overflow-hidden shadow-xl">
+            <div className="w-80 h-80 mx-auto rounded-lg overflow-hidden shadow-xl">
               <img
                 src={getAlienImage(card.nome)}
                 alt={card.nome}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
             </div>
 

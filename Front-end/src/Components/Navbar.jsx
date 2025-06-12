@@ -22,7 +22,6 @@ const Navbar = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
 
-  // Definir `character` depois que os dados forem carregados
   const character = characters.length > 0 ? characters[0] : null;
 
   useEffect(() => {
@@ -35,7 +34,7 @@ const Navbar = () => {
     async function fetchCharacters() {
       try {
         const res = await fetch(
-          `http://localhost:5000/characters?user_id=${userLogin.id}`,
+          `http://192.168.20.198:5000/characters?user_id=${userLogin.id}`,
           {
             headers: { Authorization: `Bearer ${userLogin.token}` },
           }
@@ -65,8 +64,8 @@ const Navbar = () => {
               data.characters[0].TORSO_SPELL[2],
               data.characters[0].GUN_SPELL[2],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
+              .map((value) => parseFloat(value) || 0) 
+              .reduce((acc, curr) => acc + curr, 0)  
           );
           setCritMultiplo(
             [
@@ -75,9 +74,9 @@ const Navbar = () => {
               data.characters[0].TORSO_SPELL[3],
               data.characters[0].GUN_SPELL[3],
             ]
-              .map((value) => parseFloat(value) || 0) // Converte para número ou usa 0 se inválido
-              .reduce((acc, curr) => acc + curr, 0) // Soma os valores
-              .toFixed(2) // Mantém apenas duas casas decimais
+              .map((value) => parseFloat(value) || 0) 
+              .reduce((acc, curr) => acc + curr, 0)  
+              .toFixed(2)  
           );
 
           setDefessa(
@@ -105,7 +104,7 @@ const Navbar = () => {
       (tipo) => tipo.id === tipoId
     );
 
-    return selectedMilitaryType ? selectedMilitaryType.image : "default.png"; // Fallback caso não encontre
+    return selectedMilitaryType ? selectedMilitaryType.image : "default.png"; 
   };
   const getMilitaryName = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
@@ -114,7 +113,7 @@ const Navbar = () => {
 
     return selectedMilitaryType
       ? selectedMilitaryType.name
-      : "Tipo desconhecido"; // Fallback caso o ID não seja encontrado
+      : "Tipo desconhecido";  
   };
 
   if (loading) return <div>Carregando...</div>;

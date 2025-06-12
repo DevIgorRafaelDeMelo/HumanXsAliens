@@ -70,7 +70,7 @@ const getItenByIds = async (itenIds) => {
   try {
     connection = await pool.getConnection();
     const [rows] = await connection.execute(
-      "SELECT * FROM itens WHERE id = ?",
+      "SELECT * FROM armas WHERE id = ?",
       [itenIds]
     );
     return rows[0];

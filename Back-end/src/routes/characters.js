@@ -12,7 +12,7 @@ router.get("/", authMiddleware, async (req, res) => {
       "SELECT * FROM characters WHERE user_id = ?",
       [userId]
     );
-    const [guns] = await db.query("SELECT * FROM itens ");
+    const [guns] = await db.query("SELECT * FROM armas ");
 
     if (characters.length === 0) {
       return res.status(404).json({ message: "Nenhum personagem encontrado." });

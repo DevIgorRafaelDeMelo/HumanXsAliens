@@ -29,7 +29,7 @@ const Lobby = () => {
 
     async function fetchCharacters() {
       try {
-        const res = await fetch("http://localhost:5000/characters", {
+        const res = await fetch("http://192.168.20.198:5000/characters", {
           headers: {
             Authorization: `Bearer ${userLogin.token}`,
           },
@@ -52,9 +52,10 @@ const Lobby = () => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
+  const sortedGuns = guns?.sort((a, b) => a.NIVEL - b.NIVEL);
   const handleConfirmPurchase = async (gunId) => {
     try {
-      const response = await fetch("http://localhost:5000/buy", {
+      const response = await fetch("http://192.168.20.198:5000/buy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,29 +119,28 @@ const Lobby = () => {
               {selectedOption}
             </h2>
             <ul className="w-full pt-10 grid grid-cols-2 gap-4 overflow-y-auto max-h custom-scroll pr-2 scroll-fade-mask py-10">
-              {guns?.map((gun) => (
+              {sortedGuns?.map((gun) => (
                 <li
                   onClick={() => handleSelectGun(gun)}
-                  key={gun.id}
-                  className="flex   bg-gradient-to-br mx-4 from-black/80 via-blue-950 to-black/80 text-white px-4 py-3 rounded-xl border-[2px] border-cyan-400 shadow-[0_0_15px_#00ffff80] transition-transform transform  hover:shadow-[0_0_30px_#00ffffcc] duration-300"
+                  key={gun.ID}
+                  className="flex bg-gradient-to-br mx-4 from-black/80 via-blue-950 to-black/80 text-white px-4 py-3 rounded-xl border-[2px] border-cyan-400 shadow-[0_0_15px_#00ffff80] transition-transform transform hover:shadow-[0_0_30px_#00ffffcc] duration-300"
                 >
                   <div className="relative">
                     <img
-                      src={selectImgGund(gun.id)}
-                      alt={gun.nome}
+                      src={selectImgGund(gun.ID)}
+                      alt={gun.NOME}
                       className="w-16 h-16 min-w-16 min-h-16 flex-shrink-0 object-contain rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
                     />
                     <div className="absolute top-0 right-0 bg-cyan-500 text-black text-xs px-1 rounded-bl-md font-bold shadow-sm">
-                      Lv. {gun.nível}
+                      Lv. {gun.NIVEL}
                     </div>
                   </div>
                   <div className=" ">
                     <p className="font-extrabold ms-2 text-cyan-400 tracking-wide">
-                      {gun.nome}
+                      {gun.NOME}
                     </p>
-
-                    <p className="text-sm absolute bottom-2 right-4  text-green-400 font-semibold">
-                      R$: {gun.valor}
+                    <p className="text-sm absolute bottom-2 right-4 text-green-400 font-semibold">
+                      R$: {gun.PRECO}
                     </p>
                   </div>
                 </li>
@@ -275,14 +275,18 @@ const Lobby = () => {
             </h2>
             <div className="flex items-center mb-4">
               <img
-                src={selectImgGund(selectedGun.id)}
-                alt={selectedGun.nome}
-                className="w-20 h-20 mr-4 rounded-md border-2 border-cyan-500 shadow"
+                src={selectImgGund(selectedGun.ID)}
+                alt={selectedGun.NOME}
+                className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow"
               />
               <div>
-                <p className="text-white font-semibold">{selectedGun.nome}</p>
-                <p className="text-yellow-400">⚔️ Dano: {selectedGun.dano}</p>
-                <p className="text-green-400">💰 Valor: ${selectedGun.valor}</p>
+                <p className="text-white font-semibold">{selectedGun.NOME}</p>
+                <p className="text-yellow-400">⚔️ Dano: {selectedGun.DANO}</p>
+                <p className="text-white font-semibold">{selectedGun.CRITICO}</p>
+                <p className="text-yellow-400">⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}</p>
+                <p className="text-white font-semibold">{selectedGun.VIDA}</p>
+                <p className="text-yellow-400">⚔️ Dano: {selectedGun.DEFESSA}</p>
+                <p className="text-green-400">💰 Valor: ${selectedGun.PRECO}</p>
               </div>
             </div>
             <div className="flex justify-between">
@@ -293,7 +297,7 @@ const Lobby = () => {
                 Cancelar
               </button>
               <button
-                onClick={() => handleConfirmPurchase(selectedGun.id)}
+                onClick={() => handleConfirmPurchase(selectedGun.ID)}
                 className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
               >
                 Confirmar

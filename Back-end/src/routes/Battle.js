@@ -9,7 +9,7 @@ router.post("/", authMiddleware, async (req, res) => {
   let money = 1000;
   try {
     const { characterId, enemyIds } = req.body;
-    console.log(characterId);
+    
     if (!characterId || !enemyIds) {
       return res
         .status(400)
@@ -109,15 +109,14 @@ const simulateBattle = async (character, enemy, exp, money) => {
 
   let winner;
   if (playerHP > 0) {
-    winner = "player";
-
+    winner = "player"; 
     await db.execute(
       "UPDATE characters SET alien_id = alien_id + 1 WHERE user_id = ?",
-      [character.id]
+      [character.user_id]
     );
     await db.execute(
-      "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE id = ?",
-      [exp, money, character.id]
+      "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE user_id = ?",
+      [exp, money, character.user_id]
     );
   } else if (enemyHP > 0) {
     winner = "Enemy";
