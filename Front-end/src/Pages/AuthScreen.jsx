@@ -10,7 +10,7 @@ const AuthScreen = () => {
   const [password, setPassword] = useState(" ");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { login } = useUser(); // Usa a função login do contexto
+  const { login } = useUser();  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -39,10 +39,10 @@ const AuthScreen = () => {
       if (response.ok) {
         alert(isLogin ? "Login realizado com sucesso!" : "Cadastro concluído!");
 
-        // Salva os dados do usuário e o token no contexto e localStorage
+ 
         login(data.user, data.token);
 
-        // Redireciona para a home
+ 
         navigate("/lobby");
       } else {
       }
