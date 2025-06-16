@@ -1,23 +1,33 @@
-import img1 from "../Img/Armas/gun1.png";
-import img2 from "../Img/Armas/gun2.png";
-import img3 from "../Img/Armas/gun3.png";
-import img4 from "../Img/Armas/gun4.png";
-import img5 from "../Img/Armas/gun1.png";
-import img6 from "../Img/Armas/gun1.png";
-import img7 from "../Img/Armas/gun1.png";
-import img8 from "../Img/Armas/gun1.png";
-import img9 from "../Img/Armas/gun1.png";
-import img10 from "../Img/Armas/gun1.png";
-import img11 from "../Img/Armas/gun1.png";
-import img12 from "../Img/Armas/gun1.png";
+import img1 from "../Img/Armas/Dragunov SVD.png";
+import img2 from "../Img/Armas/Steyr Scout .png";
+import img3 from "../Img/Armas/FN SCAR.png";
+import img4 from "../Img/Armas/AK-47.png";
+import img5 from "../Img/Armas/M4_Carbine.png";
+import img6 from "../Img/Armas/FN FAL.png";
+import img7 from "../Img/Armas/Heckler & Koch G3.png";
+import img8 from "../Img/Armas/m16.png";
+import img9 from "../Img/Armas/SIG Sauer SG 550.png";
+import img10 from "../Img/Armas/Steyr-AUG-A1.png";
+import img11 from "../Img/Armas/cz 805 bren.png";
+import img12 from "../Img/Armas/Galil AR.png";
 import img13 from "../Img/Armas/Tavor TAR-21.png";
 import img14 from "../Img/Armas/Valmet RK 62.png";
 import img15 from "../Img/Armas/Tavor TAR-21.png";
 import img16 from "../Img/Armas/QBZ-95.png";
 import img17 from "../Img/Armas/L85A2.png";
-import img18 from "../Img/Armas/Type-98.png";
+import img18 from "../Img/Armas/type-89.png";
 import img19 from "../Img/Armas/Vz.58.png";
-import img20 from "../Img/Armas/Valmet RK 62.png";
+import img20 from "../Img/Armas/AR-15.png";
+import img21 from "../Img/Caps/M1_HelmeT.png";
+import img22 from "../Img/Caps/PASGT.png";
+import img23 from "../Img/Caps/MICHACH.png"; 
+import img24 from "../Img/Caps/Fast Helmet.png";
+import img25 from "../Img/Caps/Stahlhelm.png";
+import img26 from "../Img/Caps/Brodie Helmet.png";
+import img27 from "../Img/Caps/Adrian_Helmet.png";
+import img28 from "../Img/Armas/type-89.png";
+import img29 from "../Img/Armas/Vz.58.png";
+import img30 from "../Img/Caps/Type 88 Helmet.png";
 const guns = [
   {
     id: 1,
@@ -33,7 +43,7 @@ const guns = [
   },
   {
     id: 2,
-    nome: "Steyr Scout (Precisão)",
+    nome: "Steyr Scout ",
     tier: "S",
     dano: 170,
     defesa: 15,
@@ -258,6 +268,126 @@ const guns = [
     multiplo_critico: 1.5,
     preco: 2000,
     img: img20,
+  },
+  {
+    id: 21,
+    nome: "M1 Helmet",
+    tier: "B",
+    dano: 0,
+    defesa: 50,
+    vida: 100,
+    critico: 5.0,
+    multiplo_critico: 1.5,
+    preco: 150,
+    img: img21,
+  },
+  {
+    id: 22,
+    nome: "PASGT",
+    tier: "A",
+    dano: 0,
+    defesa: 65,
+    vida: 120,
+    critico: 6.5,
+    multiplo_critico: 1.6,
+    preco: 200,
+    img: img22,
+  },
+  {
+    id: 23,
+    nome: "MICH/ACH",
+    tier: "A",
+    dano: 0,
+    defesa: 75,
+    vida: 130,
+    critico: 7.0,
+    multiplo_critico: 1.7,
+    preco: 250,
+    img: img23,
+  },
+  {
+    id: 24,
+    nome: "Fast Helmet",
+    tier: "S",
+    dano: 0,
+    defesa: 85,
+    vida: 140,
+    critico: 7.5,
+    multiplo_critico: 1.8,
+    preco: 300,
+    img: img24,
+  },
+  {
+    id: 25,
+    nome: "Stahlhelm",
+    tier: "B",
+    dano: 0,
+    defesa: 55,
+    vida: 110,
+    critico: 6.0,
+    multiplo_critico: 1.5,
+    preco: 180,
+    img: img25,
+  },
+  {
+    id: 26,
+    nome: "Brodie Helmet",
+    tier: "C",
+    dano: 0,
+    defesa: 45,
+    vida: 90,
+    critico: 5.5,
+    multiplo_critico: 1.4,
+    preco: 130,
+    img: img26,
+  },
+  {
+    id: 27,
+    nome: "Adrian Helmet",
+    tier: "C",
+    dano: 0,
+    defesa: 40,
+    vida: 85,
+    critico: 5.0,
+    multiplo_critico: 1.3,
+    preco: 120,
+    img: img27,
+  },
+  {
+    id: 28,
+    nome: "SSh-40",
+    tier: "B",
+    dano: 0,
+    defesa: 60,
+    vida: 115,
+    critico: 6.0,
+    multiplo_critico: 1.5,
+    preco: 190,
+    img: img28,
+  },
+  {
+    id: 29,
+    nome: "TK-3",
+    tier: "C",
+    dano: 0,
+    defesa: 50,
+    vida: 100,
+    critico: 5.5,
+    multiplo_critico: 1.4,
+    preco: 140,
+    img: img29,
+  },
+  {
+    id: 30,
+    nome: "Type 88 Helmet",
+    tier: "A",
+    dano: 0,
+    defesa: 80,
+    vida: 135,
+    critico: 7.2,
+    multiplo_critico: 1.7,
+    preco: 260,
+    img: img30,
   },
 ];
 
