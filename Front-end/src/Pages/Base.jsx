@@ -79,8 +79,7 @@ const Base = () => {
           setDepositoItens(data.characters[0].DEPOSITO);
           setItens(data.guns);
           setCapa(data.characters[0].CAPA);
-          setTorso(data.characters[0].TORSO);
-
+          setTorso(data.characters[0].TORSO); 
           setBoot(data.characters[0].BOOT);
           setArma(data.characters[0].GUN);
           setVida(
@@ -135,12 +134,13 @@ const Base = () => {
 
     fetchCharacters();
   }, [userLogin, navigate, character, characters, guns]);
+  
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
   const ItemComponent = ({ id, handleVender }) => {
-    const item = guns.find((gun) => gun.id === id);
+    const item = guns.find((gun) => gun.ID === id);
 
     if (!item) {
       return <p className="text-red-500 font-bold">Item não encontrado!</p>;
@@ -277,9 +277,9 @@ const Base = () => {
             depositoItensArray.length > 0 ? (
               <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4   max-h-[50vh] overflow-y-auto py-8 custom-scroll pr-2 scroll-fade-mask">
                 {depositoItensArray.map((id, index) => {
-                  const item = itens.find((i) => i.id === id);
+                  const item = itens.find((i) => i.ID === id);
                   if (!item) return null;
-
+                   
                   return (
                     <li
                       key={index}

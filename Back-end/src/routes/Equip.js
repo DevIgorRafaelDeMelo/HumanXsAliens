@@ -28,34 +28,53 @@ router.post("/", authMiddleware, async (req, res) => {
     let querySpell = "";
     let valuesSpell = [];
 
-    // Atualizar a coluna correta
-    switch (itemUpdate.categoria) {
+    switch (itemUpdate.TYPE) {
       case "Arma":
         queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.id, userId];
+        valuesUpdate = [itemUpdate.ID, userId];
+        console.log(
+          itemUpdate.DANO,
+          itemUpdate.DEFESSA,
+          itemUpdate.VIDA,
+          itemUpdate.CRITICO,
+          itemUpdate.MULTIPLO_CRITICO,
+          userId
+        );
         querySpell =
           "UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        valuesSpell = [
+          itemUpdate.DANO,
+          itemUpdate.DEFESSA,
+          itemUpdate.VIDA,
+          itemUpdate.CRITICO,
+          itemUpdate.MULTIPLO_CRITICO,
+          userId,
+        ];
+
         break;
 
       case "Capa":
         queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.id, userId];
         querySpell =
-          "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+          "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?) WHERE user_id = ?";
+        valuesSpell = [...spelliTEM, userId];
         break;
 
       case "Armadura":
         queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.id, userId];
         querySpell =
-          "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+          "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(? ) WHERE user_id = ?";
+        valuesSpell = [...spelliTEM, userId];
         break;
 
       case "Buts":
         queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.id, userId];
         querySpell =
-          "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+          "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?) WHERE user_id = ?";
+        valuesSpell = [...spelliTEM, userId];
         break;
 
       default:

@@ -11,7 +11,7 @@ router.post("/", authMiddleware, async (req, res) => {
   try {
     const character = await getUserById(userId);
     const iten = await getItenByIds(gunId);
-
+     
     if (character.money < iten.valor) {
       return res.status(400).json({ message: "Dinheiro insuficiente." });
     }
@@ -23,7 +23,7 @@ router.post("/", authMiddleware, async (req, res) => {
     );
 
     const characters = rows[0];
-
+    console.log(characters)
     const depositoAtual = characters.DEPOSITO
       ? JSON.parse(characters.DEPOSITO)
       : [];
@@ -31,8 +31,8 @@ router.post("/", authMiddleware, async (req, res) => {
     // Adiciona o novo item (arma)
     depositoAtual.push(gunId);
 
-    const novoSaldo = characters.money - iten.valor;
-
+    const novoSaldo = characters.money - iten.PRECO;
+    console.log(novoSaldo, depositoAtual )
     // Atualiza no banco de dados
     await db.query(
       "UPDATE characters SET DEPOSITO = ?, money = ? WHERE user_id = ?",
