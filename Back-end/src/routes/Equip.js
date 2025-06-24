@@ -9,7 +9,6 @@ router.post("/", authMiddleware, async (req, res) => {
     const { id } = req.body;
     const userId = req.user.id;
 
-    // Verificar se o ID está presente
     if (!id || !userId) {
       return res
         .status(400)
@@ -27,78 +26,56 @@ router.post("/", authMiddleware, async (req, res) => {
     let valuesUpdate = [];
     let querySpell = "";
     let valuesSpell = [];
+    const dadosAtualizados = [
+      itemUpdate.VIDA,
+      itemUpdate.DANO,
+      itemUpdate.DEFESSA,
+      itemUpdate.CRITICO,
+      itemUpdate.MULTIPLO_CRITICO,
+    ];
 
     switch (itemUpdate.TYPE) {
       case "Arma":
         queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
-        console.log(
-          itemUpdate.DANO,
-          itemUpdate.DEFESSA,
-          itemUpdate.VIDA,
-          itemUpdate.CRITICO,
-          itemUpdate.MULTIPLO_CRITICO,
-          userId
-        );
-        querySpell =
-          "UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
-        valuesSpell = [
-          itemUpdate.DANO,
-          itemUpdate.DEFESSA,
-          itemUpdate.VIDA,
-          itemUpdate.CRITICO,
-          itemUpdate.MULTIPLO_CRITICO,
-          userId,
-        ];
+        querySpell = ` UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?`;
+        valuesSpell = [...dadosAtualizados, userId];
 
         break;
 
       case "Capa":
         queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.id, userId];
-        querySpell =
-          "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?) WHERE user_id = ?";
-        valuesSpell = [...spelliTEM, userId];
+        valuesUpdate = [itemUpdate.ID, userId];
+        querySpell = "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        valuesSpell = [...dadosAtualizados, userId];
         break;
 
       case "Armadura":
         queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.id, userId];
-        querySpell =
-          "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(? ) WHERE user_id = ?";
-        valuesSpell = [...spelliTEM, userId];
+        valuesUpdate = [itemUpdate.ID, userId];
+        querySpell = "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        valuesSpell = [...dadosAtualizados, userId];
         break;
 
       case "Buts":
         queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.id, userId];
-        querySpell =
-          "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?) WHERE user_id = ?";
-        valuesSpell = [...spelliTEM, userId];
+        valuesUpdate = [itemUpdate.ID, userId];
+        querySpell = "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        valuesSpell = [...dadosAtualizados, userId];
         break;
 
       default:
         return res.status(400).json({ error: "Categoria inválida." });
     }
 
-    // Executa a atualização do item equipado
     await db.query(queryUpdate, valuesUpdate);
 
-    // Atualiza o spell corretamente
     if (querySpell) {
-      valuesSpell = [
-        itemUpdate.dano || 0,
-        itemUpdate.defesa || 0,
-        itemUpdate.chance_critico || 0,
-        itemUpdate.multiplicador_critico || 0,
-        itemUpdate.vida || 0,
-        userId,
-      ];
       await db.query(querySpell, valuesSpell);
     }
 
     res.json({
-      message: `Item ${itemUpdate.id} equipado com sucesso!`,
+      message: `Item ${itemUpdate.ID} equipado com sucesso!`,
       characters: user,
     });
   } catch (error) {

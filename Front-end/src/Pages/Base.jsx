@@ -83,28 +83,18 @@ const Base = () => {
           setBoot(data.characters[0].BOOT);
           setArma(data.characters[0].GUN);
           setVida(
-            data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
-          );
-          setDano(
             data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
               data.characters[0].GUN_SPELL[0]
           );
-          setCrit(
-            [
-              data.characters[0].BOOT_SPELL[2],
-              data.characters[0].CAPA_SPELL[2],
-              data.characters[0].TORSO_SPELL[2],
-              data.characters[0].GUN_SPELL[2],
-            ]
-              .map((value) => parseFloat(value) || 0)
-              .reduce((acc, curr) => acc + curr, 0)
+          setDano(
+            data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
           );
-          setCritMultiplo(
+          setCrit(
             [
               data.characters[0].BOOT_SPELL[3],
               data.characters[0].CAPA_SPELL[3],
@@ -113,13 +103,23 @@ const Base = () => {
             ]
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
+          );
+          setCritMultiplo(
+            [
+              data.characters[0].BOOT_SPELL[4],
+              data.characters[0].CAPA_SPELL[4],
+              data.characters[0].TORSO_SPELL[4],
+              data.characters[0].GUN_SPELL[4],
+            ]
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
               .toFixed(2)
           );
           setDefessa(
-            data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
+            data.characters[0].BOOT_SPELL[2] +
+              data.characters[0].CAPA_SPELL[2] +
+              data.characters[0].TORSO_SPELL[2] +
+              data.characters[0].GUN_SPELL[2]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);

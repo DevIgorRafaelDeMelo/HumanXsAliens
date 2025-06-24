@@ -43,37 +43,39 @@ router.post("/", authMiddleware, async (req, res) => {
 
 const simulateBattle = async (character, enemy, exp, money) => {
   const initialEnemyHP = enemy.vida;
+  
+
   const lifeTotal =
     character.health_points +
-    character.BOOT_SPELL[4] +
-    character.CAPA_SPELL[4] +
-    character.TORSO_SPELL[4] +
-    character.GUN_SPELL[4];
-  const danoTotal =
-    character.attack_points +
     character.BOOT_SPELL[0] +
     character.CAPA_SPELL[0] +
     character.TORSO_SPELL[0] +
     character.GUN_SPELL[0];
-  const danoCrit =
-    parseFloat(character.crit_chance) +
-    parseFloat(character.BOOT_SPELL[2]) +
-    parseFloat(character.CAPA_SPELL[2]) +
-    parseFloat(character.TORSO_SPELL[2]) +
-    parseFloat(character.GUN_SPELL[2]);
-
-  const danoCritMultiplo =
-    parseFloat(character.crit_multiplier) +
-    parseFloat(character.BOOT_SPELL[3]) +
-    parseFloat(character.CAPA_SPELL[3]) +
-    parseFloat(character.TORSO_SPELL[3]) +
-    parseFloat(character.GUN_SPELL[3]);
-  const defessa =
-    character.defense_points +
+  const danoTotal =
+    character.attack_points +
     character.BOOT_SPELL[1] +
     character.CAPA_SPELL[1] +
     character.TORSO_SPELL[1] +
     character.GUN_SPELL[1];
+  const danoCrit =
+    parseFloat(character.crit_chance) +
+    parseFloat(character.BOOT_SPELL[3]) +
+    parseFloat(character.CAPA_SPELL[3]) +
+    parseFloat(character.TORSO_SPELL[3]) +
+    parseFloat(character.GUN_SPELL[3]);
+
+  const danoCritMultiplo =
+    parseFloat(character.crit_multiplier) +
+    parseFloat(character.BOOT_SPELL[4]) +
+    parseFloat(character.CAPA_SPELL[4]) +
+    parseFloat(character.TORSO_SPELL[4]) +
+    parseFloat(character.GUN_SPELL[4]);
+  const defessa =
+    character.defense_points +
+    character.BOOT_SPELL[2] +
+    character.CAPA_SPELL[2] +
+    character.TORSO_SPELL[2] +
+    character.GUN_SPELL[2];
 
   let playerHP = lifeTotal;
   let enemyHP = initialEnemyHP;

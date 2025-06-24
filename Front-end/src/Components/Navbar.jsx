@@ -46,16 +46,16 @@ const Navbar = () => {
           setCharacters(data.characters);
           setMoney(data.characters[0].money);
           setVida(
-            data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
-          );
-          setDano(
             data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
               data.characters[0].GUN_SPELL[0]
+          );
+          setDano(
+            data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
           );
           setCrit(
             [
@@ -80,10 +80,10 @@ const Navbar = () => {
           );
 
           setDefessa(
-            data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
+            data.characters[0].BOOT_SPELL[2] +
+              data.characters[0].CAPA_SPELL[2] +
+              data.characters[0].TORSO_SPELL[2] +
+              data.characters[0].GUN_SPELL[2]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
