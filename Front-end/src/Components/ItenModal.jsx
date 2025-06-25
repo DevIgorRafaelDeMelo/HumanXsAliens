@@ -1,4 +1,4 @@
-import React from "react"; 
+import React from "react";
 import gunsImg from "../data/Arma";
 import { useUser } from "../context/UserContext";
 
@@ -9,6 +9,9 @@ const ItemModal = ({ item, onClose }) => {
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
+  };
+  const handleVender = (index) => {
+    console.log(`Item ${index} vendido!`);
   };
   const handleEquipar = async (itemId) => {
     try {
@@ -23,9 +26,7 @@ const ItemModal = ({ item, onClose }) => {
 
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
-      }
-
-      const data = await res.json();
+      } 
     } catch (error) {
       console.error("Erro ao enviar para o back-end:", error);
     }
@@ -68,19 +69,26 @@ const ItemModal = ({ item, onClose }) => {
         </ul>
 
         <button
-          className="w-full mt-4 bg-red-600 hover:bg-red-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
+          className="absolute top-10 right-10 text-white bg-red-600 hover:bg-red-700 font-bold rounded-full w-8 h-8 flex items-center justify-center shadow-md"
           onClick={onClose}
         >
-          Fechar
+          ✕
         </button>
+
         <button
-          className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
+          className="w-full mt-4 bg-cyan-600 hover:bg-cyan-400 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
           onClick={() => {
             handleEquipar(item.ID);
             onClose();
           }}
         >
-          Equipar Agora!
+          Equipar
+        </button>
+        <button
+          className="w-full mt-4 bg-red-600 hover:bg-red-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
+          onClick={() => handleVender(item.ID)}
+        >
+          Vender
         </button>
       </div>
     </div>

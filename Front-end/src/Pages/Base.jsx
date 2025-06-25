@@ -28,14 +28,11 @@ const Base = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
-  const [showInfoArma, setShowInfoArma] = useState(false);
+  const [showInfoArma, setShowInfoArma] = useState(true);
   const [showInfoTorso, setShowInfoTorso] = useState(false);
   const [showInfoCapa, setShowInfoCapa] = useState(false);
   const [showInfoBoot, setShowInfoBoot] = useState(false);
   const [guns, setGuns] = useState();
-  const handleVender = (index) => {
-    console.log(`Item ${index} vendido!`);
-  };
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -79,7 +76,7 @@ const Base = () => {
           setDepositoItens(data.characters[0].DEPOSITO);
           setItens(data.guns);
           setCapa(data.characters[0].CAPA);
-          setTorso(data.characters[0].TORSO); 
+          setTorso(data.characters[0].TORSO);
           setBoot(data.characters[0].BOOT);
           setArma(data.characters[0].GUN);
           setVida(
@@ -133,8 +130,8 @@ const Base = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate, character, characters, guns]);
-  
+  }, [userLogin, navigate]);
+
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
@@ -147,32 +144,25 @@ const Base = () => {
     }
 
     return (
-      <div className="p-3 bg-gray-900 text-white rounded-lg shadow-lg border-2 border-cyan-500 w-48 font-bold text-sm tracking-wide">
-        <p className="text-lg font-bold text-cyan-400">{item.nome}</p>
+      <div className="p-3 bg-gray-900 text-white rounded-lg shadow-lg border-2 border-cyan-500 w-[200px] h-[200px] z-50 font-bold text-sm tracking-wide">
+        <p className="text-lg font-bold text-cyan-400">{item.NOME}</p>
         <p>
-          🗡️ Dano: <span className="text-red-500">{item.dano}</span>
+          🗡️ Dano: <span className="text-red-500">{item.DANO}</span>
         </p>
         <p>
-          ❤️ Vida: <span className="text-green-500">{item.vida}</span>
+          ❤️ Vida: <span className="text-green-500">{item.VIDA}</span>
         </p>
         <p>
-          🛡️ Defesa: <span className="text-blue-500">{item.defesa}</span>
+          🛡️ Defesa: <span className="text-blue-500">{item.DEFESSA}</span>
         </p>
         <p>
-          🎯 Chance Crítico:{" "}
-          <span className="text-yellow-500">{item.chance_critico}%</span>
+          🎯 Chance Crítico:
+          <span className="text-yellow-500">{item.CRITICO}%</span>
         </p>
         <p>
-          🔥 Multiplicador Crítico:{" "}
-          <span className="text-purple-500">x{item.multiplicador_critico}</span>
+          🔥 M Crítico:
+          <span className="text-purple-500">x{item.MULTIPLO_CRITICO}</span>
         </p>
-
-        <button
-          onClick={() => handleVender(id)}
-          className="mt-3 bg-red-500 px-3 py-1 rounded-md font-bold hover:bg-red-400 transition"
-        >
-          Vender Item
-        </button>
       </div>
     );
   };
@@ -180,7 +170,7 @@ const Base = () => {
   if (loading) return <div>Carregando...</div>;
 
   return (
-    <div className="h-full w-full  bg-gradient-to-br from-gray-800 via-black to-gray-900  ">
+    <div className="h-full w-full  bg-gradient-to-br from-gray-800 via-black to-gray-900">
       <Navbar perfil={false} />
       <div className="flex justify-center items-center min-h-screen">
         <motion.div
@@ -200,13 +190,13 @@ const Base = () => {
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
                 onPointerEnter={() => setShowInfoArma(true)}
-                onMouseOut={() => setShowInfoArma(false)}
+                onMouseOut={() => setShowInfoArma(true)}
               >
                 <img
                   src={selectImgGund(arma)}
-                  className="w-full h-full object-cover object-top rounded-xl"
+                  className="w-full h-full object-cover object-top rounded-xl z-50"
                 />
-                {showInfoArma && <ItemComponent id={arma} />}
+                {showInfoArma && <ItemComponent id={arma}/>}
               </div>
 
               {/* Capa */}
@@ -241,7 +231,7 @@ const Base = () => {
             <div className="flex flex-col space-y-6">
               {/* Torso */}
               <div
-                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md  "
                 onPointerEnter={() => setShowInfoTorso(true)}
                 onMouseOut={() => setShowInfoTorso(false)}
               >
@@ -254,7 +244,7 @@ const Base = () => {
 
               {/* Bota */}
               <div
-                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
+                className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md "
                 onPointerEnter={() => setShowInfoBoot(true)}
                 onMouseOut={() => setShowInfoBoot(false)}
               >
@@ -279,7 +269,7 @@ const Base = () => {
                 {depositoItensArray.map((id, index) => {
                   const item = itens.find((i) => i.ID === id);
                   if (!item) return null;
-                   
+
                   return (
                     <li
                       key={index}

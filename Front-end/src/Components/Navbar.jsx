@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { AiFillHeart, AiOutlineThunderbolt } from "react-icons/ai";
+import { AiOutlineThunderbolt } from "react-icons/ai";
 import { GiShield, GiCrossedSwords } from "react-icons/gi";
 import { tiposMilitares } from "../data/militaryTypes";
 import { FaSignOutAlt } from "react-icons/fa";
@@ -64,8 +64,8 @@ const Navbar = () => {
               data.characters[0].TORSO_SPELL[2],
               data.characters[0].GUN_SPELL[2],
             ]
-              .map((value) => parseFloat(value) || 0) 
-              .reduce((acc, curr) => acc + curr, 0)  
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
           );
           setCritMultiplo(
             [
@@ -74,9 +74,9 @@ const Navbar = () => {
               data.characters[0].TORSO_SPELL[3],
               data.characters[0].GUN_SPELL[3],
             ]
-              .map((value) => parseFloat(value) || 0) 
-              .reduce((acc, curr) => acc + curr, 0)  
-              .toFixed(2)  
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
+              .toFixed(2)
           );
 
           setDefessa(
@@ -104,7 +104,7 @@ const Navbar = () => {
       (tipo) => tipo.id === tipoId
     );
 
-    return selectedMilitaryType ? selectedMilitaryType.image : "default.png"; 
+    return selectedMilitaryType ? selectedMilitaryType.image : "default.png";
   };
   const getMilitaryName = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
@@ -113,7 +113,7 @@ const Navbar = () => {
 
     return selectedMilitaryType
       ? selectedMilitaryType.name
-      : "Tipo desconhecido";  
+      : "Tipo desconhecido";
   };
 
   if (loading) return <div>Carregando...</div>;
