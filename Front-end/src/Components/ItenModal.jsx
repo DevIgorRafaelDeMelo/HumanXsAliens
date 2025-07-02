@@ -10,8 +10,27 @@ const ItemModal = ({ item, onClose }) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  const handleVender = (index) => {
-    console.log(`Item ${index} vendido!`);
+  const handleVender = async (index) => {
+    try {
+      const res = await fetch("http://192.168.20.198:5000/vender", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userLogin.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId: index }),
+      });
+    
+      const data = await res.json();
+
+      console.log(data)
+
+      if (!res.ok) {
+        throw new Error("Erro ao Vender o item!");
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+    }
   };
   const handleEquipar = async (itemId) => {
     try {
@@ -26,7 +45,7 @@ const ItemModal = ({ item, onClose }) => {
 
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
-      } 
+      }
     } catch (error) {
       console.error("Erro ao enviar para o back-end:", error);
     }

@@ -28,7 +28,7 @@ const Base = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
-  const [showInfoArma, setShowInfoArma] = useState(true);
+  const [showInfoArma, setShowInfoArma] = useState(false);
   const [showInfoTorso, setShowInfoTorso] = useState(false);
   const [showInfoCapa, setShowInfoCapa] = useState(false);
   const [showInfoBoot, setShowInfoBoot] = useState(false);
@@ -53,7 +53,6 @@ const Base = () => {
     typeof depositoItens === "string"
       ? JSON.parse(depositoItens)
       : depositoItens;
-
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -131,7 +130,6 @@ const Base = () => {
 
     fetchCharacters();
   }, [userLogin, navigate]);
-
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
@@ -189,8 +187,8 @@ const Base = () => {
               {/* Arma */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onPointerEnter={() => setShowInfoArma(true)}
-                onMouseOut={() => setShowInfoArma(true)}
+                onPointerEnter={() => setShowInfoCapa(true)}
+                onMouseOut={() => setShowInfoCapa(false)}
               >
                 <img
                   src={selectImgGund(arma)}
