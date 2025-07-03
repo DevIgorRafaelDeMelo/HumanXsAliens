@@ -16,8 +16,7 @@ const Base = () => {
   const { userLogin, logout } = useUser();
   const character = characters.length > 0 ? characters[0] : null;
   const [depositoItens, setDepositoItens] = useState([]);
-  const [itens, setItens] = useState([]);
-  const [menuAbertoIndex, setMenuAbertoIndex] = useState(null);
+  const [itens, setItens] = useState([]); 
   const [capa, setCapa] = useState();
   const [arma, setArma] = useState();
   const [torso, setTorso] = useState();
@@ -129,12 +128,12 @@ const Base = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate]);
+  }, [userLogin, navigate,character, capa , torso , arma , boot, dano,  vida, crit, critMultiplo , defessa]);
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  const ItemComponent = ({ id, handleVender }) => {
+  const ItemComponent = ({ id  }) => {
     const item = guns.find((gun) => gun.ID === id);
 
     if (!item) {

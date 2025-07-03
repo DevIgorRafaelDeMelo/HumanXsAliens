@@ -9,6 +9,7 @@ import { tiposMilitares } from "../data/militaryTypes";
 import { FaSignOutAlt } from "react-icons/fa";
 import { FaDollarSign } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
+import { GiToolbox } from "react-icons/gi";
 
 const Navbar = () => {
   const [characters, setCharacters] = useState([]);
@@ -21,8 +22,20 @@ const Navbar = () => {
   const [crit, setCrit] = useState();
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
+  const [tool, setTool] = useState();
 
   const character = characters.length > 0 ? characters[0] : null;
+  const formatMoney = (amount) => {
+    if (typeof amount !== "number") return "0";
+
+    if (amount >= 1_000_000) {
+      return `${(amount / 1_000_000).toFixed(1)}M`;
+    } else {
+      return amount.toLocaleString("pt-BR");
+    }
+  };
+
+  const formattedMoney = formatMoney(money);
 
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
@@ -45,7 +58,9 @@ const Navbar = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setMoney(data.characters[0].money);
+          setTool(data.characters[0].SCRAP);
           setVida(
+            
             data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
@@ -123,7 +138,11 @@ const Navbar = () => {
       {/* Card animado */}
       <div className="fixed flex z-1 left-8 top-[22vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
         <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}
-        <span className="text-white-100">{money}</span>
+        <span className="text-white-100">{formattedMoney}</span>
+      </div>
+      <div className="fixed flex z-1 left-40 top-[22vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
+        <GiToolbox className="h-6 me-4 text-blue-500  " />{" "}
+        <span className="text-white-100">{tool}</span>
       </div>
       <div className="fixed top-5 right-5">
         <button
@@ -198,19 +217,19 @@ const Navbar = () => {
             <p className="flex items-center gap-2">
               <AiOutlineThunderbolt className="text-red-400" />
               MC:
-              {critMultiplo}
+              {critMultiplo + character?.crit_multiplier}
             </p>
             <p className="flex items-center gap-2">
               <GiCrossedSwords className="text-orange-400" />
-              ATK: {dano}
+              ATK: {dano + character?.attack_points}
             </p>
             <p className="flex items-center gap-2">
               <AiOutlineThunderbolt className="text-yellow-400" />
-              CC: {crit}%
+              CC: {crit + character?.crit_chance}%
             </p>
             <p className="flex items-center gap-2">
               <GiShield className="text-blue-400" />
-              DEF: {defessa}
+              DEF: {defessa + character?.defense_points}
             </p>
           </div>
         </div>

@@ -36,7 +36,7 @@ router.post("/", authMiddleware, async (req, res) => {
     const novoScrap = (character.scrap || 0) + scrapGanho;
 
     await db.query(
-      "UPDATE characters SET DEPOSITO = ?, SCRAP = ? WHERE user_id = ?",
+      "UPDATE characters SET DEPOSITO = ?, SCRAP = SCRAP + ? WHERE user_id = ?",
       [JSON.stringify(depositoAtual), novoScrap, userId]
     );
 

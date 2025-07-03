@@ -38,29 +38,33 @@ router.post("/", authMiddleware, async (req, res) => {
       case "Arma":
         queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
-        querySpell = ` UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?`;
-        valuesSpell = [...dadosAtualizados, userId];
+        console.log(itemUpdate.ID);
+        querySpell = ` UPDATE characters  SET  GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?; `;
+        valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
 
         break;
 
       case "Capa":
         queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
-        querySpell = "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        querySpell =
+          "UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         valuesSpell = [...dadosAtualizados, userId];
         break;
 
       case "Armadura":
         queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
-        querySpell = "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        querySpell =
+          "UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         valuesSpell = [...dadosAtualizados, userId];
         break;
 
       case "Buts":
         queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
-        querySpell = "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
+        querySpell =
+          "UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?) WHERE user_id = ?";
         valuesSpell = [...dadosAtualizados, userId];
         break;
 
