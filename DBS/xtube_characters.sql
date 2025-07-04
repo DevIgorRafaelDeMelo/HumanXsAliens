@@ -52,10 +52,12 @@ CREATE TABLE `characters` (
   `BOOT_SPELL` json DEFAULT NULL,
   `TORSO_SPELL` json DEFAULT NULL,
   `CAPA_SPELL` json DEFAULT NULL,
+  `SCRAP` int DEFAULT '0',
+  `EQUIPADOS` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `characters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +66,7 @@ CREATE TABLE `characters` (
 
 LOCK TABLES `characters` WRITE;
 /*!40000 ALTER TABLE `characters` DISABLE KEYS */;
-INSERT INTO `characters` VALUES (51,6,NULL,4,'Met4',1,1,0,1,'2025-06-13 11:43:33','2025-06-13 18:51:26',100,0,100,10,10,0.00,0,2,1000,'[]',0,0,0,0,'[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]');
+INSERT INTO `characters` VALUES (51,6,NULL,4,'Met4',1,1,0,1,'2025-06-13 11:43:33','2025-07-04 16:29:01',100,0,100,10,10,1.00,1,2,155462970,'[17,17,17,17,17,17,14,3,27]',27,17,35,59,'[98, 78, 66, \"19.00\", \"1.70\"]','[92, 0, 36, \"4.70\", \"1.40\"]','[300, 0, 180, \"7.00\", \"1.70\"]','[85, 0, 40, \"5.00\", \"1.30\"]',6454,'[17, 27, 35, 59]'),(52,21,NULL,6,'Valeria',1,1,0,1,'2025-07-03 16:34:40','2025-07-03 16:34:40',100,0,0,10,10,0.00,0,1,0,'[]',0,0,0,0,'[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]','[0, 0, 0, 0, 0]',0,'[0, 0, 0, 0]');
 /*!40000 ALTER TABLE `characters` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -77,4 +79,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-20 15:43:50
+-- Dump completed on 2025-07-04 17:19:16
