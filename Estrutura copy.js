@@ -11,14 +11,14 @@ const Home = () => {
 
   useEffect(() => {
     if (!userLogin) {
-      navigate("/auth"); // Se não está logado, vai para auth
+      navigate("/auth");  
       return;
     }
     async function fetchCharacters() {
       try {
         const res = await fetch("http://localhost:5000/characters", {
           headers: {
-            Authorization: `Bearer ${userLogin.token}`, // assumindo que o token veio na resposta do login
+            Authorization: `Bearer ${userLogin.token}`, 
           },
         });
         const data = await res.json();
@@ -34,8 +34,7 @@ const Home = () => {
     }
     fetchCharacters();
   }, [userLogin, navigate]);
-
-  // Se tem personagem(s), pode mostrar lista ou ir direto para o personagem principal
+ 
   return (
     <div>
       <Navbar />

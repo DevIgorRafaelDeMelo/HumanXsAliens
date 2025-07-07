@@ -16,7 +16,7 @@ const Base = () => {
   const { userLogin, logout } = useUser();
   const character = characters.length > 0 ? characters[0] : null;
   const [depositoItens, setDepositoItens] = useState([]);
-  const [itens, setItens] = useState([]); 
+  const [itens, setItens] = useState([]);
   const [capa, setCapa] = useState();
   const [arma, setArma] = useState();
   const [torso, setTorso] = useState();
@@ -32,6 +32,7 @@ const Base = () => {
   const [showInfoCapa, setShowInfoCapa] = useState(false);
   const [showInfoBoot, setShowInfoBoot] = useState(false);
   const [guns, setGuns] = useState();
+  const [itemEquip, setItemEquip] = useState([]);
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -52,6 +53,17 @@ const Base = () => {
     typeof depositoItens === "string"
       ? JSON.parse(depositoItens)
       : depositoItens;
+  const ordenadoArray = Array.isArray(depositoItensArray)
+    ? [...depositoItensArray].sort((a, b) => {
+        const aIsEquipado = itemEquip.includes(a);
+        const bIsEquipado = itemEquip.includes(b);
+
+        if (aIsEquipado && !bIsEquipado) return -1;
+        if (!aIsEquipado && bIsEquipado) return 1;
+        return 0; // mantém a ordem relativa dos demais
+      })
+    : [];
+
   useEffect(() => {
     if (!userLogin?.token || !userLogin?.id) {
       console.error("Token ou ID do usuário ausente.");
@@ -116,6 +128,8 @@ const Base = () => {
               data.characters[0].TORSO_SPELL[2] +
               data.characters[0].GUN_SPELL[2]
           );
+
+          setItemEquip(character.EQUIPADOS);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -128,12 +142,25 @@ const Base = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate,character, capa , torso , arma , boot, dano,  vida, crit, critMultiplo , defessa]);
+  }, [
+    userLogin,
+    navigate,
+    character,
+    capa,
+    torso,
+    arma,
+    boot,
+    dano,
+    vida,
+    crit,
+    critMultiplo,
+    defessa,
+  ]);
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  const ItemComponent = ({ id  }) => {
+  const ItemComponent = ({ id }) => {
     const item = guns.find((gun) => gun.ID === id);
 
     if (!item) {
@@ -193,7 +220,7 @@ const Base = () => {
                   src={selectImgGund(arma)}
                   className="w-full h-full object-cover object-top rounded-xl z-50"
                 />
-                {showInfoArma && <ItemComponent id={arma}/>}
+                {showInfoArma && <ItemComponent id={arma} />}
               </div>
 
               {/* Capa */}
@@ -263,7 +290,7 @@ const Base = () => {
             {Array.isArray(depositoItensArray) &&
             depositoItensArray.length > 0 ? (
               <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4   max-h-[50vh] overflow-y-auto py-8 custom-scroll pr-2 scroll-fade-mask">
-                {depositoItensArray.map((id, index) => {
+                {ordenadoArray.map((id, index) => {
                   const item = itens.find((i) => i.ID === id);
                   if (!item) return null;
 

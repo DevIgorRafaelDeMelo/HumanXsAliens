@@ -9,6 +9,7 @@ const ItemModal = ({ item, onClose }) => {
   const [modalMessage, setModalMessage] = React.useState("");
   const [showResultModal, setShowResultModal] = React.useState(false);
   const [responseData, setResponseData] = React.useState(null);
+  const [statusModal, setStatusModal] = React.useState();
 
   if (!item) return null;
 
@@ -33,6 +34,8 @@ const ItemModal = ({ item, onClose }) => {
       });
 
       const data = await res.json();
+
+      setStatusModal(data.STATUS);
 
       const formattedScrap = new Intl.NumberFormat("pt-BR").format(
         data.scrapGanho
@@ -149,13 +152,33 @@ const ItemModal = ({ item, onClose }) => {
           </div>
         </div>
       )}
-      {showResultModal && (
+      {statusModal && showResultModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
           <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-2xl w-[400px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
             <h3
               className="text-center text-lg"
               dangerouslySetInnerHTML={{ __html: modalMessage }}
             ></h3>
+            <button
+              className="bg-cyan-600 hover:bg-cyan-400 text-white font-bold px-6 py-2 rounded-md shadow-md transition-transform transform hover:scale-105"
+              onClick={() => {
+                setShowResultModal(false);
+                onClose();
+              }}
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+      {!statusModal && showResultModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+          <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6 rounded-xl shadow-2xl w-[400px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
+            <h3
+              className="text-center text-lg" 
+            >
+              Esse item está equipado
+            </h3>
             <button
               className="bg-cyan-600 hover:bg-cyan-400 text-white font-bold px-6 py-2 rounded-md shadow-md transition-transform transform hover:scale-105"
               onClick={() => {
