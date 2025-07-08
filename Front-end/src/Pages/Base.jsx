@@ -49,6 +49,8 @@ const Base = () => {
       ? selectedMilitaryType.name
       : "Tipo desconhecido";
   };
+  const [tipoSelecionado, setTipoSelecionado] = useState("Todos");
+
   const depositoItensArray =
     typeof depositoItens === "string"
       ? JSON.parse(depositoItens)
@@ -60,7 +62,7 @@ const Base = () => {
 
         if (aIsEquipado && !bIsEquipado) return -1;
         if (!aIsEquipado && bIsEquipado) return 1;
-        return 0; // mantém a ordem relativa dos demais
+        return 0;
       })
     : [];
 
@@ -84,6 +86,7 @@ const Base = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
+          setItemEquip(data.characters[0].EQUIPADOS);
           setItens(data.guns);
           setCapa(data.characters[0].CAPA);
           setTorso(data.characters[0].TORSO);
@@ -128,8 +131,6 @@ const Base = () => {
               data.characters[0].TORSO_SPELL[2] +
               data.characters[0].GUN_SPELL[2]
           );
-
-          setItemEquip(character.EQUIPADOS);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -156,6 +157,14 @@ const Base = () => {
     critMultiplo,
     defessa,
   ]);
+
+  const itensAgrupados = depositoItensArray.reduce((acc, item) => {
+    if (!acc[item.TIPO]) {
+      acc[item.TIPO] = [];
+    }
+    acc[item.TIPO].push(item);
+    return acc;
+  }, {});
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
@@ -283,29 +292,58 @@ const Base = () => {
 
           {/* Detalhes */}
           <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] w-[100vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
-            <h3 className="text-2xl font-extrabold text-cyan-400 mb-6 border-b border-cyan-500 pb-2">
-              🎒 Itens no Depósito
-            </h3>
+            <div className="flex justify-between items-end w-full border-b border-cyan-500 pb-2 mb-6">
+              <h3 className="text-2xl font-extrabold text-cyan-400">
+                🎒 Itens no Depósito
+              </h3>
+              <select
+                value={tipoSelecionado}
+                onChange={(e) => setTipoSelecionado(e.target.value)}
+                className="p-2 px-4 bg-gray-800 text-cyan-300 rounded border border-cyan-500 shadow-md"
+              >
+                <option value="Todos">All</option>
+                <option value="Arma">Arma</option>
+                <option value="Buts">Botas</option>
+                <option value="Armadura">Torso</option>
+                <option value="Capa">Capacete</option>
+                {/* Adicione mais opções conforme necessário */}
+              </select>
+            </div>
 
             {Array.isArray(depositoItensArray) &&
             depositoItensArray.length > 0 ? (
-              <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4   max-h-[50vh] overflow-y-auto py-8 custom-scroll pr-2 scroll-fade-mask">
-                {ordenadoArray.map((id, index) => {
+              <ul className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 gap-4 max-h-[50vh] overflow-y-auto py-8 custom-scroll pr-2 scroll-fade-mask">
+                {[...new Set(ordenadoArray)].map((id, index) => {
                   const item = itens.find((i) => i.ID === id);
-                  if (!item) return null;
+
+                  // Verifica se o item existe e aplica o filtro por tipo
+                  if (
+                    !item ||
+                    (tipoSelecionado !== "Todos" &&
+                      item.TYPE !== tipoSelecionado)
+                  )
+                    return null;
+
+                  const quantidade = ordenadoArray.filter(
+                    (i) => i === id
+                  ).length;
 
                   return (
                     <li
                       key={index}
-                      className="relative flex flex-col items-center  shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer h-40"
+                      className="relative flex flex-col items-center shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer h-40"
                       onClick={() => setSelectedItem(item)}
                     >
-                      <div className="relative w-20 h-20 flex items-center   bg-gray-700 rounded-md p-2 shadow-md">
+                      <div className="relative w-20 h-20 flex items-center bg-gray-700 rounded-md p-2 shadow-md">
                         <img
                           src={selectImgGund(item.ID)}
                           alt={item.NOME}
                           className="w-full h-full object-contain rounded"
                         />
+                        {/* Quantidade no canto superior direito */}
+                        <span className="absolute top-0 right-0 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                          {quantidade}
+                        </span>
                       </div>
 
                       <p className="mt-2 text-cyan-300 text-lg font-semibold text-center">
