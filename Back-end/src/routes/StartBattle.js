@@ -4,11 +4,11 @@ const { getEnemiesByIds, getCharacterById, pool } = require("../config/DBs");
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/", authMiddleware, async (req, res) => {
-  console.log(req);
+ 
   try {
     const { characterId, enemyIds } = req.body;
 
-    // Buscar jogador e inimigos
+ 
     const character = await getCharacterById(characterId);
 
     const enemies = await getEnemiesByIds(enemyIds);
@@ -18,7 +18,7 @@ router.post("/", authMiddleware, async (req, res) => {
         .json({ message: "Personagem ou inimigos não encontrados!" });
     }
 
-    // Simulação da batalha no novo formato
+ 
     const { turns, playerHP } = simulateBattle(character, enemies);
 
     return res.status(200).json({
@@ -26,15 +26,14 @@ router.post("/", authMiddleware, async (req, res) => {
       enemies: enemies.map((e) => ({ id: e.id, nome: e.nome, vida: e.vida })),
       turns,
     });
-  } catch (error) {
-    console.error("Erro ao processar batalha:", error);
+  } catch (error) { 
     return res.status(500).json({ message: "Erro interno no servidor" });
   }
 });
 
 module.exports = router;
 
-// Nova simulação de batalha: retorna apenas os turnos e vida final
+ 
 const simulateBattle = (character, enemies) => {
   let playerHP = character.health_points;
   const turns = [];
@@ -43,14 +42,14 @@ const simulateBattle = (character, enemies) => {
     let enemyHP = enemy.vida;
 
     while (playerHP > 0 && enemyHP > 0) {
-      // Turno do personagem
+     
       let danoJogador = Math.max(character.attack_points - enemy.defesa, 0);
       enemyHP -= danoJogador;
       turns.push({ source: "player", dano: danoJogador });
 
       if (enemyHP <= 0) break;
 
-      // Turno do inimigo
+     
       let danoInimigo = Math.max(enemy.ataque - character.defense_points, 0);
       playerHP -= danoInimigo;
       turns.push({ source: "enemy", dano: danoInimigo });
@@ -58,7 +57,7 @@ const simulateBattle = (character, enemies) => {
       if (playerHP <= 0) break;
     }
 
-    if (playerHP <= 0) break; // Se o jogador morreu, para a batalha
+    if (playerHP <= 0) break; 
   }
 
   return {

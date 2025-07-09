@@ -1,5 +1,3 @@
-// BACKEND (Node.js + Express + MySQL)
-
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -8,7 +6,6 @@ const db = require("../config/db");
 
 const JWT_SECRET = "seu_segredo_super_seguro";
 
-// REGISTRO
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -43,13 +40,11 @@ router.post("/register", async (req, res) => {
     });
 
     return res.status(201).json({ user, token });
-  } catch (error) {
-    console.error("Erro ao registrar usuário:", error);
+  } catch (error) { 
     return res.status(500).json({ message: "Erro no servidor." });
   }
 });
 
-// LOGIN
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -85,7 +80,6 @@ router.post("/login", async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error("Erro ao logar:", error);
     res.status(500).json({ message: "Erro no servidor." });
   }
 });

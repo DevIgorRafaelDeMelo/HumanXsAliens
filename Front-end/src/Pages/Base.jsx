@@ -158,13 +158,6 @@ const Base = () => {
     defessa,
   ]);
 
-  const itensAgrupados = depositoItensArray.reduce((acc, item) => {
-    if (!acc[item.TIPO]) {
-      acc[item.TIPO] = [];
-    }
-    acc[item.TIPO].push(item);
-    return acc;
-  }, {});
   const selectImgGund = (id) => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";

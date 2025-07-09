@@ -68,8 +68,7 @@ router.post("/", authMiddleware, async (req, res) => {
       STATUS: true,
       scrapGanho: scrapGanho,
     });
-  } catch (err) {
-    console.error("Erro ao processar venda:", err);
+  } catch (err) { 
     return res.status(500).json({ message: "Erro interno ao vender item." });
   }
 });

@@ -6,7 +6,7 @@ const { getEnemiesByIds, getCharacterById, pool } = require("../config/DBs");
 
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.id; // Correção: pegando ID corretamente
+    const userId = req.user.id;  
 
     const [characters] = await db.query(
       "SELECT * FROM characters WHERE user_id = ?",
@@ -22,8 +22,7 @@ router.get("/", authMiddleware, async (req, res) => {
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);
     res.json({ characters, enemies, guns });
-  } catch (error) {
-    console.error("Erro ao buscar personagens:", error);
+  } catch (error) { 
     res.status(500).json({ message: "Erro interno ao buscar personagens." });
   }
 });

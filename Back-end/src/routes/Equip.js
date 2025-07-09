@@ -37,8 +37,7 @@ router.post("/", authMiddleware, async (req, res) => {
     switch (itemUpdate.TYPE) {
       case "Arma":
         queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.ID, userId];
-        console.log(itemUpdate.ID);
+        valuesUpdate = [itemUpdate.ID, userId]; 
         querySpell = ` UPDATE characters  SET  GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?; `;
         valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
 
@@ -79,8 +78,7 @@ router.post("/", authMiddleware, async (req, res) => {
       message: `Item ${itemUpdate.ID} equipado com sucesso!`,
       characters: user,
     });
-  } catch (error) {
-    console.error("Erro na consulta:", error);
+  } catch (error) { 
     res.status(500).json({ error: "Erro ao equipar item." });
   }
 });
