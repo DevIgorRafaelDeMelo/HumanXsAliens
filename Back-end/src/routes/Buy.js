@@ -21,8 +21,7 @@ router.post("/", authMiddleware, async (req, res) => {
       [userId]
     );
 
-    const characters = rows[0];
-    console.log(characters)
+    const characters = rows[0]; 
     const depositoAtual = characters.DEPOSITO
       ? JSON.parse(characters.DEPOSITO)
       : [];
