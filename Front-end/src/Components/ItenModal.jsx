@@ -68,7 +68,7 @@ const ItemModal = ({ item, onClose }) => {
       console.error("Erro ao enviar para o back-end:", error);
     }
   };
-   const handleBetter = async (itemId) => {
+  const handleBetter = async (itemId) => {
     try {
       const res = await fetch("http://192.168.20.198:5000/Better", {
         method: "POST",
@@ -78,7 +78,8 @@ const ItemModal = ({ item, onClose }) => {
         },
         body: JSON.stringify({ id: itemId }),
       });
-
+      const data = await res.json();
+      console.log(data);
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
       }

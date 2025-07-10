@@ -81,7 +81,7 @@ router.post("/", authMiddleware, async (req, res) => {
       switch (item.TYPE) {
         case "Arma":
           queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-          valuesUpdate = [item.ID, userId]; 
+          valuesUpdate = [item.ID, userId];
           querySpell = ` UPDATE characters  SET  GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?; `;
           valuesSpell = [...dadosAtualizados, item.ID, userId];
 
@@ -117,9 +117,12 @@ router.post("/", authMiddleware, async (req, res) => {
       if (querySpell) {
         await db.query(querySpell, valuesSpell);
       }
-
-      return res.json({ message: "Arma aupdate" });
-    } else { 
+      console.log("OK");
+      return res.json({
+        characters: user,
+        items: item,
+      });
+    } else {
       return res.json({ message: "Recursos insuficiente" });
     }
   } catch (err) {

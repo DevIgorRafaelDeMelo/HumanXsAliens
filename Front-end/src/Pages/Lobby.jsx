@@ -61,7 +61,7 @@ const Lobby = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userLogin.token}`,
         },
-        body: JSON.stringify({ gunId }),
+        body: JSON.stringify({ gunId, buyItem: true }),
       });
 
       const data = await response.json();
@@ -282,10 +282,16 @@ const Lobby = () => {
               <div>
                 <p className="text-white font-semibold">{selectedGun.NOME}</p>
                 <p className="text-yellow-400">⚔️ Dano: {selectedGun.DANO}</p>
-                <p className="text-white font-semibold">{selectedGun.CRITICO}</p>
-                <p className="text-yellow-400">⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}</p>
+                <p className="text-white font-semibold">
+                  {selectedGun.CRITICO}
+                </p>
+                <p className="text-yellow-400">
+                  ⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}
+                </p>
                 <p className="text-white font-semibold">{selectedGun.VIDA}</p>
-                <p className="text-yellow-400">⚔️ Dano: {selectedGun.DEFESSA}</p>
+                <p className="text-yellow-400">
+                  ⚔️ Dano: {selectedGun.DEFESSA}
+                </p>
                 <p className="text-green-400">💰 Valor: ${selectedGun.PRECO}</p>
               </div>
             </div>

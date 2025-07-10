@@ -157,7 +157,7 @@ const Map = () => {
       });
 
       const data = await response.json();
-
+      
       setMoney(data.money);
       setExp(data.exp);
       setWinner(data.winner);
