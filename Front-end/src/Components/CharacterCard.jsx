@@ -83,7 +83,7 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
 
   useEffect(() => {
     if (!userLogin) {
-      navigate("/auth"); // Se não está logado, vai para auth
+      navigate("/auth");
       return;
     }
   }, [userLogin, navigate]);
@@ -97,11 +97,11 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
     }
 
     try {
-      // pegar token do localStorage
+      
       const response = await fetch("http://192.168.20.198:5000/registerCharater", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // ✅ ESSENCIAL
+          "Content-Type": "application/json",  
           Authorization: `Bearer ${userLogin.token}`,
         },
         body: JSON.stringify({ name, tipo_id: tipoId, user_id: userLogin.id }),
@@ -110,7 +110,7 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
       const data = await response.json();
 
       if (response.ok) {
-        onCharacterCreated && onCharacterCreated(data.character); // callback para atualizar estado pai
+        onCharacterCreated && onCharacterCreated(data.character);  
         navigate("/Lobby");
       } else {
         alert(`Erro: ${data.message || "Não foi possível cadastrar"}`);
@@ -125,14 +125,14 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
 
   return (
     <div className="h-[100vh] w-full flex justify-center items-center relative">
-      {/* Imagem de fundo */}
+     
       <img
         src={Img}
         alt="Imagem centralizada"
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
-      {/* Card sobre a imagem */}
+    
       <div className="w-[80%] text-center p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border-2 border-purple-600 relative z-10">
         <h2 className="text-3xl font-extrabold mb-6 text-purple-400 tracking-wide drop-shadow-lg">
           Cadastrar Personagem

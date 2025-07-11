@@ -64,6 +64,39 @@ const getEnemiesByIds = async (enemyIds) => {
     if (connection) await connection.release();
   }
 };
+const getItenUserByIds = async (userIds) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM Itemuser WHERE ID_USER = ? ",
+      [userIds]
+    );
+    return rows;
+  } catch (error) {
+    console.error("Erro ao buscar item:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
+const getItenUserById = async (userIds, itenId) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM Itemuser WHERE ID_USER = ? and ID_ITEM = ? ",
+      [userIds, itenId]
+    );
+    return rows;
+  } catch (error) {
+    console.error("Erro ao buscar item:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
 
 const getItenByIds = async (itenIds) => {
   let connection;
@@ -84,6 +117,8 @@ const getItenByIds = async (itenIds) => {
 
 module.exports = {
   pool,
+  getItenUserByIds,
+  getItenUserById,
   getCharacterById,
   getEnemiesByIds,
   getItenByIds,

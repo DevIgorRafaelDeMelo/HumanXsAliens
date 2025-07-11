@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
-const { getUserById, getItenByIds } = require("../config/DBs");
+const { getUserById, getItenByIds, getItenUserById } = require("../config/DBs");
 const { Types } = require("mysql2");
 
 router.post("/", authMiddleware, async (req, res) => {
@@ -66,6 +66,12 @@ router.post("/", authMiddleware, async (req, res) => {
         ]
       );
 
+      const newItem = await getItenUserById(userId, itemId);
+      const objetoFinal = {
+        ...item,
+        ...newItem["0"],
+      };
+
       let queryUpdate = "";
       let valuesUpdate = [];
       let querySpell = "";
@@ -117,10 +123,10 @@ router.post("/", authMiddleware, async (req, res) => {
       if (querySpell) {
         await db.query(querySpell, valuesSpell);
       }
-      console.log("OK");
+
       return res.json({
         characters: user,
-        items: item,
+        items: objetoFinal,
       });
     } else {
       return res.json({ message: "Recursos insuficiente" });

@@ -82,12 +82,13 @@ const Base = () => {
           },
         });
         const data = await res.json();
-        setGuns(data.guns);
+        setGuns(data.gunsMescladas);
+
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
           setItemEquip(data.characters[0].EQUIPADOS);
-          setItens(data.guns);
+          setItens(data.gunsMescladas);
           setCapa(data.characters[0].CAPA);
           setTorso(data.characters[0].TORSO);
           setBoot(data.characters[0].BOOT);
@@ -141,7 +142,6 @@ const Base = () => {
         setLoading(false);
       }
     }
-
     fetchCharacters();
   }, [
     userLogin,
@@ -210,9 +210,7 @@ const Base = () => {
           </h2>
 
           <div className="flex items-center justify-center space-x-10">
-            {/* Caixa à esquerda */}
             <div className="flex flex-col space-y-6">
-              {/* Arma */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
                 onPointerEnter={() => setShowInfoCapa(true)}
@@ -225,7 +223,6 @@ const Base = () => {
                 {showInfoArma && <ItemComponent id={arma} />}
               </div>
 
-              {/* Capa */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
                 onPointerEnter={() => setShowInfoCapa(true)}
@@ -239,7 +236,6 @@ const Base = () => {
               </div>
             </div>
 
-            {/* Imagem principal */}
             <div className="relative">
               <div className="relative w-52 h-52 overflow-hidden shadow-xl">
                 <img
@@ -253,9 +249,7 @@ const Base = () => {
               </div>
             </div>
 
-            {/* Caixa à direita */}
             <div className="flex flex-col space-y-6">
-              {/* Torso */}
               <div
                 className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md  "
                 onPointerEnter={() => setShowInfoTorso(true)}
@@ -268,7 +262,6 @@ const Base = () => {
                 {showInfoTorso && <ItemComponent id={torso} />}
               </div>
 
-              {/* Bota */}
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md "
                 onPointerEnter={() => setShowInfoBoot(true)}
@@ -283,7 +276,6 @@ const Base = () => {
             </div>
           </div>
 
-          {/* Detalhes */}
           <div className="mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900 h-[60vh] w-[100vh] p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
             <div className="flex justify-between items-end w-full border-b border-cyan-500 pb-2 mb-6">
               <h3 className="text-2xl font-extrabold text-cyan-400">
@@ -299,7 +291,6 @@ const Base = () => {
                 <option value="Buts">Botas</option>
                 <option value="Armadura">Torso</option>
                 <option value="Capa">Capacete</option>
-                {/* Adicione mais opções conforme necessário */}
               </select>
             </div>
 
@@ -309,7 +300,6 @@ const Base = () => {
                 {[...new Set(ordenadoArray)].map((id, index) => {
                   const item = itens.find((i) => i.ID === id);
 
-                  // Verifica se o item existe e aplica o filtro por tipo
                   if (
                     !item ||
                     (tipoSelecionado !== "Todos" &&
@@ -333,7 +323,7 @@ const Base = () => {
                           alt={item.NOME}
                           className="w-full h-full object-contain rounded"
                         />
-                        {/* Quantidade no canto superior direito */}
+
                         <span className="absolute top-0 right-0 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                           {quantidade}
                         </span>
@@ -350,7 +340,6 @@ const Base = () => {
               <p className="text-gray-400">Nenhum item no depósito.</p>
             )}
 
-            {/* Exibe o modal quando um item for selecionado */}
             {selectedItem && (
               <ItemModal
                 item={selectedItem}
@@ -362,7 +351,6 @@ const Base = () => {
       </div>
 
       <div className="fixed top-[50vh] left-10 p-4   w-[20%] rounded-lg shadow-lg  ">
-        {/* Atributos */}
         <ul className="bg-gradient-to-br from-gray-800 via-black to-gray-900 p-6 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55] w-full space-y-4 text-gray-300">
           <li className="flex justify-between border-b border-gray-600 pb-2">
             <span className="font-bold">Vida</span>
@@ -396,7 +384,7 @@ const Base = () => {
           </li>
         </ul>
       </div>
-      {/* Barra de XP */}
+
       <div className="fixed top-0 w-full bg-gray-900  h-5 overflow-hidden  shadow-md border border-yellow-500">
         <motion.div className="h-5 bg-gradient-to-r from-yellow-400 to-yellow-600" />
         <p className="absolute inset-0 flex justify-center items-center text-sm font-bold text-white shadow-md">
