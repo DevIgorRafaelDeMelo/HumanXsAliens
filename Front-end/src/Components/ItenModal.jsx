@@ -12,6 +12,8 @@ const ItemModal = ({ item, onClose }) => {
   const [statusModal, setStatusModal] = useState();
   const [recarregando, setRecarregando] = useState(false);
   const [selectedItem, setSelectedItem] = useState(item);
+  const [nivelItem, setNivelItem] = useState(item.NIVEL);
+  const [defItem, setDefItem] = useState(item.DEFESA || item.DEFESSA);
 
   useEffect(() => {
     if (!item) return null;
@@ -96,7 +98,8 @@ const ItemModal = ({ item, onClose }) => {
       });
       const data = await res.json();
       setSelectedItem(data.items);
-
+      setNivelItem(data.items.NV_ITEM);
+      setDefItem(data.items.DEFESA)
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
       }
@@ -113,7 +116,7 @@ const ItemModal = ({ item, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
       <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 rounded-xl shadow-2xl w-[500px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
         <div className="relative top-4 left-4 bg-cyan-700 text-white font-bold px-3 py-1 rounded-md shadow-md text-sm">
-          Nível {selectedItem.NV_ITEM}
+          Nível {nivelItem}
         </div>
 
         <h2 className="text-cyan-300 text-3xl font-extrabold tracking-wider shadow-md">
@@ -142,8 +145,8 @@ const ItemModal = ({ item, onClose }) => {
             <span>{selectedItem.DANO}</span>
           </li>
           <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Chance Crítico</span>
-            <span>{selectedItem.DEFESSA}</span>
+            <span className="font-bold">Defesa</span>
+            <span>{defItem}</span>
           </li>
           <li className="flex justify-between border-b border-gray-600 pb-2">
             <span className="font-bold">Multiplicador Crítico</span>

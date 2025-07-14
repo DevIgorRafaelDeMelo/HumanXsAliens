@@ -182,7 +182,7 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
               </button>
             </div>
 
-            {/* Grid para exibir os cards do tipo militar */}
+           
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {tiposMilitares[generoSelecionado].map((tipo) => (
                 <div

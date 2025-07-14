@@ -41,7 +41,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
     if (characters.length === 0) {
       return res.status(404).json({ message: "Nenhum personagem encontrado." });
-    }
+    } 
     const alienIds =
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);

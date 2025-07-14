@@ -82,8 +82,7 @@ const Base = () => {
           },
         });
         const data = await res.json();
-        setGuns(data.gunsMescladas);
-
+        setGuns(data.gunsMescladas); 
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
