@@ -10,9 +10,10 @@ import INF from "../Img/MEN.png";
 import HOS from "../Img/MED.png";
 import CharacterCard from "../Components/CharacterCard";
 import gunsImg from "../data/Arma";
+import Load from "../Components/LoadingScreen";
 
 const Lobby = () => {
-  const { userLogin, logout } = useUser();
+  const { userLogin } = useUser();
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -90,6 +91,9 @@ const Lobby = () => {
   if (characters.length === 0) {
     return <CharacterCard user={userLogin} />;
   }
+
+  if (loading) return <Load />;
+
   return (
     <div
       style={{
@@ -147,10 +151,24 @@ const Lobby = () => {
               ))}
             </ul>
             {showDescriptionModal && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <p className="text-green-600 font-bold">
-                    Você adquiriu equipamanento!
+              <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-black/70 to-gray-900/80 backdrop-blur-sm z-50">
+                <div className="bg-gradient-to-r from-gray-800 to-gray-700 border border-cyan-500 p-6 rounded-2xl shadow-xl animate-pulse">
+                  <p className="text-cyan-400 font-extrabold text-xl flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-cyan-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Você adquiriu equipamento !
                   </p>
                 </div>
               </div>

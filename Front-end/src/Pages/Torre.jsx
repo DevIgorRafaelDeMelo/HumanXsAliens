@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../Components/Navbar";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import background from "../Img/Torre.png"; 
+import background from "../Img/Torre.png";
+import Load from "../Components/LoadingScreen";
+
 const Torre = () => {
-  const { userLogin, logout } = useUser();
-  const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { userLogin } = useUser();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!userLogin) {
-      navigate("/auth");  
+      navigate("/auth");
       return;
     }
 
@@ -27,7 +27,6 @@ const Torre = () => {
         const data = await res.json();
 
         if (res.ok) {
-          setCharacters(data.characters);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -46,7 +45,6 @@ const Torre = () => {
             Authorization: `Bearer ${userLogin.token}`,
           },
         });
-        const data = await res.json();
         if (res.ok) {
         } else {
           console.error("Erro ao carregar aliens");
@@ -60,7 +58,7 @@ const Torre = () => {
     fetchAliens();
   }, [userLogin, navigate]);
 
-  if (loading) return <div>Carregando...</div>;
+  if (!loading) return <Load />;
 
   return (
     <div

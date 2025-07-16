@@ -44,15 +44,15 @@ router.post("/", authMiddleware, async (req, res) => {
       ).toFixed(2);
       await db.query(
         `INSERT INTO ItemUser (
-        ID_USER, ID_ITEM, NV_ITEM, VIDA, DEFESA, CRITICO, MULTIPLI_CRITICO, DANO
+        ID_USER, ID_ITEM, NV_ITEM, VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
             NV_ITEM = NV_ITEM + 1,
             VIDA = VALUES(VIDA),
             DEFESA = VALUES(DEFESA),
-            CRITICO = VALUES(CRITICO),
-            MULTIPLI_CRITICO = VALUES(MULTIPLI_CRITICO),
+            USER_ITEM_CRITICO = VALUES(USER_ITEM_CRITICO),
+            USER_ITEM_MULTIPLI_CRITICO = VALUES(USER_ITEM_MULTIPLI_CRITICO),
             DANO = VALUES(DANO)`,
         [
           userId,
@@ -122,8 +122,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
       if (querySpell) {
         await db.query(querySpell, valuesSpell);
-      }
-
+      } 
       return res.json({
         characters: user,
         items: objetoFinal,

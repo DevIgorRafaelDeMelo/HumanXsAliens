@@ -31,8 +31,8 @@ router.get("/", authMiddleware, async (req, res) => {
           DANO: itemUser.DANO,
           VIDA: itemUser.VIDA,
           DEFESA: itemUser.DEFESA,
-          CRITICO: itemUser.CRITICO.toString(),
-          MULTIPLO_CRITICO: itemUser.MULTIPLI_CRITICO.toString(),
+          CRITICO: itemUser.USER_ITEM_CRITICO.toString(),
+          MULTIPLO_CRITICO: itemUser.USER_ITEM_MULTIPLI_CRITICO.toString(),
         };
       }
 
@@ -41,10 +41,11 @@ router.get("/", authMiddleware, async (req, res) => {
 
     if (characters.length === 0) {
       return res.status(404).json({ message: "Nenhum personagem encontrado." });
-    } 
+    }
     const alienIds =
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);
+    
     res.json({ characters, enemies, guns, gunsMescladas });
   } catch (error) {
     res.status(500).json({ message: "Erro interno ao buscar personagens." });

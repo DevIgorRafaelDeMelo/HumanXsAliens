@@ -2,18 +2,19 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { GiShield, GiCrossedSwords } from "react-icons/gi";
 import { tiposMilitares } from "../data/militaryTypes";
 import { useUser } from "../context/UserContext";
 import Navbar from "../Components/Navbar";
 import gunsImg from "../data/Arma";
 import ItemModal from "../Components/ItenModal";
+import Load from "../Components/LoadingScreen";
+import imgBackItem from "../Img/icone_equipamento.png";
 
 const Base = () => {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { userLogin, logout } = useUser();
+  const { userLogin } = useUser();
   const character = characters.length > 0 ? characters[0] : null;
   const [depositoItens, setDepositoItens] = useState([]);
   const [itens, setItens] = useState([]);
@@ -82,7 +83,7 @@ const Base = () => {
           },
         });
         const data = await res.json();
-        setGuns(data.gunsMescladas); 
+        setGuns(data.gunsMescladas);
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
@@ -192,7 +193,7 @@ const Base = () => {
     );
   };
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) return <Load />;
 
   return (
     <div className="h-full w-full  bg-gradient-to-br from-gray-800 via-black to-gray-900">
@@ -212,12 +213,13 @@ const Base = () => {
             <div className="flex flex-col space-y-6">
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onPointerEnter={() => setShowInfoCapa(true)}
-                onMouseOut={() => setShowInfoCapa(false)}
+                onPointerEnter={() => setShowInfoArma(true)}
+                onMouseOut={() => setShowInfoArma(false)}
               >
                 <img
-                  src={selectImgGund(arma)}
-                  className="w-full h-full object-cover object-top rounded-xl z-50"
+                  src={arma ? selectImgGund(arma) : imgBackItem}
+                  alt={`Imagem`}
+                  className="w-full h-full object-cover object-top rounded-xl  bg-white"
                 />
                 {showInfoArma && <ItemComponent id={arma} />}
               </div>
@@ -228,9 +230,11 @@ const Base = () => {
                 onMouseOut={() => setShowInfoCapa(false)}
               >
                 <img
-                  src={selectImgGund(capa)}
-                  className="w-full h-full object-cover object-top rounded-xl"
+                  src={capa ? selectImgGund(capa) : imgBackItem}
+                  alt="Imagem da arma ou padrão"
+                  className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
+
                 {showInfoCapa && <ItemComponent id={capa} />}
               </div>
             </div>
@@ -255,8 +259,9 @@ const Base = () => {
                 onMouseOut={() => setShowInfoTorso(false)}
               >
                 <img
-                  src={selectImgGund(torso)}
-                  className="w-full h-full object-cover object-top rounded-xl"
+                  src={torso ? selectImgGund(torso) : imgBackItem}
+                  alt={`Imagem`}
+                  className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
                 {showInfoTorso && <ItemComponent id={torso} />}
               </div>
@@ -267,8 +272,9 @@ const Base = () => {
                 onMouseOut={() => setShowInfoBoot(false)}
               >
                 <img
-                  src={selectImgGund(boot)}
-                  className="w-full h-full object-cover object-top rounded-xl"
+                  src={boot ? selectImgGund(boot) : imgBackItem}
+                  alt={`Imagem`}
+                  className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
                 {showInfoBoot && <ItemComponent id={boot} />}
               </div>

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import Load from "../Components/LoadingScreen";
 
 const Home = () => {
-  const { userLogin, logout } = useUser();
-  const [characters, setCharacters] = useState([]);
+  const { userLogin, logout } = useUser(); 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
@@ -25,8 +25,7 @@ const Home = () => {
         );
         const data = await res.json();
 
-        if (res.ok) {
-          setCharacters(data.characters);
+        if (res.ok) { 
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -41,7 +40,7 @@ const Home = () => {
     fetchCharacters();
   }, [userLogin, navigate]);
 
-  if (loading) return <div>Carregando...</div>;
+   if (loading) return <Load />;
  
   return (
     <div className="h-full w-full bg-red">

@@ -3,17 +3,21 @@ import gunsImg from "../data/Arma";
 import { useUser } from "../context/UserContext";
 
 const ItemModal = ({ item, onClose }) => {
-  const { userLogin, logout } = useUser();
+  const { userLogin } = useUser();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [vendaIndex, setVendaIndex] = useState(null);
   const [modalMessage, setModalMessage] = useState("");
   const [showResultModal, setShowResultModal] = useState(false);
-  const [responseData, setResponseData] = useState(null);
   const [statusModal, setStatusModal] = useState();
-  const [recarregando, setRecarregando] = useState(false);
   const [selectedItem, setSelectedItem] = useState(item);
   const [nivelItem, setNivelItem] = useState(item.NIVEL);
   const [defItem, setDefItem] = useState(item.DEFESA || item.DEFESSA);
+  const [critItem, setCritItem] = useState(
+    item.USER_ITEM_CRITICO || item.CRITICO
+  );
+  const [mulCritItem, setMulCritItem] = useState(
+    item.USER_ITEM_MULTIPLI_CRITICO || item.MULTIPLO_CRITICO
+  );
 
   useEffect(() => {
     if (!item) return null;
@@ -30,7 +34,6 @@ const ItemModal = ({ item, onClose }) => {
   };
   const handleVender = async () => {
     try {
-      setRecarregando(true);
       const res = await fetch("http://192.168.20.198:5000/vender", {
         method: "POST",
         headers: {
@@ -55,15 +58,11 @@ const ItemModal = ({ item, onClose }) => {
     } finally {
       setShowConfirmModal(false);
       setShowResultModal(true);
-      setTimeout(() => {
-        setRecarregando(false);
-      }, 1000);
+      setTimeout(() => {}, 1000);
     }
   };
   const handleEquipar = async (itemId) => {
     try {
-      setRecarregando(true);
-
       const res = await fetch("http://192.168.20.198:5000/equipar", {
         method: "POST",
         headers: {
@@ -79,15 +78,11 @@ const ItemModal = ({ item, onClose }) => {
     } catch (error) {
       console.error("Erro ao enviar para o back-end:", error);
     } finally {
-      setTimeout(() => {
-        setRecarregando(false);
-      }, 1000);
+      setTimeout(() => {}, 1000);
     }
   };
   const handleBetter = async (itemId) => {
     try {
-      setRecarregando(true);
-
       const res = await fetch("http://192.168.20.198:5000/Better", {
         method: "POST",
         headers: {
@@ -99,19 +94,18 @@ const ItemModal = ({ item, onClose }) => {
       const data = await res.json();
       setSelectedItem(data.items);
       setNivelItem(data.items.NV_ITEM);
-      setDefItem(data.items.DEFESA)
+      setDefItem(data.items.DEFESA);
+      setCritItem(data.items.USER_ITEM_CRITICO);
+      setMulCritItem(data.items.USER_ITEM_MULTIPLI_CRITICO);
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
       }
     } catch (error) {
       console.error("Erro ao enviar para o back-end:", error);
     } finally {
-      setTimeout(() => {
-        setRecarregando(false);
-      }, 1000);
+      setTimeout(() => {}, 1000);
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
       <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 rounded-xl shadow-2xl w-[500px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
@@ -149,12 +143,12 @@ const ItemModal = ({ item, onClose }) => {
             <span>{defItem}</span>
           </li>
           <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Multiplicador Crítico</span>
-            <span>{selectedItem.CRITICO}</span>
+            <span className="font-bold">Crítico</span>
+            <span>{Number(critItem).toFixed(2)}</span>
           </li>
           <li className="flex justify-between border-b border-gray-600 pb-2">
             <span className="font-bold">Multiplicador Crítico</span>
-            <span>{selectedItem.MULTIPLO_CRITICO}</span>
+            <span>{Number(mulCritItem).toFixed(2)}</span>
           </li>
         </ul>
 

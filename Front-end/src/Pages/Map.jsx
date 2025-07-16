@@ -8,6 +8,7 @@ import { tiposMilitares } from "../data/militaryTypes";
 import background from "../Img/Torre.png";
 import Modal from "../Components/Modal";
 import x from "../Img/X.png";
+import Load from "../Components/LoadingScreen";
 
 const Map = () => {
   const [characters, setCharacters] = useState([]);
@@ -15,11 +16,8 @@ const Map = () => {
   const character = characters.length > 0 ? characters[0] : null;
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { userLogin, logout } = useUser();
-  const [battleTurns, setBattleTurns] = useState([]);
-  const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
+  const { userLogin } = useUser();
   const [damageInfo, setDamageInfo] = useState(null);
-  const [aliens, setAliens] = useState([]);
   const [card, setCard] = useState();
   const [playerHP, setPlayerHP] = useState();
   const [enemyHP, setEnemyHP] = useState();
@@ -55,10 +53,10 @@ const Map = () => {
           setEnemyHP(data.enemies.vida);
           setVida(
             data.characters[0].health_points +
-              data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
+              data.characters[0].BOOT_SPELL[0] +
+              data.characters[0].CAPA_SPELL[0] +
+              data.characters[0].TORSO_SPELL[0] +
+              data.characters[0].GUN_SPELL[0]
           );
           setDano(
             data.characters[0].attack_points +
@@ -100,10 +98,10 @@ const Map = () => {
           );
           setPlayerHP(
             data.characters[0].health_points +
-              data.characters[0].BOOT_SPELL[4] +
-              data.characters[0].CAPA_SPELL[4] +
-              data.characters[0].TORSO_SPELL[4] +
-              data.characters[0].GUN_SPELL[4]
+              data.characters[0].BOOT_SPELL[0] +
+              data.characters[0].CAPA_SPELL[0] +
+              data.characters[0].TORSO_SPELL[0] +
+              data.characters[0].GUN_SPELL[0]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
@@ -121,9 +119,8 @@ const Map = () => {
         const res = await fetch("http://192.168.20.198:5000/aliens", {
           headers: { Authorization: `Bearer ${userLogin.token}` },
         });
-        const data = await res.json();
-        
-        if (res.ok) setAliens(data);
+
+        if (res.ok);
       } catch (error) {
         console.error("Erro ao conectar com o servidor");
       }
@@ -157,12 +154,10 @@ const Map = () => {
       });
 
       const data = await response.json();
-      
+
       setMoney(data.money);
       setExp(data.exp);
       setWinner(data.winner);
-      setBattleTurns(data.turns);
-      setCurrentTurnIndex(0);
       processTurn(data.turns, data.enemies);
     } catch (error) {
       console.error("Erro ao iniciar batalha:", error);
@@ -182,8 +177,6 @@ const Map = () => {
       }, 1000);
 
       index++;
-
-      setCurrentTurnIndex(index);
 
       if (turnoAtual.source === "enemy") {
         setPlayerHP((prevHP) => prevHP - turnoAtual.dano);
@@ -210,6 +203,8 @@ const Map = () => {
 
   if (loading || !character) return <div>Carregando...</div>;
   const maxhealth = vida;
+
+  if (loading) return <Load />;
 
   return (
     <div
@@ -260,6 +255,7 @@ const Map = () => {
           <div className="w-80 h-80 mx-auto rounded-lg overflow-hidden shadow-xl">
             <img
               src={getMilitaryImage(character.tipo_id)}
+              alt="n"
               className="w-full h-full object-cover object-top"
             />
           </div>
