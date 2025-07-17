@@ -60,7 +60,6 @@ const Navbar = () => {
           setMoney(data.characters[0].money);
           setTool(data.characters[0].SCRAP);
           setVida(
-            
             data.characters[0].BOOT_SPELL[0] +
               data.characters[0].CAPA_SPELL[0] +
               data.characters[0].TORSO_SPELL[0] +
@@ -72,17 +71,13 @@ const Navbar = () => {
               data.characters[0].TORSO_SPELL[1] +
               data.characters[0].GUN_SPELL[1]
           );
-          setCrit(
-            [
-              data.characters[0].BOOT_SPELL[2],
-              data.characters[0].CAPA_SPELL[2],
-              data.characters[0].TORSO_SPELL[2],
-              data.characters[0].GUN_SPELL[2],
-            ]
-              .map((value) => parseFloat(value) || 0)
-              .reduce((acc, curr) => acc + curr, 0)
+          setDefessa(
+            data.characters[0].BOOT_SPELL[2] +
+              data.characters[0].CAPA_SPELL[2] +
+              data.characters[0].TORSO_SPELL[2] +
+              data.characters[0].GUN_SPELL[2]
           );
-          setCritMultiplo(
+          setCrit(
             [
               data.characters[0].BOOT_SPELL[3],
               data.characters[0].CAPA_SPELL[3],
@@ -91,14 +86,17 @@ const Navbar = () => {
             ]
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
-              .toFixed(2)
           );
-
-          setDefessa(
-            data.characters[0].BOOT_SPELL[2] +
-              data.characters[0].CAPA_SPELL[2] +
-              data.characters[0].TORSO_SPELL[2] +
-              data.characters[0].GUN_SPELL[2]
+          setCritMultiplo(
+            [
+              data.characters[0].BOOT_SPELL[4],
+              data.characters[0].CAPA_SPELL[4],
+              data.characters[0].TORSO_SPELL[4],
+              data.characters[0].GUN_SPELL[4],
+            ]
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
+              .toFixed(2)
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);

@@ -20,6 +20,42 @@ router.get("/", authMiddleware, async (req, res) => {
     itensUser.forEach((item) => {
       itensMap[item.ID_ITEM] = item;
     });
+    const VIDA_TOTAL =
+      characters[0].health_points +
+      characters[0].BOOT_SPELL[0] +
+      characters[0].GUN_SPELL[0] +
+      characters[0].TORSO_SPELL[0] +
+      characters[0].CAPA_SPELL[0];
+    const DANO_TOTAL =
+      characters[0].attack_points +
+      characters[0].BOOT_SPELL[1] +
+      characters[0].GUN_SPELL[1] +
+      characters[0].TORSO_SPELL[1] +
+      characters[0].CAPA_SPELL[1];
+    const DEFESA_TOTAL =
+      characters[0].defense_points +
+      characters[0].BOOT_SPELL[2] +
+      characters[0].GUN_SPELL[2] +
+      characters[0].TORSO_SPELL[2] +
+      characters[0].CAPA_SPELL[2];
+    const CRITICO_TOTAL =
+      +characters[0].crit_chance +
+      +characters[0].BOOT_SPELL[3] +
+      +characters[0].GUN_SPELL[3] +
+      +characters[0].TORSO_SPELL[3] +
+      +characters[0].CAPA_SPELL[3];
+    const MULT_CRITICO_TOTAL =
+      +characters[0].crit_multiplier +
+      +characters[0].BOOT_SPELL[4] +
+      +characters[0].GUN_SPELL[4] +
+      +characters[0].TORSO_SPELL[4] +
+      +characters[0].CAPA_SPELL[4];
+
+    characters[0].VIDA_TOTAL = VIDA_TOTAL;
+    characters[0].DANO_TOTAL = DANO_TOTAL;
+    characters[0].DEFESA_TOTAL = DEFESA_TOTAL;
+    characters[0].CRITICO_TOTAL = CRITICO_TOTAL;
+    characters[0].MULT_CRITICO_TOTAL = MULT_CRITICO_TOTAL;
 
     const gunsMescladas = guns.map((gun) => {
       const itemUser = itensMap[gun.ID];
@@ -29,7 +65,7 @@ router.get("/", authMiddleware, async (req, res) => {
           ...gun,
           NIVEL: itemUser.NV_ITEM,
           DANO: itemUser.DANO,
-          VIDA: itemUser.VIDA,
+          VIDA: itemUser.USER_ITEM_VIDA,
           DEFESA: itemUser.DEFESA,
           CRITICO: itemUser.USER_ITEM_CRITICO.toString(),
           MULTIPLO_CRITICO: itemUser.USER_ITEM_MULTIPLI_CRITICO.toString(),
@@ -45,7 +81,7 @@ router.get("/", authMiddleware, async (req, res) => {
     const alienIds =
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);
-    
+
     res.json({ characters, enemies, guns, gunsMescladas });
   } catch (error) {
     res.status(500).json({ message: "Erro interno ao buscar personagens." });

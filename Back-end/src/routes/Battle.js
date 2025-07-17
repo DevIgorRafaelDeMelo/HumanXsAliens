@@ -9,7 +9,7 @@ router.post("/", authMiddleware, async (req, res) => {
   let money = 1000;
   try {
     const { characterId, enemyIds } = req.body;
-    
+
     if (!characterId || !enemyIds) {
       return res
         .status(400)
@@ -18,7 +18,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
     const character = await getCharacterById(characterId);
     let enemies = await getEnemiesByIds(enemyIds);
-
+    console.log(character);
     const battleResult = await simulateBattle(character, enemies, exp, money);
     const { turns, winner } = battleResult;
     if (winner === "player") {
@@ -43,7 +43,6 @@ router.post("/", authMiddleware, async (req, res) => {
 
 const simulateBattle = async (character, enemy, exp, money) => {
   const initialEnemyHP = enemy.vida;
-  
 
   const lifeTotal =
     character.health_points +
@@ -57,6 +56,12 @@ const simulateBattle = async (character, enemy, exp, money) => {
     character.CAPA_SPELL[1] +
     character.TORSO_SPELL[1] +
     character.GUN_SPELL[1];
+  const defessa =
+    character.defense_points +
+    character.BOOT_SPELL[2] +
+    character.CAPA_SPELL[2] +
+    character.TORSO_SPELL[2] +
+    character.GUN_SPELL[2];
   const danoCrit =
     parseFloat(character.crit_chance) +
     parseFloat(character.BOOT_SPELL[3]) +
@@ -70,17 +75,11 @@ const simulateBattle = async (character, enemy, exp, money) => {
     parseFloat(character.CAPA_SPELL[4]) +
     parseFloat(character.TORSO_SPELL[4]) +
     parseFloat(character.GUN_SPELL[4]);
-  const defessa =
-    character.defense_points +
-    character.BOOT_SPELL[2] +
-    character.CAPA_SPELL[2] +
-    character.TORSO_SPELL[2] +
-    character.GUN_SPELL[2];
 
   let playerHP = lifeTotal;
   let enemyHP = initialEnemyHP;
   const turns = [];
-
+  console.log(danoTotal);
   while (playerHP > 0 && enemyHP > 0) {
     const variationFactor = Math.random() * 0.2 - 0.1;
 
@@ -111,7 +110,7 @@ const simulateBattle = async (character, enemy, exp, money) => {
 
   let winner;
   if (playerHP > 0) {
-    winner = "player"; 
+    winner = "player";
     await db.execute(
       "UPDATE characters SET alien_id = alien_id + 1 WHERE user_id = ?",
       [character.user_id]

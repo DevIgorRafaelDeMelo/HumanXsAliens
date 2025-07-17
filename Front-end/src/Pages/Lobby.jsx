@@ -35,7 +35,7 @@ const Lobby = () => {
             Authorization: `Bearer ${userLogin.token}`,
           },
         });
-        const data = await res.json();
+        const data = await res.json(); 
         if (res.ok) {
           setCharacters(data.characters);
           setGuns(data.guns);

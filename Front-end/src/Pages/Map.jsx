@@ -60,25 +60,21 @@ const Map = () => {
           );
           setDano(
             data.characters[0].attack_points +
-              data.characters[0].BOOT_SPELL[0] +
-              data.characters[0].CAPA_SPELL[0] +
-              data.characters[0].TORSO_SPELL[0] +
-              data.characters[0].GUN_SPELL[0]
+              data.characters[0].BOOT_SPELL[1] +
+              data.characters[0].CAPA_SPELL[1] +
+              data.characters[0].TORSO_SPELL[1] +
+              data.characters[0].GUN_SPELL[1]
+          );
+          setDefessa(
+            data.characters[0].defense_points +
+              data.characters[0].BOOT_SPELL[2] +
+              data.characters[0].CAPA_SPELL[2] +
+              data.characters[0].TORSO_SPELL[2] +
+              data.characters[0].GUN_SPELL[2]
           );
           setCrit(
             [
               data.characters[0].crit_chance,
-              data.characters[0].BOOT_SPELL[2],
-              data.characters[0].CAPA_SPELL[2],
-              data.characters[0].TORSO_SPELL[2],
-              data.characters[0].GUN_SPELL[2],
-            ]
-              .map((value) => parseFloat(value) || 0)
-              .reduce((acc, curr) => acc + curr, 0)
-          );
-          setCritMultiplo(
-            [
-              data.characters[0].crit_multiplier,
               data.characters[0].BOOT_SPELL[3],
               data.characters[0].CAPA_SPELL[3],
               data.characters[0].TORSO_SPELL[3],
@@ -86,16 +82,20 @@ const Map = () => {
             ]
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
+          );
+          setCritMultiplo(
+            [
+              data.characters[0].crit_multiplier,
+              data.characters[0].BOOT_SPELL[4],
+              data.characters[0].CAPA_SPELL[4],
+              data.characters[0].TORSO_SPELL[4],
+              data.characters[0].GUN_SPELL[4],
+            ]
+              .map((value) => parseFloat(value) || 0)
+              .reduce((acc, curr) => acc + curr, 0)
               .toFixed(2)
           );
 
-          setDefessa(
-            data.characters[0].defense_points +
-              data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
-          );
           setPlayerHP(
             data.characters[0].health_points +
               data.characters[0].BOOT_SPELL[0] +

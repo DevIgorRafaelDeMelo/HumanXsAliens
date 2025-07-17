@@ -105,6 +105,12 @@ const Base = () => {
               data.characters[0].TORSO_SPELL[1] +
               data.characters[0].GUN_SPELL[1]
           );
+          setDefessa(
+            data.characters[0].BOOT_SPELL[2] +
+              data.characters[0].CAPA_SPELL[2] +
+              data.characters[0].TORSO_SPELL[2] +
+              data.characters[0].GUN_SPELL[2]
+          );
           setCrit(
             [
               data.characters[0].BOOT_SPELL[3],
@@ -125,12 +131,6 @@ const Base = () => {
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
               .toFixed(2)
-          );
-          setDefessa(
-            data.characters[0].BOOT_SPELL[2] +
-              data.characters[0].CAPA_SPELL[2] +
-              data.characters[0].TORSO_SPELL[2] +
-              data.characters[0].GUN_SPELL[2]
           );
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);

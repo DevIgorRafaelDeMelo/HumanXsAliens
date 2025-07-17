@@ -18,7 +18,7 @@ const Torre = () => {
     async function fetchCharacters() {
       try {
         const res = await fetch(
-          `http://localhost:5000/characters?user_id=${userLogin.id}`,
+          `http://192.168.20.198:5000/characters?user_id=${userLogin.id}`,
           {
             headers: { Authorization: `Bearer ${userLogin.token}` },
           }
@@ -40,7 +40,7 @@ const Torre = () => {
 
     async function fetchAliens() {
       try {
-        const res = await fetch("http://localhost:5000/aliens", {
+        const res = await fetch("http://192.168.20.198:5000/aliens", {
           headers: {
             Authorization: `Bearer ${userLogin.token}`,
           },

@@ -53,28 +53,28 @@ const CharacterCard = ({ onCharacterCreated, user }) => {
       {
         id: 5,
         name: "Fuzileiro",
-        image: FUZ2, // Substitua pela imagem correspondente
+        image: FUZ2, 
         description:
           "Soldada especializada em operações terrestres e aquáticas.",
       },
       {
         id: 6,
         name: "Atiradora",
-        image: ATR2, // Substitua pela imagem correspondente
+        image: ATR2, 
         description:
           "Especialista em disparos de precisão e combate à distância.",
       },
       {
         id: 7,
         name: "Paramédica",
-        image: MED2, // Substitua pela imagem correspondente
+        image: MED2, 
         description:
           "Responsável pelo suporte médico e resgate no campo de batalha.",
       },
       {
         id: 8,
         name: "Engenheira",
-        image: ENG2, // Substitua pela imagem correspondente
+        image: ENG2,  
         description:
           "Especialista em construção, manutenção e desativação de armadilhas.",
       },
