@@ -32,6 +32,7 @@ router.post("/", authMiddleware, async (req, res) => {
             WHERE user_id = ?`,
         [updateTotalMoney, updateTotalScrap, userId]
       );
+
       const vel = (
         parseFloat(item.CRITICO) +
         parseFloat(item.CRITICO) * nivelItem
@@ -41,17 +42,18 @@ router.post("/", authMiddleware, async (req, res) => {
         parseFloat(item.MULTIPLO_CRITICO) +
         parseFloat(item.MULTIPLO_CRITICO) * nivelItem
       ).toFixed(2);
+      console.log(item);
       await db.query(
         `INSERT INTO ItemUser (
-        ID_USER, ID_ITEM, NV_ITEM, VIDA, DEFESA, CRITICO, MULTIPLI_CRITICO, DANO
+        ID_USER, ID_ITEM, NV_ITEM, USER_ITEM_VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
             NV_ITEM = NV_ITEM + 1,
-            VIDA = VALUES(VIDA),
+            USER_ITEM_VIDA = VALUES(USER_ITEM_VIDA),
             DEFESA = VALUES(DEFESA),
-            CRITICO = VALUES(CRITICO),
-            MULTIPLI_CRITICO = VALUES(MULTIPLI_CRITICO),
+            USER_ITEM_CRITICO = VALUES(USER_ITEM_CRITICO),
+            USER_ITEM_MULTIPLI_CRITICO = VALUES(USER_ITEM_MULTIPLI_CRITICO),
             DANO = VALUES(DANO)`,
         [
           userId,
@@ -64,13 +66,11 @@ router.post("/", authMiddleware, async (req, res) => {
           item.DANO + item.DANO * nivelItem,
         ]
       );
-
       const newItem = await getItenUserById(userId, itemId);
       const objetoFinal = {
         ...item,
         ...newItem["0"],
       };
-
       let queryUpdate = "";
       let valuesUpdate = [];
       let querySpell = "";
@@ -127,7 +127,7 @@ router.post("/", authMiddleware, async (req, res) => {
         items: objetoFinal,
       });
     } else {
-      return res.json({ message: "Recursos insuficiente" });
+      return res.json({ items: objetoFinal });
     }
   } catch (err) {
     return res.status(500).json({ message: "Erro ao selecionar arma." });

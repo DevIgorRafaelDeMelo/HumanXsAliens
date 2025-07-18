@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import gunsImg from "../data/Arma";
 import { useUser } from "../context/UserContext";
+import { GiToolbox } from "react-icons/gi";
+import { FaDollarSign } from "react-icons/fa";
 
 const ItemModal = ({ item, onClose }) => {
+  const [characters, setCharacters] = useState([]);
   const { userLogin } = useUser();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [vendaIndex, setVendaIndex] = useState(null);
@@ -10,8 +13,11 @@ const ItemModal = ({ item, onClose }) => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [statusModal, setStatusModal] = useState();
   const [selectedItem, setSelectedItem] = useState(item);
-  const [nivelItem, setNivelItem] = useState(item.NIVEL);
+  const [moneyUser, setMoneyUser] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nivelItem, setNivelItem] = useState(item.NV_ITEM || item.NIVEL);
   const [defItem, setDefItem] = useState(item.DEFESA || item.DEFESSA);
+  const [vidaItem, setVidaItem] = useState(item.USER_ITEM_VIDA || item.VIDA);
   const [critItem, setCritItem] = useState(
     item.USER_ITEM_CRITICO || item.CRITICO
   );
@@ -22,6 +28,31 @@ const ItemModal = ({ item, onClose }) => {
   useEffect(() => {
     if (!item) return null;
   }, [item]);
+
+  useEffect(() => {
+    async function fetchCharacters() {
+      try {
+        const res = await fetch(`http://192.168.20.198:5000/characters`, {
+          headers: {
+            Authorization: `Bearer ${userLogin.token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        setMoneyUser(data.characters[0].money);
+
+        if (res.ok) {
+          setCharacters(data.characters);
+        } else {
+          alert(`Erro ao buscar personagens: ${data.message}`);
+        }
+      } catch (error) {
+        alert("Erro ao conectar com o servidor.");
+        console.error("Erro de conexão:", error);
+      }
+    }
+    fetchCharacters();
+  }, [userLogin]);
 
   const confirmarVenda = (index) => {
     setVendaIndex(index);
@@ -97,6 +128,7 @@ const ItemModal = ({ item, onClose }) => {
       setDefItem(data.items.DEFESA);
       setCritItem(data.items.USER_ITEM_CRITICO);
       setMulCritItem(data.items.USER_ITEM_MULTIPLI_CRITICO);
+      setVidaItem(data.items.USER_ITEM_VIDA);
       if (!res.ok) {
         throw new Error("Erro ao equipar o item!");
       }
@@ -108,73 +140,78 @@ const ItemModal = ({ item, onClose }) => {
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-      <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 rounded-xl shadow-2xl w-[500px] flex flex-col items-center space-y-6 border-2 border-cyan-500">
-        <div className="relative top-4 left-4 bg-cyan-700 text-white font-bold px-3 py-1 rounded-md shadow-md text-sm">
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-auto flex flex-col items-center space-y-6 border-2 border-cyan-500 relative overflow-hidden">
+        {/* Nível */}
+        <div className="absolute top-4 left-4 bg-cyan-600 text-white font-semibold px-3 py-1 rounded-full shadow text-xs uppercase tracking-wide">
           Nível {nivelItem}
         </div>
 
-        <h2 className="text-cyan-300 text-3xl font-extrabold tracking-wider shadow-md">
+        {/* Nome do item */}
+        <h2 className="text-cyan-300 text-3xl font-bold tracking-wide shadow-sm text-center">
           {selectedItem.NOME}
         </h2>
 
+        {/* Imagem */}
         <img
           src={selectImgGund(selectedItem.ID)}
           alt={selectedItem.nome}
-          className="w-40 h-40 border-4 border-cyan-500 rounded-lg shadow-lg transform hover:scale-105 transition duration-300"
+          className="w-40 h-40 border-4 border-cyan-500 rounded-xl shadow-xl transform hover:scale-110 transition duration-300"
         />
+
+        {/* Botão Melhorar */}
         <button
-          className="  mt-4 px-6 bg-green-600 hover:bg-green-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
-          onClick={() => handleBetter(selectedItem.ID)}
+          className="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-5 py-3 rounded-lg shadow-lg transition"
+          onClick={() => setIsModalOpen(true)}
         >
           Melhorar
         </button>
 
-        <ul className="  from-gray-800 via-black to-gray-900 p-6 rounded-xl w-full space-y-4 text-gray-300">
-          <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Vida</span>
-            <span>{selectedItem.VIDA}</span>
-          </li>
-          <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Ataque</span>
-            <span>{selectedItem.DANO}</span>
-          </li>
-          <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Defesa</span>
-            <span>{defItem}</span>
-          </li>
-          <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Crítico</span>
-            <span>{Number(critItem).toFixed(2)}</span>
-          </li>
-          <li className="flex justify-between border-b border-gray-600 pb-2">
-            <span className="font-bold">Multiplicador Crítico</span>
-            <span>{Number(mulCritItem).toFixed(2)}</span>
-          </li>
+        {/* Status do item */}
+        <ul className="bg-gray-900 bg-opacity-70 p-6 rounded-xl w-full space-y-3 text-gray-300 shadow-inner border border-gray-700">
+          {[
+            ["Vida", vidaItem],
+            ["Ataque", selectedItem.DANO],
+            ["Defesa", defItem],
+            ["Crítico", Number(critItem).toFixed(2)],
+            ["Multiplicador Crítico", Number(mulCritItem).toFixed(2)],
+          ].map(([label, value]) => (
+            <li
+              key={label}
+              className="flex justify-between items-center border-b border-gray-600 pb-2 text-sm"
+            >
+              <span className="font-bold text-white">{label}</span>
+              <span>{value}</span>
+            </li>
+          ))}
         </ul>
 
+        {/* Botão de fechar */}
+
         <button
-          className="absolute top-10 right-10 text-white bg-red-600 hover:bg-red-700 font-bold rounded-full w-8 h-8 flex items-center justify-center shadow-md"
+          className="absolute top-4 right-4 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-full w-8 h-8 flex items-center justify-center shadow-md transition"
           onClick={onClose}
         >
           ✕
         </button>
 
-        <button
-          className="w-full mt-4 bg-cyan-600 hover:bg-cyan-400 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
-          onClick={() => {
-            handleEquipar(selectedItem.ID);
-            onClose();
-          }}
-        >
-          Equipar
-        </button>
-
-        <button
-          className="w-full mt-4 bg-red-600 hover:bg-red-700 text-xl font-bold p-4 rounded-md shadow-lg transition-transform transform hover:scale-105"
-          onClick={() => confirmarVenda(item.ID)}
-        >
-          Vender
-        </button>
+        {/* Ações finais */}
+        <div className="flex flex-col w-full space-y-4 mt-4">
+          <button
+            className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-lg py-3 rounded-md shadow-lg transition hover:scale-105"
+            onClick={() => {
+              handleEquipar(selectedItem.ID);
+              onClose();
+            }}
+          >
+            Equipar
+          </button>
+          <button
+            className="bg-red-600 hover:bg-red-700 text-white font-semibold text-lg py-3 rounded-md shadow-lg transition hover:scale-105"
+            onClick={() => confirmarVenda(item.ID)}
+          >
+            Vender
+          </button>
+        </div>
       </div>
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
@@ -197,6 +234,83 @@ const ItemModal = ({ item, onClose }) => {
                 Confirmar Venda
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white px-8 py-10 rounded-2xl shadow-2xl w-full max-w-md border border-cyan-600 relative">
+            {/* Título */}
+            <h3 className="text-3xl font-extrabold mb-6 text-cyan-400 text-center tracking-wide drop-shadow">
+              Melhoria do Item
+            </h3>
+
+            {/* Informações de custo */}
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="flex items-center gap-2">
+                <FaDollarSign className="h-6 w-6 text-green-400" />
+                <p className="text-base text-gray-300 font-medium">
+                  Preço em moedas:{" "}
+                  <span className="text-white font-bold">
+                    {(
+                      1230 * selectedItem.NV_ITEM || 1230 * item.NIVEL
+                    ).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaDollarSign className="h-6 w-6 text-green-400" />
+                <p className="text-base text-gray-300 font-medium">
+                  Voçe tem:{" "}
+                  <span className="text-white font-bold">
+                    {moneyUser.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <GiToolbox className="h-6 w-6 text-blue-400" />
+                <p className="text-base text-gray-300 font-medium">
+                  Custo técnico:{" "}
+                  <span className="text-white font-bold">
+                    {895 * selectedItem.NV_ITEM || 895 * item.NIVEL}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Botões de ação */}
+            <div className="flex justify-center gap-6 mt-8">
+              <button
+                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition-transform hover:scale-105"
+                onClick={() => {
+                  handleBetter(selectedItem.ID);
+                  setIsModalOpen(false);
+                }}
+              >
+                Confirmar
+              </button>
+
+              <button
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md transition-transform hover:scale-105"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+
+            {/* Botão de fechar */}
+            <button
+              className="absolute top-4 right-4 bg-gray-700 hover:bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md transition"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

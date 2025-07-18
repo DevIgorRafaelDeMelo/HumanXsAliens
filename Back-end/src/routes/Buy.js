@@ -25,19 +25,19 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Dinheiro insuficiente." });
     }
 
-    if (rowsS.length === 0) { 
+    if (rowsS.length === 0) {
       const vel = parseFloat(iten.CRITICO).toFixed(2);
 
       const vel1 = parseFloat(iten.MULTIPLO_CRITICO).toFixed(2);
 
       await db.query(
         `INSERT INTO ItemUser (
-        ID_USER, ID_ITEM, NV_ITEM, VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
+        ID_USER, ID_ITEM, NV_ITEM, USER_ITEM_VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
             NV_ITEM = NV_ITEM + 1,
-            VIDA = VALUES(VIDA),
+            USER_ITEM_VIDA = VALUES(USER_ITEM_VIDA),
             DEFESA = VALUES(DEFESA),
             USER_ITEM_CRITICO = VALUES(USER_ITEM_CRITICO),
             USER_ITEM_MULTIPLI_CRITICO = VALUES(USER_ITEM_MULTIPLI_CRITICO),
@@ -70,12 +70,11 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.json({ message: "Arma adicionada ao depósito com sucesso." });
     }
 
-    if (rowsS.length >= 1) { 
+    if (rowsS.length >= 1) {
       const characters = rows[0];
       const depositoAtual = characters.DEPOSITO
         ? JSON.parse(characters.DEPOSITO)
         : [];
-
       depositoAtual.push(gunId);
 
       const novoSaldo = characters.money - iten.PRECO;

@@ -59,41 +59,16 @@ const Navbar = () => {
           setCharacters(data.characters);
           setMoney(data.characters[0].money);
           setTool(data.characters[0].SCRAP);
-          setVida(
-            data.characters[0].BOOT_SPELL[0] +
-              data.characters[0].CAPA_SPELL[0] +
-              data.characters[0].TORSO_SPELL[0] +
-              data.characters[0].GUN_SPELL[0]
-          );
-          setDano(
-            data.characters[0].BOOT_SPELL[1] +
-              data.characters[0].CAPA_SPELL[1] +
-              data.characters[0].TORSO_SPELL[1] +
-              data.characters[0].GUN_SPELL[1]
-          );
-          setDefessa(
-            data.characters[0].BOOT_SPELL[2] +
-              data.characters[0].CAPA_SPELL[2] +
-              data.characters[0].TORSO_SPELL[2] +
-              data.characters[0].GUN_SPELL[2]
-          );
+          setVida(data.characters[0].VIDA_TOTAL);
+          setDano(data.characters[0].DANO_TOTAL);
+          setDefessa(data.characters[0].DEFESA_TOTAL);
           setCrit(
-            [
-              data.characters[0].BOOT_SPELL[3],
-              data.characters[0].CAPA_SPELL[3],
-              data.characters[0].TORSO_SPELL[3],
-              data.characters[0].GUN_SPELL[3],
-            ]
+            [data.characters[0].CRITICO_TOTAL]
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
           );
           setCritMultiplo(
-            [
-              data.characters[0].BOOT_SPELL[4],
-              data.characters[0].CAPA_SPELL[4],
-              data.characters[0].TORSO_SPELL[4],
-              data.characters[0].GUN_SPELL[4],
-            ]
+            [data.characters[0].MULT_CRITICO_TOTAL]
               .map((value) => parseFloat(value) || 0)
               .reduce((acc, curr) => acc + curr, 0)
               .toFixed(2)
@@ -164,7 +139,7 @@ const Navbar = () => {
 
         {/* Imagem do Personagem */}
         <div className="relative">
-          <div className="relative w-40 h-40 overflow-hidden shadow-xl">
+          <div className="relative w-24 h-32 overflow-hidden shadow-xl">
             <img
               src={getMilitaryImage(character.tipo_id)}
               alt={character?.name}
@@ -192,8 +167,7 @@ const Navbar = () => {
               className="h-4 bg-red-500 rounded-full"
             />
             <p className="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
-              {vida + character?.health_points} /
-              {vida + character?.health_points} HP
+              {vida} /{vida} HP
             </p>
           </div>
 
@@ -213,21 +187,21 @@ const Navbar = () => {
           {/* Atributos do Personagem */}
           <div className="grid grid-cols-2 gap-2 mt-3 text-white text-sm font-semibold">
             <p className="flex items-center gap-2">
-              <AiOutlineThunderbolt className="text-red-400" />
-              MC:
-              {critMultiplo + character?.crit_multiplier}
-            </p>
-            <p className="flex items-center gap-2">
               <GiCrossedSwords className="text-orange-400" />
-              ATK: {dano + character?.attack_points}
-            </p>
-            <p className="flex items-center gap-2">
-              <AiOutlineThunderbolt className="text-yellow-400" />
-              CC: {crit + character?.crit_chance}%
+              ATK: {dano}
             </p>
             <p className="flex items-center gap-2">
               <GiShield className="text-blue-400" />
-              DEF: {defessa + character?.defense_points}
+              DEF: {defessa}
+            </p>
+            <p className="flex items-center gap-2">
+              <AiOutlineThunderbolt className="text-yellow-400" />
+              CC: {crit}%
+            </p>
+            <p className="flex items-center gap-2">
+              <AiOutlineThunderbolt className="text-red-400" />
+              MC:
+              {critMultiplo}
             </p>
           </div>
         </div>

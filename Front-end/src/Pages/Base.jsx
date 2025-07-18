@@ -319,22 +319,26 @@ const Base = () => {
                   return (
                     <li
                       key={index}
-                      className="relative flex flex-col items-center shadow-lg transition-transform duration-200 p-3 bg-gray-800 rounded-lg border hover:bg-gray-700 cursor-pointer h-40"
+                      className="relative flex flex-col items-center shadow-xl transition-transform duration-300 transform  p-4 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 rounded-xl border border-gray-600 cursor-pointer h-44"
                       onClick={() => setSelectedItem(item)}
                     >
-                      <div className="relative w-20 h-20 flex items-center bg-gray-700 rounded-md p-2 shadow-md">
+                      {/* Imagem e quantidade */}
+                      <div className="relative w-20 h-20 flex items-center justify-center bg-gray-900 rounded-lg p-2 shadow-inner">
                         <img
                           src={selectImgGund(item.ID)}
                           alt={item.NOME}
-                          className="w-full h-full object-contain rounded"
+                          className="w-full h-full object-contain rounded-md"
                         />
-
-                        <span className="absolute top-0 right-0 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                          {quantidade}
-                        </span>
                       </div>
-
-                      <p className="mt-2 text-cyan-300 text-lg font-semibold text-center">
+                      {/* Nível */}
+                      <p className="absolute top-2 left-2 bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 z-1 rounded shadow">
+                        Nível {item.NIVEL}
+                      </p>
+                      <span className="absolute bottom-0 right-0 text-stone-300 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md ">
+                        Qtd:{quantidade}
+                      </span>
+                      {/* Nome do item */}
+                      <p className="mt-3 text-center text-cyan-300 text-base font-bold tracking-wide">
                         {item.NOME}
                       </p>
                     </li>
