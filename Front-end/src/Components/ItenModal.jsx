@@ -13,7 +13,8 @@ const ItemModal = ({ item, onClose }) => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [statusModal, setStatusModal] = useState();
   const [selectedItem, setSelectedItem] = useState(item);
-  const [moneyUser, setMoneyUser] = useState();
+  const [update, setUpdate] = useState();
+  const [modalUpdate, setModalUpdate] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [nivelItem, setNivelItem] = useState(item.NV_ITEM || item.NIVEL);
   const [defItem, setDefItem] = useState(item.DEFESA || item.DEFESSA);
@@ -39,7 +40,6 @@ const ItemModal = ({ item, onClose }) => {
           },
         });
         const data = await res.json();
-        setMoneyUser(data.characters[0].money);
 
         if (res.ok) {
           setCharacters(data.characters);
@@ -123,6 +123,8 @@ const ItemModal = ({ item, onClose }) => {
         body: JSON.stringify({ id: itemId }),
       });
       const data = await res.json();
+      console.log(data);
+      setUpdate(data.Update);
       setSelectedItem(data.items);
       setNivelItem(data.items.NV_ITEM);
       setDefItem(data.items.DEFESA);
@@ -262,18 +264,6 @@ const ItemModal = ({ item, onClose }) => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <FaDollarSign className="h-6 w-6 text-green-400" />
-                <p className="text-base text-gray-300 font-medium">
-                  Voçe tem:{" "}
-                  <span className="text-white font-bold">
-                    {moneyUser.toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
                 <GiToolbox className="h-6 w-6 text-blue-400" />
                 <p className="text-base text-gray-300 font-medium">
                   Custo técnico:{" "}
@@ -289,8 +279,11 @@ const ItemModal = ({ item, onClose }) => {
               <button
                 className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition-transform hover:scale-105"
                 onClick={() => {
-                  handleBetter(selectedItem.ID);
+                  const resultado = handleBetter(selectedItem.ID); // Se handleBetter retorna resultado sincrono
+
+                  setUpdate(resultado); // Ou atualize via callback, dependendo da lógica interna
                   setIsModalOpen(false);
+                  setModalUpdate(true);
                 }}
               >
                 Confirmar
@@ -329,6 +322,110 @@ const ItemModal = ({ item, onClose }) => {
               }}
             >
               Fechar
+            </button>
+          </div>
+        </div>
+      )}
+      {modalUpdate && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white px-8 py-10 rounded-2xl shadow-2xl w-full max-w-md border border-cyan-600 flex flex-col items-center space-y-6">
+            {/* Título do status */}
+            <h3 className="text-2xl font-extrabold text-center tracking-wide drop-shadow text-cyan-400">
+              {update ? "New Nivel" : "Falha"}
+            </h3>
+
+            {/* Ícone e Mensagem */}
+            <div className="flex flex-col items-center space-y-4">
+              {update ? (
+                <>
+                  <p className="text-base text-gray-300 font-medium text-center">
+                    O item foi aprimorado com sucesso! Veja os dados atualizados
+                    abaixo:
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-base text-gray-300 font-medium text-center">
+                    Não foi possível aplicar a melhoria no item. Tente
+                    novamente.
+                  </p>
+                </>
+              )}
+            </div>
+
+            {/* Dados Atualizados */}
+            {update && (
+              <div className="relative text-sm text-gray-200 rounded-2xl p-6 w-full space-y-6">
+                {/* Nível no canto superior direito */}
+                <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-5xl font-black  drop-shadow-xl animate-pulse z-10">
+                  NV {selectedItem.NV_ITEM}
+                </div>
+
+                {/* Imagem do item com moldura especial */}
+                <div className="relative flex justify-center">
+                  <img
+                    src={selectImgGund(selectedItem.ID)}
+                    alt={selectedItem.NOME}
+                    className="w-44 h-44 border-4 border-cyan-500 rounded-xl shadow-2xl transform hover:scale-105 transition duration-300"
+                  />
+                </div>
+
+                {/* Nome do personagem */}
+                <h4 className="text-xl text-center font-bold text-cyan-400 uppercase tracking-wide">
+                  {characters.name}
+                </h4>
+
+                {/* Informações do item */}
+                <div className="text-center space-y-1">
+                  <p className="text-gray-300">Item Atualizado:</p>
+                  <p className="text-lg font-semibold text-white">
+                    {selectedItem.NOME} —{" "}
+                    <span className="text-cyan-300">
+                      {selectedItem.CATEGORIA}
+                    </span>
+                  </p>
+                </div>
+
+                {/* Atributos do item com destaque em fundo sutil */}
+                <div className="grid grid-cols-2 gap-4 mt-2 bg-gray-800/60 p-4 rounded-xl shadow-inner text-sm text-gray-100">
+                  <div>
+                    🗡️ <span className="font-bold">Dano:</span>{" "}
+                    {selectedItem.DANO}
+                  </div>
+                  <div>
+                    🛡️ <span className="font-bold">Defesa:</span>{" "}
+                    {selectedItem.DEFESA}
+                  </div>
+                  <div>
+                    💥 <span className="font-bold">Crítico:</span>{" "}
+                    {selectedItem.CRITICO}
+                  </div>
+                  <div>
+                    🎯 <span className="font-bold">Mult. Crítico:</span>{" "}
+                    {selectedItem.MULTIPLO_CRITICO}
+                  </div>
+                  <div>
+                    🏷️ <span className="font-bold">Tier:</span>{" "}
+                    {selectedItem.TIER}
+                  </div>
+                  <div>
+                    📈 <span className="font-bold">Nível:</span>{" "}
+                    {selectedItem.NV_ITEM}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Botão de confirmação */}
+            <button
+              className={`px-6 py-2 font-bold rounded-lg shadow-md transition-transform hover:scale-105 ${
+                update
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-red-600 hover:bg-red-700"
+              }`}
+              onClick={() => setModalUpdate(false)}
+            >
+              Confirmar
             </button>
           </div>
         </div>

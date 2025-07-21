@@ -28,12 +28,10 @@ const Base = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
-  const [showInfoArma, setShowInfoArma] = useState(false);
-  const [showInfoTorso, setShowInfoTorso] = useState(false);
-  const [showInfoCapa, setShowInfoCapa] = useState(false);
-  const [showInfoBoot, setShowInfoBoot] = useState(false);
   const [guns, setGuns] = useState();
   const [itemEquip, setItemEquip] = useState([]);
+  const [selectedItems, setSelectedItems] = useState();
+  const itemSelecionado = itens.find((item) => item.ID === selectedItems);
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -162,36 +160,6 @@ const Base = () => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
-  const ItemComponent = ({ id }) => {
-    const item = guns.find((gun) => gun.ID === id);
-
-    if (!item) {
-      return <p className="text-red-500 font-bold">Item não encontrado!</p>;
-    }
-
-    return (
-      <div className="p-3 bg-gray-900 text-white rounded-lg shadow-lg border-2 border-cyan-500 w-[200px] h-[200px] z-50 font-bold text-sm tracking-wide">
-        <p className="text-lg font-bold text-cyan-400">{item.NOME}</p>
-        <p>
-          🗡️ Dano: <span className="text-red-500">{item.DANO}</span>
-        </p>
-        <p>
-          ❤️ Vida: <span className="text-green-500">{item.VIDA}</span>
-        </p>
-        <p>
-          🛡️ Defesa: <span className="text-blue-500">{item.DEFESSA}</span>
-        </p>
-        <p>
-          🎯 Chance Crítico:
-          <span className="text-yellow-500">{item.CRITICO}%</span>
-        </p>
-        <p>
-          🔥 M Crítico:
-          <span className="text-purple-500">x{item.MULTIPLO_CRITICO}</span>
-        </p>
-      </div>
-    );
-  };
 
   if (loading) return <Load />;
 
@@ -213,29 +181,30 @@ const Base = () => {
             <div className="flex flex-col space-y-6">
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onPointerEnter={() => setShowInfoArma(true)}
-                onMouseOut={() => setShowInfoArma(false)}
+                onClick={() => {
+                  setSelectedItems(arma);
+                  setSelectedItem(itemSelecionado);
+                }}
               >
                 <img
                   src={arma ? selectImgGund(arma) : imgBackItem}
                   alt={`Imagem`}
                   className="w-full h-full object-cover object-top rounded-xl  bg-white"
                 />
-                {showInfoArma && <ItemComponent id={arma} />}
               </div>
 
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
-                onPointerEnter={() => setShowInfoCapa(true)}
-                onMouseOut={() => setShowInfoCapa(false)}
+                onClick={() => {
+                  setSelectedItems(capa);
+                  setSelectedItem(itemSelecionado);
+                }}
               >
                 <img
                   src={capa ? selectImgGund(capa) : imgBackItem}
                   alt="Imagem da arma ou padrão"
                   className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
-
-                {showInfoCapa && <ItemComponent id={capa} />}
               </div>
             </div>
 
@@ -255,28 +224,24 @@ const Base = () => {
             <div className="flex flex-col space-y-6">
               <div
                 className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md  "
-                onPointerEnter={() => setShowInfoTorso(true)}
-                onMouseOut={() => setShowInfoTorso(false)}
+                onClick={() => setSelectedItem(torso)}
               >
                 <img
                   src={torso ? selectImgGund(torso) : imgBackItem}
                   alt={`Imagem`}
                   className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
-                {showInfoTorso && <ItemComponent id={torso} />}
               </div>
 
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md "
-                onPointerEnter={() => setShowInfoBoot(true)}
-                onMouseOut={() => setShowInfoBoot(false)}
+                onClick={() => setSelectedItem(boot)}
               >
                 <img
                   src={boot ? selectImgGund(boot) : imgBackItem}
                   alt={`Imagem`}
                   className="w-full h-full object-cover object-top rounded-xl bg-white"
                 />
-                {showInfoBoot && <ItemComponent id={boot} />}
               </div>
             </div>
           </div>

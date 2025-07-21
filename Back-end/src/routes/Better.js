@@ -25,6 +25,19 @@ router.post("/", authMiddleware, async (req, res) => {
     const userMoney = user.money;
     const userScrap = user.SCRAP;
 
+    if (userMoney < updateTotalMoney || userScrap < updateTotalScrap) {
+      const newItem = await getItenUserById(userId, itemId);
+      const objetoFinal = {
+        ...item,
+        ...newItem["0"],
+      };
+      return res.json({
+        characters: user,
+        items: objetoFinal,
+        Update: false,
+      });
+    }
+
     if (userMoney >= updateTotalMoney && userScrap >= updateTotalScrap) {
       await db.execute(
         `UPDATE characters
@@ -125,6 +138,7 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.json({
         characters: user,
         items: objetoFinal,
+         Update: true,
       });
     } else {
       return res.json({ items: objetoFinal });

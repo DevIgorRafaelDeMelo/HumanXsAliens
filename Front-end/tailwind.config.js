@@ -5,9 +5,9 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#2563EB", // Azul principal (similar ao blue-600)
-          light: "#3B82F6", // Azul claro (similar ao blue-500)
-          dark: "#1E40AF", // Azul escuro (similar ao blue-700)
+          DEFAULT: "#2563EB",
+          light: "#3B82F6",
+          dark: "#1E40AF",
         },
       },
     },
