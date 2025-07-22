@@ -154,11 +154,12 @@ const Map = () => {
       });
 
       const data = await response.json();
-
+      console.log(data)
       setMoney(data.money);
       setExp(data.exp);
       setWinner(data.winner);
       processTurn(data.turns, data.enemies);
+      
     } catch (error) {
       console.error("Erro ao iniciar batalha:", error);
     }
@@ -228,14 +229,12 @@ const Map = () => {
         className="fixed flex flex-col mt-40 justify-between items-center"
       ></div>
       <div className="flex justify-center  w-[100%]  pt-40 ">
-        {/* Card do Personagem */}
         <motion.div
           initial={{ opacity: 0, x: -2000 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
           className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8  max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
         >
-          {/* Dano recebido - Correto na parte superior */}
           {damageInfo?.source === "enemy" && (
             <motion.div
               initial={{ opacity: 1, scale: 1.2, y: 0 }}
@@ -251,7 +250,6 @@ const Map = () => {
             {character.name}
           </h3>
 
-          {/* Imagem do Personagem */}
           <div className="w-80 h-80 mx-auto rounded-lg overflow-hidden shadow-xl">
             <img
               src={getMilitaryImage(character.tipo_id)}
@@ -260,7 +258,6 @@ const Map = () => {
             />
           </div>
 
-          {/* Barra de Vida */}
           <div className="w-full bg-gray-700 rounded-full h-5 shadow-md mt-5">
             <motion.div
               initial={{ width: "100%" }}
@@ -273,7 +270,6 @@ const Map = () => {
             </p>
           </div>
 
-          {/* Pontos de Ataque e Defesa */}
           <ul className="w-full mt-6 px-8 space-y-4 text-gray-400">
             <li className="flex justify-between border-b border-gray-600 pb-2">
               <span className=" font-bold">Ataque</span>
@@ -293,10 +289,9 @@ const Map = () => {
             </li>
           </ul>
         </motion.div>
-        {/* Ícone de Batalha */}
+
         <div className="w-[200px] h-32 flex items-center justify-center"></div>
 
-        {/* Card do Alien */}
         {card && (
           <motion.div
             initial={{ opacity: 0, x: 2000 }}
@@ -304,7 +299,6 @@ const Map = () => {
             transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
             className="relative bg-gradient-to-br from-gray-700 via-black to-gray-900 text-white p-8   max-w-lg border-[3px] border-red-500 rounded-xl shadow-lg flex flex-col items-center gap-6"
           >
-            {/* Dano recebido - Correto na parte superior */}
             {damageInfo?.source === "player" && (
               <motion.div
                 initial={{ opacity: 1, scale: 1.2, y: 0 }}
@@ -320,7 +314,6 @@ const Map = () => {
               {card.nome}
             </h3>
 
-            {/* Imagem do Alien */}
             <div className="w-80 h-80 mx-auto rounded-lg overflow-hidden shadow-xl">
               <img
                 src={getAlienImage(card.nome)}
@@ -329,7 +322,6 @@ const Map = () => {
               />
             </div>
 
-            {/* Barra de Vida */}
             <div className="w-full bg-gray-700 rounded-full h-5 shadow-md mt-5">
               <motion.div
                 initial={{ width: "100%" }}
@@ -344,8 +336,6 @@ const Map = () => {
                 {enemyHP} / {card.vida} HP
               </p>
             </div>
-
-            {/* Pontos de Ataque e Defesa */}
 
             <ul className="w-full mt-6 px-8 space-y-4 text-gray-400">
               <li className="flex justify-between border-b border-gray-600 pb-2">

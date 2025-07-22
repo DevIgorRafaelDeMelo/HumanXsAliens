@@ -35,7 +35,7 @@ const Lobby = () => {
             Authorization: `Bearer ${userLogin.token}`,
           },
         });
-        const data = await res.json(); 
+        const data = await res.json();
         if (res.ok) {
           setCharacters(data.characters);
           setGuns(data.guns);
@@ -175,7 +175,6 @@ const Lobby = () => {
             )}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
 
-            {/* Texto com melhor espaçamento e leitura */}
             <p className="text-gray-200 text-lg mt-4"></p>
           </div>
         </motion.div>
@@ -194,15 +193,12 @@ const Lobby = () => {
           }}
         >
           <div className="bg-gradient-to-br from-black/70 via-blue-900 to-black/70 backdrop-blur-md p-8 rounded-xl border-[6px] border-cyan-500/80 border-t-[8px] border-t-blue-500  w-[70%] h-[100%] flex flex-col items-center justify-center relative ">
-            {/* Efeito neon no título */}
             <h2 className="text-3xl font-extrabold text-cyan-400  tracking-wide">
               {selectedOption} selecionado!
             </h2>
 
-            {/* Barra luminosa inferior */}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
 
-            {/* Texto com melhor espaçamento e leitura */}
             <p className="text-gray-200 text-lg mt-4">
               Aqui está o conteúdo da opção{" "}
               <span className="font-bold text-cyan-300">{selectedOption}</span>.
@@ -224,15 +220,10 @@ const Lobby = () => {
           }}
         >
           <div className="bg-gradient-to-br from-black/70 via-blue-900 to-black/70 backdrop-blur-md p-8 rounded-xl border-[6px] border-cyan-500/80 border-t-[8px] border-t-blue-500  w-[80%] h-[100%] flex flex-col items-center justify-center relative ">
-            {/* Efeito neon no título */}
             <h2 className="text-3xl font-extrabold text-cyan-400  tracking-wide">
               {selectedOption} selecionado!
             </h2>
-
-            {/* Barra luminosa inferior */}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
-
-            {/* Texto com melhor espaçamento e leitura */}
             <p className="text-gray-200 text-lg mt-4">
               Aqui está o conteúdo da opção{" "}
               <span className="font-bold text-cyan-300">{selectedOption}</span>.
@@ -254,15 +245,10 @@ const Lobby = () => {
           }}
         >
           <div className="bg-gradient-to-br from-black/70 via-blue-900 to-black/70 backdrop-blur-md p-8 rounded-xl border-[6px] border-cyan-500/80 border-t-[8px] border-t-blue-500  w-[80%] h-[50%] flex flex-col items-center justify-center relative ">
-            {/* Efeito neon no título */}
             <h2 className="text-3xl font-extrabold text-cyan-400  tracking-wide">
               {selectedOption} selecionado!
             </h2>
-
-            {/* Barra luminosa inferior */}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
-
-            {/* Texto com melhor espaçamento e leitura */}
             <p className="text-gray-200 text-lg mt-4">
               Aqui está o conteúdo da opção{" "}
               <span className="font-bold text-cyan-300">{selectedOption}</span>.
@@ -271,7 +257,6 @@ const Lobby = () => {
         </motion.div>
       )}
 
-      {/* Barra Inferior ajustada */}
       <div className="fixed bottom-20 w-[60%] bg-gray-900 p-4 flex justify-between rounded-t-xl shadow-lg border-[4px] border-gray-700">
         {["Mercado Negro", "Hospital", "Comandante", "Informante"].map(
           (option, index) => (

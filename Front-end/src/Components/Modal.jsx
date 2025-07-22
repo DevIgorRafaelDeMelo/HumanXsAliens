@@ -10,17 +10,18 @@ const Modal = ({ winner, onClose, exp, money }) => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative bg-gradient-to-br from-gray-900 to-black p-10 rounded-lg shadow-[0_0_20px_rgba(255,0,0,0.8)] text-center border-4 border-red-500"
       >
-        {/* Ícone de vitória ou derrota com animação */}
         <motion.h2
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="text-4xl font-extrabold text-white tracking-wider"
         >
-          {winner === "player" ? "🏆 Vitória Suprema!" : "💀 Derrota Brutal!"}
+          {winner === "player"
+            ? "🏆 Vitória Suprema!"
+            : winner === "Enemy"
+            ? "💀 Derrota Brutal!"
+            : "⚔️ Empate Estratégico!"}
         </motion.h2>
-
-        {/* Mensagem de vitória ou derrota */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -29,10 +30,10 @@ const Modal = ({ winner, onClose, exp, money }) => {
         >
           {winner === "player"
             ? "Você dizimou seus inimigos e provou sua supremacia! ⚔️🔥"
-            : "O inimigo foi implacável desta vez... Mas a guerra ainda não acabou! 💀"}
+            : winner === "Enemy"
+            ? "O inimigo foi implacável desta vez... Mas a guerra ainda não acabou! 💀"
+            : "Nenhum dos lados cedeu... A batalha terminou em empate! 🕊️⚔️"}
         </motion.p>
-
-        {/* Recompensas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,8 +47,6 @@ const Modal = ({ winner, onClose, exp, money }) => {
             ⚡ EXP recebido: <span className="text-yellow-300">{exp}</span>
           </p>
         </motion.div>
-
-        {/* Botão de fechar com efeito */}
         <motion.button
           onClick={onClose}
           initial={{ scale: 1 }}

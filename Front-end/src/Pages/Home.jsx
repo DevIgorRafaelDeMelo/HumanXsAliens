@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Load from "../Components/LoadingScreen";
 
 const Home = () => {
-  const { userLogin, logout } = useUser(); 
+  const { userLogin } = useUser(); 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {

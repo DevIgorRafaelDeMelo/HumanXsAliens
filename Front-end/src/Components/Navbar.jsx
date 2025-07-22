@@ -108,7 +108,6 @@ const Navbar = () => {
 
   return (
     <nav className="fixed w-full   flex justify-between items-center ">
-      {/* Card animado */}
       <div className="fixed flex z-1 left-8 top-[22vh]  p-2 border-4 border-t-[20px] border-cyan-400  bg-gradient-to-br from-blue-900 via-cyen-500 to-blue-500 text-white  font-bold tracking-widest rounded-b-lg">
         <FaDollarSign className="h-6 me-4 text-green-500  " />{" "}
         <span className="text-white-100">{formattedMoney}</span>
@@ -132,12 +131,9 @@ const Navbar = () => {
         transition={{ duration: 0.8, type: "spring" }}
         className="bg-gradient-to-br from-gray-800 via-black to-gray-900 text-white p-2 w-[20%] h-48 flex items-center border-[3px] border-cyan-400 rounded-xl shadow-lg m-4 relative"
       >
-        {/* Nível do Personagem - Agora maior e destacado */}
         <div className="absolute -top-4 right-[-10px] bg-cyan-500 text-black text-2xl p-2 py-2 rounded-lg font-extrabold shadow-xl">
           Lvl {character?.level}
         </div>
-
-        {/* Imagem do Personagem */}
         <div className="relative">
           <div className="relative w-24 h-32 overflow-hidden shadow-xl">
             <img
@@ -151,14 +147,10 @@ const Navbar = () => {
             {getMilitaryName(character.tipo_id)}
           </div>
         </div>
-
-        {/* Detalhes do Personagem */}
         <div className="flex flex-col gap-2 p-4 w-full">
           <h2 className="text-xl font-extrabold text-yellow-300 drop-shadow-md text-center">
             {character?.name}
           </h2>
-
-          {/* Barra de Vida */}
           <div className="relative w-full bg-gray-700 rounded-full h-4 overflow-hidden mt-2 shadow-md">
             <motion.div
               initial={{ width: "0%" }}
@@ -170,8 +162,6 @@ const Navbar = () => {
               {vida} /{vida} HP
             </p>
           </div>
-
-          {/* Barra de XP */}
           <div className="relative w-full bg-gray-700 rounded-full h-3 overflow-hidden mt-2 shadow-md">
             <motion.div
               initial={{ width: "0%" }}
@@ -183,8 +173,6 @@ const Navbar = () => {
               XP: {character?.exp_points} / {character?.next_level_exp}
             </p>
           </div>
-
-          {/* Atributos do Personagem */}
           <div className="grid grid-cols-2 gap-2 mt-3 text-white text-sm font-semibold">
             <p className="flex items-center gap-2">
               <GiCrossedSwords className="text-orange-400" />
@@ -206,8 +194,6 @@ const Navbar = () => {
           </div>
         </div>
       </motion.div>
-
-      {/* Menu */}
       <motion.div
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
@@ -220,7 +206,6 @@ const Navbar = () => {
         className="relative top-40 px-10 justify-end items-center  "
       >
         {" "}
-        {/* Primeira lista de links */}
         <ul className="space-y-4">
           <li>
             <Link
@@ -239,7 +224,6 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        {/* Segunda lista de links */}
         <ul className="space-y-4 mt-4">
           <li>
             <Link

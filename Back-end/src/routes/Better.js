@@ -54,8 +54,7 @@ router.post("/", authMiddleware, async (req, res) => {
       const vel1 = (
         parseFloat(item.MULTIPLO_CRITICO) +
         parseFloat(item.MULTIPLO_CRITICO) * nivelItem
-      ).toFixed(2);
-      console.log(item);
+      ).toFixed(2); 
       await db.query(
         `INSERT INTO ItemUser (
         ID_USER, ID_ITEM, NV_ITEM, USER_ITEM_VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
@@ -84,61 +83,11 @@ router.post("/", authMiddleware, async (req, res) => {
         ...item,
         ...newItem["0"],
       };
-      let queryUpdate = "";
-      let valuesUpdate = [];
-      let querySpell = "";
-      let valuesSpell = [];
-      const dadosAtualizados = [
-        item.VIDA + item.VIDA * nivelItem,
-        item.DANO + item.DANO * nivelItem,
-        item.DEFESSA + item.DEFESSA * nivelItem,
-        vel,
-        vel1,
-      ];
 
-      switch (item.TYPE) {
-        case "Arma":
-          queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-          valuesUpdate = [item.ID, userId];
-          querySpell = ` UPDATE characters  SET  GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?; `;
-          valuesSpell = [...dadosAtualizados, item.ID, userId];
-
-          break;
-
-        case "Capa":
-          queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
-          valuesUpdate = [item.ID, userId];
-          querySpell = ` UPDATE characters  SET  CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[1]', ?) WHERE user_id = ?; `;
-          valuesSpell = [...dadosAtualizados, item.ID, userId];
-          break;
-
-        case "Armadura":
-          queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
-          valuesUpdate = [item.ID, userId];
-          querySpell = ` UPDATE characters  SET  TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[2]', ?) WHERE user_id = ?; `;
-          valuesSpell = [...dadosAtualizados, item.ID, userId];
-          break;
-
-        case "Buts":
-          queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
-          valuesUpdate = [item.ID, userId];
-          querySpell = ` UPDATE characters  SET  BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[3]', ?) WHERE user_id = ?; `;
-          valuesSpell = [...dadosAtualizados, item.ID, userId];
-          break;
-
-        default:
-          return res.status(400).json({ error: "Categoria inválida." });
-      }
-
-      await db.query(queryUpdate, valuesUpdate);
-
-      if (querySpell) {
-        await db.query(querySpell, valuesSpell);
-      }
       return res.json({
         characters: user,
         items: objetoFinal,
-         Update: true,
+        Update: true,
       });
     } else {
       return res.json({ items: objetoFinal });

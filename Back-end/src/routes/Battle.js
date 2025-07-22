@@ -18,7 +18,6 @@ router.post("/", authMiddleware, async (req, res) => {
 
     const character = await getCharacterById(characterId);
     let enemies = await getEnemiesByIds(enemyIds);
-    console.log(character);
     const battleResult = await simulateBattle(character, enemies, exp, money);
     const { turns, winner } = battleResult;
     if (winner === "player") {
@@ -79,8 +78,15 @@ const simulateBattle = async (character, enemy, exp, money) => {
   let playerHP = lifeTotal;
   let enemyHP = initialEnemyHP;
   const turns = [];
-  console.log(danoTotal);
+  const maxTurns = 100;
+  let winner;
+
   while (playerHP > 0 && enemyHP > 0) {
+    if (turns.length >= maxTurns) {
+      winner = "Empate";
+      break;
+    }
+
     const variationFactor = Math.random() * 0.2 - 0.1;
 
     let danoJogador = Math.max(danoTotal - enemy.defesa, 0);
@@ -93,7 +99,18 @@ const simulateBattle = async (character, enemy, exp, money) => {
     enemyHP -= danoJogador;
     turns.push({ source: "player", dano: danoJogador });
 
-    if (enemyHP <= 0) break;
+    if (enemyHP <= 0) {
+      winner = "player";
+      await db.execute(
+        "UPDATE characters SET alien_id = alien_id + 1 WHERE user_id = ?",
+        [character.user_id]
+      );
+      await db.execute(
+        "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE user_id = ?",
+        [exp, money, character.user_id]
+      );
+      break;
+    }
 
     let danoInimigo = Math.max(enemy.ataque - defessa, 0);
     danoInimigo = Math.round(danoInimigo * (1 + variationFactor));
@@ -105,26 +122,12 @@ const simulateBattle = async (character, enemy, exp, money) => {
     playerHP -= danoInimigo;
     turns.push({ source: "enemy", dano: danoInimigo });
 
-    if (playerHP <= 0) break;
+    if (playerHP <= 0) {
+      winner = "Enemy";
+      break;
+    }
   }
-
-  let winner;
-  if (playerHP > 0) {
-    winner = "player";
-    await db.execute(
-      "UPDATE characters SET alien_id = alien_id + 1 WHERE user_id = ?",
-      [character.user_id]
-    );
-    await db.execute(
-      "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE user_id = ?",
-      [exp, money, character.user_id]
-    );
-  } else if (enemyHP > 0) {
-    winner = "Enemy";
-  } else {
-    winner = "Empate!";
-  }
-
+ 
   return {
     turns,
     winner,

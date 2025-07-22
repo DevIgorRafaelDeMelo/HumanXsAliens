@@ -9,6 +9,7 @@ import gunsImg from "../data/Arma";
 import ItemModal from "../Components/ItenModal";
 import Load from "../Components/LoadingScreen";
 import imgBackItem from "../Img/icone_equipamento.png";
+import { GiKevlarVest } from "react-icons/gi";
 
 const Base = () => {
   const [characters, setCharacters] = useState([]);
@@ -28,10 +29,20 @@ const Base = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
-  const [guns, setGuns] = useState();
+  const [selectedItems, setSelectedItems] = useState([]);
   const [itemEquip, setItemEquip] = useState([]);
-  const [selectedItems, setSelectedItems] = useState();
+  const [uneQuip, setUneQuip] = useState();
   const itemSelecionado = itens.find((item) => item.ID === selectedItems);
+  const [readyToSelectItem, setReadyToSelectItem] = useState(false);
+
+  useEffect(() => {
+    if (readyToSelectItem) {
+      setSelectedItem(itemSelecionado);
+      setReadyToSelectItem(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItems, readyToSelectItem]);
+
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -81,7 +92,6 @@ const Base = () => {
           },
         });
         const data = await res.json();
-        setGuns(data.gunsMescladas);
         if (res.ok) {
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
@@ -183,7 +193,8 @@ const Base = () => {
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
                 onClick={() => {
                   setSelectedItems(arma);
-                  setSelectedItem(itemSelecionado);
+                  setReadyToSelectItem(true);
+                  setUneQuip(true);
                 }}
               >
                 <img
@@ -197,7 +208,8 @@ const Base = () => {
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md"
                 onClick={() => {
                   setSelectedItems(capa);
-                  setSelectedItem(itemSelecionado);
+                  setReadyToSelectItem(true);
+                  setUneQuip(true);
                 }}
               >
                 <img
@@ -224,7 +236,11 @@ const Base = () => {
             <div className="flex flex-col space-y-6">
               <div
                 className="w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md  "
-                onClick={() => setSelectedItem(torso)}
+                onClick={() => {
+                  setSelectedItems(torso);
+                  setReadyToSelectItem(true);
+                  setUneQuip(true);
+                }}
               >
                 <img
                   src={torso ? selectImgGund(torso) : imgBackItem}
@@ -235,7 +251,11 @@ const Base = () => {
 
               <div
                 className="relative w-24 h-24 bg-black rounded-xl border-4 border-cyan-500 shadow-md "
-                onClick={() => setSelectedItem(boot)}
+                onClick={() => {
+                  setSelectedItems(boot);
+                  setReadyToSelectItem(true);
+                  setUneQuip(true);
+                }}
               >
                 <img
                   src={boot ? selectImgGund(boot) : imgBackItem}
@@ -284,10 +304,17 @@ const Base = () => {
                   return (
                     <li
                       key={index}
-                      className="relative flex flex-col items-center shadow-xl transition-transform duration-300 transform  p-4 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 rounded-xl border border-gray-600 cursor-pointer h-44"
-                      onClick={() => setSelectedItem(item)}
+                      className={`relative flex flex-col items-center shadow-xl transition-transform duration-300 transform p-4  bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 
+                      rounded-xl border border-gray-600 cursor-pointer h-44`}
+                      onClick={() => {
+                        setSelectedItem(item);
+                        if ([capa, torso, boot, arma].includes(item.ID)) {
+                          setUneQuip(true);
+                        } else {
+                          setUneQuip(false);
+                        }
+                      }}
                     >
-                      {/* Imagem e quantidade */}
                       <div className="relative w-20 h-20 flex items-center justify-center bg-gray-900 rounded-lg p-2 shadow-inner">
                         <img
                           src={selectImgGund(item.ID)}
@@ -295,14 +322,17 @@ const Base = () => {
                           className="w-full h-full object-contain rounded-md"
                         />
                       </div>
-                      {/* Nível */}
+                      {[capa, torso, boot, arma].includes(item.ID) && (
+                        <div className="absolute top-2 right-2 bg-white bg-opacity-10 text-sm px-2 py-1 rounded text-white">
+                          <GiKevlarVest className="w-4 h-4 text-blue-400" />
+                        </div>
+                      )}
                       <p className="absolute top-2 left-2 bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 z-1 rounded shadow">
                         Nível {item.NIVEL}
                       </p>
                       <span className="absolute bottom-0 right-0 text-stone-300 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md ">
                         Qtd:{quantidade}
                       </span>
-                      {/* Nome do item */}
                       <p className="mt-3 text-center text-cyan-300 text-base font-bold tracking-wide">
                         {item.NOME}
                       </p>
@@ -317,6 +347,7 @@ const Base = () => {
             {selectedItem && (
               <ItemModal
                 item={selectedItem}
+                equip={uneQuip}
                 onClose={() => setSelectedItem(null)}
               />
             )}
