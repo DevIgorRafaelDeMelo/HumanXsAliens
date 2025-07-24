@@ -14,7 +14,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
   try {
     await db.query(
-      "INSERT INTO characters (name, tipo_id, user_id, alien_id, DEPOSITO, GUN_SPELL, TORSO_SPELL, CAPA_SPELL, BOOT_SPELL , EQUIPADOS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
+      "INSERT INTO characters (name, tipo_id, user_id, alien_id, DEPOSITO, GUN_SPELL, TORSO_SPELL, CAPA_SPELL, BOOT_SPELL , EQUIPADOS, CHAR_VIDA_ATUAL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         name,
         tipo_id,
@@ -26,6 +26,7 @@ router.post("/", authMiddleware, async (req, res) => {
         JSON.stringify([0, 0, 0, 0, 0]),
         JSON.stringify([0, 0, 0, 0, 0]),
         JSON.stringify([0, 0, 0, 0]),
+        100,
       ]
     );
 

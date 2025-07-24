@@ -23,6 +23,8 @@ const Navbar = () => {
   const [vida, setVida] = useState();
   const [critMultiplo, setCritMultiplo] = useState();
   const [tool, setTool] = useState();
+  const [lifeAtual, setLifeAtual] = useState();
+  const [vidaAtual, setVidaAtual] = useState();
 
   const character = characters.length > 0 ? characters[0] : null;
   const formatMoney = (amount) => {
@@ -61,7 +63,9 @@ const Navbar = () => {
           setTool(data.characters[0].SCRAP);
           setVida(data.characters[0].VIDA_TOTAL);
           setDano(data.characters[0].DANO_TOTAL);
+          setLifeAtual(data.characters[0].PORC_VIDA);
           setDefessa(data.characters[0].DEFESA_TOTAL);
+          setVidaAtual(data.characters[0].CHAR_VIDA_ATUAL);
           setCrit(
             [data.characters[0].CRITICO_TOTAL]
               .map((value) => parseFloat(value) || 0)
@@ -154,12 +158,12 @@ const Navbar = () => {
           <div className="relative w-full bg-gray-700 rounded-full h-4 overflow-hidden mt-2 shadow-md">
             <motion.div
               initial={{ width: "0%" }}
-              animate={{ width: `${vida + character?.health_points}%` }}
+              animate={{ width: `${lifeAtual}%` }}
               transition={{ duration: 1 }}
               className="h-4 bg-red-500 rounded-full"
             />
             <p className="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
-              {vida} /{vida} HP
+              {vidaAtual} /{vida} HP
             </p>
           </div>
           <div className="relative w-full bg-gray-700 rounded-full h-3 overflow-hidden mt-2 shadow-md">

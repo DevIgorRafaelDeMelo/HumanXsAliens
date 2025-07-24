@@ -51,13 +51,7 @@ const Map = () => {
         if (res.ok) {
           setCharacters(data.characters);
           setEnemyHP(data.enemies.vida);
-          setVida(
-            data.characters[0].health_points +
-              data.characters[0].BOOT_SPELL[0] +
-              data.characters[0].CAPA_SPELL[0] +
-              data.characters[0].TORSO_SPELL[0] +
-              data.characters[0].GUN_SPELL[0]
-          );
+          setVida(data.characters[0].CHAR_VIDA_ATUAL);
           setDano(
             data.characters[0].attack_points +
               data.characters[0].BOOT_SPELL[1] +
@@ -96,13 +90,7 @@ const Map = () => {
               .toFixed(2)
           );
 
-          setPlayerHP(
-            data.characters[0].health_points +
-              data.characters[0].BOOT_SPELL[0] +
-              data.characters[0].CAPA_SPELL[0] +
-              data.characters[0].TORSO_SPELL[0] +
-              data.characters[0].GUN_SPELL[0]
-          );
+          setPlayerHP(data.characters[0].CHAR_VIDA_ATUAL);
         } else {
           alert(`Erro ao buscar personagens: ${data.message}`);
         }
@@ -128,7 +116,7 @@ const Map = () => {
 
     fetchAliens();
     fetchCharacters();
-  }, [userLogin, navigate]);
+  }, [userLogin, navigate, vida]);
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -154,12 +142,10 @@ const Map = () => {
       });
 
       const data = await response.json();
-      console.log(data)
       setMoney(data.money);
       setExp(data.exp);
       setWinner(data.winner);
       processTurn(data.turns, data.enemies);
-      
     } catch (error) {
       console.error("Erro ao iniciar batalha:", error);
     }

@@ -14,7 +14,7 @@ const StartBattle = require("./routes/StartBattle");
 const Buy = require("./routes/Buy");
 const Equip = require("./routes/Equip");
 const Vender = require("./routes/Vender");
-const Better = require("./routes/Better");
+const Better = require("./routes/Better"); 
 
 dotenv.config();
 
@@ -34,7 +34,7 @@ app.use("/battle", Battle);
 app.use("/buy", Buy);
 app.use("/equipar", Equip);
 app.use("/vender", Vender);
-app.use("/Better", Better);
+app.use("/Better", Better); 
 
 app.get("/profile", authMiddleware, (req, res) => {
   res.json({ message: `Bem-vindo, usuário ${req.user.id}` });

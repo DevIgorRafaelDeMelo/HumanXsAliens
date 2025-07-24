@@ -19,7 +19,13 @@ router.post("/", authMiddleware, async (req, res) => {
     const character = await getCharacterById(characterId);
     let enemies = await getEnemiesByIds(enemyIds);
     const battleResult = await simulateBattle(character, enemies, exp, money);
-    const { turns, winner } = battleResult;
+    const { turns, winner, playerHP } = battleResult;
+
+    await db.execute(
+      "UPDATE characters SET CHAR_VIDA_ATUAL = GREATEST(?, 0) WHERE user_id = ?",
+      [playerHP, character.user_id]
+    );
+
     if (winner === "player") {
       enemies = await getEnemiesByIds(enemyIds + 1);
       return res.status(200).json({
@@ -43,12 +49,7 @@ router.post("/", authMiddleware, async (req, res) => {
 const simulateBattle = async (character, enemy, exp, money) => {
   const initialEnemyHP = enemy.vida;
 
-  const lifeTotal =
-    character.health_points +
-    character.BOOT_SPELL[0] +
-    character.CAPA_SPELL[0] +
-    character.TORSO_SPELL[0] +
-    character.GUN_SPELL[0];
+  const lifeTotal = character.CHAR_VIDA_ATUAL;
   const danoTotal =
     character.attack_points +
     character.BOOT_SPELL[1] +
@@ -127,8 +128,9 @@ const simulateBattle = async (character, enemy, exp, money) => {
       break;
     }
   }
- 
+
   return {
+    playerHP,
     turns,
     winner,
   };

@@ -37,8 +37,21 @@ const getUserById = async (characterId) => {
       "SELECT * FROM characters WHERE user_id = ?",
       [characterId]
     );
-
     return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Erro ao buscar personagem:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
+const getItemMedKit = async () => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute("SELECT * FROM item_cura");
+    return rows;
   } catch (error) {
     console.error("Erro ao buscar personagem:", error);
     return null;
@@ -123,4 +136,5 @@ module.exports = {
   getEnemiesByIds,
   getItenByIds,
   getUserById,
+  getItemMedKit,
 };

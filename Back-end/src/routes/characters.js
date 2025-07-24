@@ -2,11 +2,18 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
-const { getEnemiesByIds, getItenUserByIds } = require("../config/DBs");
+const {
+  getEnemiesByIds,
+  getItenUserByIds,
+  getItemMedKit,
+} = require("../config/DBs");
 
 router.get("/", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
+
+    const medKits = await getItemMedKit();
+ 
 
     const [characters] = await db.query(
       "SELECT * FROM characters WHERE user_id = ?",
@@ -57,6 +64,13 @@ router.get("/", authMiddleware, async (req, res) => {
     characters[0].CRITICO_TOTAL = CRITICO_TOTAL;
     characters[0].MULT_CRITICO_TOTAL = MULT_CRITICO_TOTAL;
 
+    const porcentagemVida = Math.max(
+      0,
+      Math.min((characters[0].CHAR_VIDA_ATUAL / VIDA_TOTAL) * 100, 100)
+    );
+
+    characters[0].PORC_VIDA = porcentagemVida;
+
     const gunsMescladas = guns.map((gun) => {
       const itemUser = itensMap[gun.ID];
 
@@ -82,7 +96,7 @@ router.get("/", authMiddleware, async (req, res) => {
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);
 
-    res.json({ characters, enemies, guns, gunsMescladas });
+    res.json({ characters, enemies, guns, gunsMescladas, medKits });
   } catch (error) {
     res.status(500).json({ message: "Erro interno ao buscar personagens." });
   }

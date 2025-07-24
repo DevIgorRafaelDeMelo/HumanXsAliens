@@ -5,33 +5,39 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { getUserById, getItenByIds } = require("../config/DBs");
 
 router.post("/", authMiddleware, async (req, res) => {
-  const gunId = req.body.gunId;
+  const gunId = req.body.item;
   const userId = req.user.id;
+  const medKit = req.body.medKit;
 
-  try {
-    const character = await getUserById(userId);
-    const iten = await getItenByIds(gunId);
+  if (medKit) {
+     
+  }
 
-    const [rows] = await db.query(
-      "SELECT DEPOSITO, money FROM characters WHERE user_id = ?",
-      [userId]
-    );
-    const [rowsS] = await db.execute(
-      `SELECT NV_ITEM FROM ItemUser WHERE ID_USER = ? AND ID_ITEM = ?`,
-      [userId, gunId]
-    );
+  if (!medKit) {
+    try {
+      const character = await getUserById(userId);
+      const iten = await getItenByIds(gunId);
 
-    if (character.money < iten.valor) {
-      return res.status(400).json({ message: "Dinheiro insuficiente." });
-    }
+      const [rows] = await db.query(
+        "SELECT DEPOSITO, money FROM characters WHERE user_id = ?",
+        [userId]
+      );
+      const [rowsS] = await db.execute(
+        `SELECT NV_ITEM FROM ItemUser WHERE ID_USER = ? AND ID_ITEM = ?`,
+        [userId, gunId]
+      );
 
-    if (rowsS.length === 0) {
-      const vel = parseFloat(iten.CRITICO).toFixed(2);
+      if (character.money < iten.valor) {
+        return res.status(400).json({ message: "Dinheiro insuficiente." });
+      }
 
-      const vel1 = parseFloat(iten.MULTIPLO_CRITICO).toFixed(2);
+      if (rowsS.length === 0) {
+        const vel = parseFloat(iten.CRITICO).toFixed(2);
 
-      await db.query(
-        `INSERT INTO ItemUser (
+        const vel1 = parseFloat(iten.MULTIPLO_CRITICO).toFixed(2);
+
+        await db.query(
+          `INSERT INTO ItemUser (
         ID_USER, ID_ITEM, NV_ITEM, USER_ITEM_VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -42,52 +48,57 @@ router.post("/", authMiddleware, async (req, res) => {
             USER_ITEM_CRITICO = VALUES(USER_ITEM_CRITICO),
             USER_ITEM_MULTIPLI_CRITICO = VALUES(USER_ITEM_MULTIPLI_CRITICO),
             DANO = VALUES(DANO)`,
-        [
-          userId,
-          iten.ID,
-          iten.NIVEL,
-          iten.VIDA,
-          iten.DEFESSA,
-          vel,
-          vel1,
-          iten.DANO,
-        ]
-      );
-      const characters = rows[0];
-      const depositoAtual = characters.DEPOSITO
-        ? JSON.parse(characters.DEPOSITO)
-        : [];
+          [
+            userId,
+            iten.ID,
+            iten.NIVEL,
+            iten.VIDA,
+            iten.DEFESSA,
+            vel,
+            vel1,
+            iten.DANO,
+          ]
+        );
+        const characters = rows[0];
+        const depositoAtual = characters.DEPOSITO
+          ? JSON.parse(characters.DEPOSITO)
+          : [];
 
-      depositoAtual.push(gunId);
+        depositoAtual.push(gunId);
 
-      const novoSaldo = characters.money - iten.PRECO;
+        const novoSaldo = characters.money - iten.PRECO;
 
-      await db.query(
-        "UPDATE characters SET DEPOSITO = ?, money = ? WHERE user_id = ?",
-        [JSON.stringify(depositoAtual), novoSaldo, userId]
-      );
+        await db.query(
+          "UPDATE characters SET DEPOSITO = ?, money = ? WHERE user_id = ?",
+          [JSON.stringify(depositoAtual), novoSaldo, userId]
+        );
 
-      return res.json({ message: "Arma adicionada ao depósito com sucesso." });
+        return res.json({
+          message: "Arma adicionada ao depósito com sucesso.",
+        });
+      }
+
+      if (rowsS.length >= 1) {
+        const characters = rows[0];
+        const depositoAtual = characters.DEPOSITO
+          ? JSON.parse(characters.DEPOSITO)
+          : [];
+        depositoAtual.push(gunId);
+
+        const novoSaldo = characters.money - iten.PRECO;
+
+        await db.query(
+          "UPDATE characters SET DEPOSITO = ?, money = ? WHERE user_id = ?",
+          [JSON.stringify(depositoAtual), novoSaldo, userId]
+        );
+
+        return res.json({
+          message: "Arma adicionada ao depósito com sucesso.",
+        });
+      }
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao selecionar arma." });
     }
-
-    if (rowsS.length >= 1) {
-      const characters = rows[0];
-      const depositoAtual = characters.DEPOSITO
-        ? JSON.parse(characters.DEPOSITO)
-        : [];
-      depositoAtual.push(gunId);
-
-      const novoSaldo = characters.money - iten.PRECO;
-
-      await db.query(
-        "UPDATE characters SET DEPOSITO = ?, money = ? WHERE user_id = ?",
-        [JSON.stringify(depositoAtual), novoSaldo, userId]
-      );
-
-      return res.json({ message: "Arma adicionada ao depósito com sucesso." });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: "Erro ao selecionar arma." });
   }
 });
 

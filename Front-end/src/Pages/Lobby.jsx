@@ -10,6 +10,7 @@ import INF from "../Img/MEN.png";
 import HOS from "../Img/MED.png";
 import CharacterCard from "../Components/CharacterCard";
 import gunsImg from "../data/Arma";
+import medKitImg from "../data/MedKit";
 import Load from "../Components/LoadingScreen";
 
 const Lobby = () => {
@@ -22,6 +23,11 @@ const Lobby = () => {
   const [selectedGun, setSelectedGun] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [listMedKit, setListMedKit] = useState();
+  const [selectedMedKit, setSelectedMedKit] = useState();
+  const [showModalMedKit, setShowModalMedKit] = useState(false);
+  const medKit = true;
+  const [quantidade, setQuantidade] = useState(1);
   useEffect(() => {
     if (!userLogin) {
       navigate("/");
@@ -36,7 +42,9 @@ const Lobby = () => {
           },
         });
         const data = await res.json();
+        console.log(data);
         if (res.ok) {
+          setListMedKit(data.medKits);
           setCharacters(data.characters);
           setGuns(data.guns);
         } else {
@@ -53,8 +61,15 @@ const Lobby = () => {
     const gun = gunsImg.find((g) => g.id === id);
     return gun ? gun.img : "";
   };
+
+  const selectImgMedKit = (id) => {
+    const gun = medKitImg.find((g) => g.ID === id);
+    return gun ? gun.img : "";
+  };
+
   const sortedGuns = guns?.sort((a, b) => a.NIVEL - b.NIVEL);
-  const handleConfirmPurchase = async (gunId) => {
+
+  const handleConfirmPurchase = async (item, medKit, quantidade) => {
     try {
       const response = await fetch("http://192.168.20.198:5000/buy", {
         method: "POST",
@@ -62,7 +77,7 @@ const Lobby = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userLogin.token}`,
         },
-        body: JSON.stringify({ gunId, buyItem: true }),
+        body: JSON.stringify({ item, buyItem: true, medKit, quantidade }),
       });
 
       const data = await response.json();
@@ -87,6 +102,10 @@ const Lobby = () => {
   const handleSelectGun = (gun) => {
     setSelectedGun(gun);
     setShowModal(true);
+  };
+  const handleSelectMedKit = (item) => {
+    setSelectedMedKit(item);
+    setShowModalMedKit(true);
   };
   if (characters.length === 0) {
     return <CharacterCard user={userLogin} />;
@@ -194,15 +213,26 @@ const Lobby = () => {
         >
           <div className="bg-gradient-to-br from-black/70 via-blue-900 to-black/70 backdrop-blur-md p-8 rounded-xl border-[6px] border-cyan-500/80 border-t-[8px] border-t-blue-500  w-[70%] h-[100%] flex flex-col items-center justify-center relative ">
             <h2 className="text-3xl font-extrabold text-cyan-400  tracking-wide">
-              {selectedOption} selecionado!
+              {selectedOption}
             </h2>
-
+            <ul className="w-full pt-10 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 px-4 overflow-y-auto max-h custom-scroll scroll-fade-mask py-10">
+              {listMedKit?.map((item) => (
+                <li
+                  key={item.ID_ITEM_LIFE}
+                  onClick={() => handleSelectMedKit(item)}
+                  className="flex bg-gradient-to-br mx-4 from-black/80 via-blue-900 to-black/80 text-white px-4 py-3 rounded-xl border-[2px] border-blue-400 shadow-[0_0_15px_#00ffff80] transition-transform transform hover:shadow-[0_0_30px_#00ffffcc] duration-300"
+                >
+                  <div className="relative">
+                    <img
+                      src={selectImgMedKit(item.ID_ITEM_LIFE)}
+                      alt={item.ID_ITEM_NOME}
+                      className="w-16 h-16 min-w-16 min-h-16 flex-shrink-0 object-contain rounded-md border-2 border-red-700 "
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
-
-            <p className="text-gray-200 text-lg mt-4">
-              Aqui está o conteúdo da opção{" "}
-              <span className="font-bold text-cyan-300">{selectedOption}</span>.
-            </p>
           </div>
         </motion.div>
       )}
@@ -307,6 +337,68 @@ const Lobby = () => {
               </button>
               <button
                 onClick={() => handleConfirmPurchase(selectedGun.ID)}
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showModalMedKit && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
+            <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
+              Confirmar Compra
+            </h2>
+            <div className="flex items-center mb-4">
+              <img
+                src={selectImgMedKit(selectedMedKit.ID_ITEM_LIFE)}
+                className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
+              />
+              <div>
+                <p className="text-white font-semibold">
+                  {selectedMedKit.ID_ITEM_NOME}
+                </p>
+                <p className="text-green-400">
+                  💰 Valor un: ${selectedMedKit.VALOR_ITEM}
+                </p>
+
+                {/* 👇 Campo de quantidade */}
+                <div className="flex items-center mt-2 bg-gradient-to-br from-black/80 via-blue-900 to-black/80 px-3 py-2 rounded-lg border-[2px] border-blue-400 shadow-[0_0_10px_#00ffff88]">
+                  <button
+                    className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+                    onClick={() => setQuantidade((q) => Math.max(q - 1, 1))}
+                  >
+                    −
+                  </button>
+                  <span className="text-white px-4 font-bold tracking-wider">
+                    {quantidade}
+                  </span>
+                  <button
+                    className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+                    onClick={() => setQuantidade((q) => q + 1)}
+                  >
+                    ＋
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <button
+                onClick={() => setShowModalMedKit(false)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() =>
+                  handleConfirmPurchase(
+                    selectedMedKit.ID_ITEM_LIFE,
+                    medKit,
+                    quantidade
+                  )
+                }
                 className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
               >
                 Confirmar
