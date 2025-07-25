@@ -42,7 +42,7 @@ const Lobby = () => {
           },
         });
         const data = await res.json();
-        console.log(data);
+         
         if (res.ok) {
           setListMedKit(data.medKits);
           setCharacters(data.characters);
@@ -81,12 +81,14 @@ const Lobby = () => {
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (response.ok) {
         setShowModal(true);
+        selectImgMedKit(true);
 
         setTimeout(() => {
           setShowModal(false);
+          setShowModalMedKit(false);
           setShowDescriptionModal(true);
           setTimeout(() => {
             setShowDescriptionModal(false);
@@ -232,6 +234,29 @@ const Lobby = () => {
                 </li>
               ))}
             </ul>
+            {showDescriptionModal && (
+              <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-black/70 to-gray-900/80 backdrop-blur-sm z-50">
+                <div className="bg-gradient-to-r from-gray-800 to-gray-700 border border-cyan-500 p-6 rounded-2xl shadow-xl animate-pulse">
+                  <p className="text-cyan-400 font-extrabold text-xl flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-cyan-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Você adquiriu Medicamento !
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
           </div>
         </motion.div>
@@ -286,7 +311,6 @@ const Lobby = () => {
           </div>
         </motion.div>
       )}
-
       <div className="fixed bottom-20 w-[60%] bg-gray-900 p-4 flex justify-between rounded-t-xl shadow-lg border-[4px] border-gray-700">
         {["Mercado Negro", "Hospital", "Comandante", "Informante"].map(
           (option, index) => (

@@ -10,6 +10,7 @@ import ItemModal from "../Components/ItenModal";
 import Load from "../Components/LoadingScreen";
 import imgBackItem from "../Img/icone_equipamento.png";
 import { GiKevlarVest } from "react-icons/gi";
+import medKitImg from "../data/MedKit";
 
 const Base = () => {
   const [characters, setCharacters] = useState([]);
@@ -34,6 +35,8 @@ const Base = () => {
   const [uneQuip, setUneQuip] = useState();
   const itemSelecionado = itens.find((item) => item.ID === selectedItems);
   const [readyToSelectItem, setReadyToSelectItem] = useState(false);
+  const [listMedKitUnUser, setListMedKitUnUser] = useState();
+  const [selectedItemMedKit, setSelectedItemMedKit] = useState();
 
   useEffect(() => {
     if (readyToSelectItem) {
@@ -50,6 +53,12 @@ const Base = () => {
 
     return selectedMilitaryType ? selectedMilitaryType.image : "default.png";
   };
+
+  const selectImgMedKit = (id) => {
+    const gun = medKitImg.find((g) => g.ID === id);
+    return gun ? gun.img : "";
+  };
+
   const getMilitaryName = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(
       (tipo) => tipo.id === tipoId
@@ -93,6 +102,7 @@ const Base = () => {
         });
         const data = await res.json();
         if (res.ok) {
+          setListMedKitUnUser(data.listaMedKits);
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
           setItemEquip(data.characters[0].EQUIPADOS);
@@ -347,6 +357,47 @@ const Base = () => {
             {selectedItem && (
               <ItemModal
                 item={selectedItem}
+                equip={uneQuip}
+                onClose={() => setSelectedItem(null)}
+              />
+            )}
+          </div>
+
+          <div className="fixed bottom-10 right-10 mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900  w-[30vh] p-4 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
+            <div className="flex justify-between items-end w-full border-b border-cyan-500 pb-2 mb-2">
+              <h3 className="text-xl font-extrabold text-cyan-400">Med Kits</h3>
+            </div>
+
+            {Array.isArray(listMedKitUnUser) && listMedKitUnUser.length > 0 ? (
+              <ul className="grid grid-cols-3 gap-4">
+                {listMedKitUnUser
+                  .filter((medkit) => medkit.quantidade > 0)
+                  .slice(0, 6)
+                  .map((medkit, index) => (
+                    <li
+                      key={index}
+                      className="flex flex-col items-center justify-between shadow-lg    p-2 h-[8vh]"
+                      onClick={() => setSelectedItemMedKit(medkit)}
+                    >
+                      <img
+                        src={selectImgMedKit(medkit.nome)}
+                        alt={ medkit.nome}
+                        className="w-16 h-16 object-contain rounded-md border-2 border-red-700 cursor-pointer"
+                      />
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <div className="text-white text-center py-2">
+                Nenhum MedKit disponível
+              </div>
+            )}
+
+            {/* Modal de detalhes */}
+            {selectedItemMedKit && (
+              <ItemModal
+                item={selectedItem}
+                medKit={true}
                 equip={uneQuip}
                 onClose={() => setSelectedItem(null)}
               />

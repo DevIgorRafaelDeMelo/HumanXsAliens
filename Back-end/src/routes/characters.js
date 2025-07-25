@@ -13,7 +13,6 @@ router.get("/", authMiddleware, async (req, res) => {
     const userId = req.user.id;
 
     const medKits = await getItemMedKit();
- 
 
     const [characters] = await db.query(
       "SELECT * FROM characters WHERE user_id = ?",
@@ -22,6 +21,15 @@ router.get("/", authMiddleware, async (req, res) => {
     const [guns] = await db.query("SELECT * FROM armas ");
 
     const itensUser = await getItenUserByIds(userId);
+
+    const listaMedKits = [
+      { nome: 1, quantidade: characters[0].DEP_MEDKIT_UM },
+      { nome: 2, quantidade: characters[0].DEP_MEDKIT_DOIS },
+      { nome: 3, quantidade: characters[0].DEP_MEDKIT_TREIS },
+      { nome: 4, quantidade: characters[0].DEP_MEDKIT_QUATRO },
+      { nome: 5, quantidade: characters[0].DEP_MEDKIT_CINCO },
+      { nome: 6, quantidade: characters[0].DEP_MEDKIT_SEIS },
+    ];
 
     const itensMap = {};
     itensUser.forEach((item) => {
@@ -96,7 +104,14 @@ router.get("/", authMiddleware, async (req, res) => {
       characters.length > 0 ? characters.map((char) => char.alien_id) : [];
     let enemies = await getEnemiesByIds(alienIds[0]);
 
-    res.json({ characters, enemies, guns, gunsMescladas, medKits });
+    res.json({
+      characters,
+      enemies,
+      guns,
+      gunsMescladas,
+      medKits,
+      listaMedKits,
+    });
   } catch (error) {
     res.status(500).json({ message: "Erro interno ao buscar personagens." });
   }

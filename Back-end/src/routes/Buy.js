@@ -2,15 +2,81 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
-const { getUserById, getItenByIds } = require("../config/DBs");
+const {
+  getUserById,
+  getItenByIds,
+  getItemMedKitById,
+} = require("../config/DBs");
 
 router.post("/", authMiddleware, async (req, res) => {
   const gunId = req.body.item;
   const userId = req.user.id;
   const medKit = req.body.medKit;
+  const Qtd = req.body.quantidade;
 
   if (medKit) {
-     
+    const character = await getUserById(userId);
+    const item = await getItemMedKitById(gunId);
+
+    const valorTotalItems = item[0].VALOR_ITEM * Qtd;
+
+    if (valorTotalItems < character.money) {
+      const valorAtual = character.money - valorTotalItems;
+
+      await db.query("UPDATE characters SET money = ? WHERE user_id = ?", [
+        valorAtual,
+        userId,
+      ]);
+
+      switch (gunId) {
+        case 1:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_UM = DEP_MEDKIT_UM + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        case 2:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_DOIS = DEP_MEDKIT_DOIS + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        case 3:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_TREIS = DEP_MEDKIT_TREIS + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        case 4:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_QUATRO = DEP_MEDKIT_QUATRO + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        case 5:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_CINCO = DEP_MEDKIT_CINCO + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        case 6:
+          await db.query(
+            "UPDATE characters SET DEP_MEDKIT_SEIS = DEP_MEDKIT_SEIS + ? WHERE user_id = ?",
+            [Qtd, userId]
+          );
+          break;
+        default:
+          console.log("Item desconhecido");
+          break;
+      }
+      return res.json({
+        message: "Arma adicionada ao depósito com sucesso.",
+      });
+    } else {
+      if (character.money < valorTotalItems) {
+        return res.status(400).json({ message: "Dinheiro insuficiente." });
+      }
+    }
   }
 
   if (!medKit) {

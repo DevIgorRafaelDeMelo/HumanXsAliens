@@ -60,6 +60,24 @@ const getItemMedKit = async () => {
   }
 };
 
+const getItemMedKitById = async (Id) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM item_cura WHERE ID_ITEM_LIFE = ?",
+      [Id]
+    );
+
+    return rows;
+  } catch (error) {
+    console.error("Erro ao buscar personagem:", error);
+    return null;
+  } finally {
+    if (connection) await connection.release();
+  }
+};
+
 const getEnemiesByIds = async (enemyIds) => {
   let connection;
   try {
@@ -137,4 +155,5 @@ module.exports = {
   getItenByIds,
   getUserById,
   getItemMedKit,
+  getItemMedKitById,
 };
