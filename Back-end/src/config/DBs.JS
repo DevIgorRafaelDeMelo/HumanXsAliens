@@ -78,6 +78,27 @@ const getItemMedKitById = async (Id) => {
   }
 };
 
+const getFullLive = async (Id) => {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+
+    const [rows] = await connection.execute(
+      "SELECT * FROM characters WHERE user_id = ?",
+      [Id]
+    );
+
+    const liveTotal =
+      rows[0].health_points +
+      rows[0].GUN_SPELL[0] +
+      rows[0].BOOT_SPELL[0] +
+      rows[0].CAPA_SPELL[0] +
+      rows[0].TORSO_SPELL[0];
+
+    return liveTotal;
+  } catch (error) {}
+};
+
 const getEnemiesByIds = async (enemyIds) => {
   let connection;
   try {
@@ -156,4 +177,5 @@ module.exports = {
   getUserById,
   getItemMedKit,
   getItemMedKitById,
+  getFullLive,
 };

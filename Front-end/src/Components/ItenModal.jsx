@@ -3,6 +3,7 @@ import gunsImg from "../data/Arma";
 import { useUser } from "../context/UserContext";
 import { GiToolbox } from "react-icons/gi";
 import { FaDollarSign } from "react-icons/fa";
+import medKitImg from "../data/MedKit";
 
 const ItemModal = ({ item, onClose, equip, medKit }) => {
   const [characters, setCharacters] = useState([]);
@@ -12,24 +13,26 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [showResultModal, setShowResultModal] = useState(false);
   const [statusModal, setStatusModal] = useState();
-  const [selectedItem, setSelectedItem] = useState(item);
+  const [selectedItem] = useState(item);
   const [update, setUpdate] = useState();
   const [modalUpdate, setModalUpdate] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [nivelItem, setNivelItem] = useState(item.NV_ITEM || item.NIVEL);
-  const [defItem, setDefItem] = useState(item.DEFESA || item.DEFESSA);
-  const [vidaItem, setVidaItem] = useState(item.USER_ITEM_VIDA || item.VIDA);
-  const [critItem, setCritItem] = useState(
-    item.USER_ITEM_CRITICO || item.CRITICO
-  );
-  const [mulCritItem, setMulCritItem] = useState(
-    item.USER_ITEM_MULTIPLI_CRITICO || item.MULTIPLO_CRITICO
-  );
+  const [nivelItem, setNivelItem] = useState();
+  const [defItem, setDefItem] = useState();
+  const [vidaItem, setVidaItem] = useState();
+  const [critItem, setCritItem] = useState();
+  const [mulCritItem, setMulCritItem] = useState();
+  const [quantidade, setQuantidade] = useState(1);
 
   useEffect(() => {
-    if (!item) return null;
-    console.log(medKit);
-  }, [item]);
+    if (!medKit) {
+      setNivelItem(item.NV_ITEM || item.NIVEL);
+      setDefItem(item.DEFESA || item.DEFESSA);
+      setVidaItem(item.USER_ITEM_VIDA || item.VIDA);
+      setCritItem(item.USER_ITEM_CRITICO || item.CRITICO);
+      setMulCritItem(item.USER_ITEM_MULTIPLI_CRITICO || item.MULTIPLO_CRITICO);
+    }
+  }, [medKit, item]);
 
   useEffect(() => {
     async function fetchCharacters() {
@@ -41,7 +44,7 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
           },
         });
         const data = await res.json();
-
+        console.log(data);
         if (res.ok) {
           setCharacters(data.characters);
         } else {
@@ -54,7 +57,6 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
     }
     fetchCharacters();
   }, [userLogin]);
-
   const confirmarVenda = (index) => {
     setVendaIndex(index);
     setShowConfirmModal(true);
@@ -93,6 +95,10 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
       setTimeout(() => {}, 1000);
     }
   };
+  const selectImgMedKit = (id) => {
+    const gun = medKitImg.find((g) => g.ID === id);
+    return gun ? gun.img : "";
+  };
   const handleEquipar = async (itemId) => {
     try {
       const res = await fetch("http://192.168.20.198:5000/equipar", {
@@ -113,6 +119,27 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
       setTimeout(() => {}, 1000);
     }
   };
+
+  const handleMed = async (id, quantidade) => {
+    try {
+      const response = await fetch("http://192.168.20.198:5000/Med", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userLogin.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idMed: id,
+          qtd: quantidade,
+        }),
+      });
+
+      const resultado = await response.json();
+      console.log("Resposta do servidor:", resultado);
+    } catch (error) {
+      console.error("Erro ao medicar:", error);
+    }
+  };
   const handleBetter = async (itemId) => {
     try {
       const res = await fetch("http://192.168.20.198:5000/Better", {
@@ -125,7 +152,6 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
       });
       const data = await res.json();
       setUpdate(data.Update);
-      setSelectedItem(data.items);
       setNivelItem(data.items.NV_ITEM);
       setDefItem(data.items.DEFESA);
       setCritItem(data.items.USER_ITEM_CRITICO);
@@ -410,6 +436,64 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
             </div>
           </div>
         )}
+      </div>
+    );
+  }
+  if (medKit) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-auto flex flex-col items-center space-y-6 border-2 border-cyan-500 relative overflow-hidden">
+          <h2 className="text-cyan-300 text-3xl font-bold tracking-wide shadow-sm text-center">
+            {selectedItem.NOME}
+          </h2>
+          <img
+            src={selectImgMedKit(selectedItem.ID)}
+            alt={selectedItem.NOME}
+            className="w-40 h-40 border-4 border-cyan-500 rounded-xl shadow-xl transition duration-300"
+          />
+          <div className="w-full bg-gray-800 text-cyan-300 p-4 rounded-lg shadow-inner mt-2 border border-cyan-600 text-center">
+            <p className="text-sm font-semibold">Vida que será recuperada:</p>
+            <p className="text-2xl font-bold tracking-wide mt-1">
+              {quantidade * item.LIFE_STATUS} HP
+            </p>
+          </div>
+          <button
+            className="absolute top-4 right-4 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-full w-8 h-8 flex items-center justify-center shadow-md transition"
+            onClick={onClose}
+          >
+            ✕
+          </button>
+
+          <div className="flex items-center mt-2 bg-gradient-to-br from-black/80 via-blue-900 to-black/80 px-3 py-2 rounded-lg border-[2px] border-blue-400 shadow-[0_0_10px_#00ffff88]">
+            <button
+              className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+              onClick={() => setQuantidade((q) => Math.max(q - 1, 1))}
+            >
+              −
+            </button>
+            <span className="text-white px-4 font-bold tracking-wider">
+              {quantidade}
+            </span>
+            <button
+              className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+              onClick={() =>
+                setQuantidade((q) => Math.min(q + 1, selectedItem.QTD_ITEM))
+              }
+            >
+              ＋
+            </button>
+          </div>
+          <button
+            className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-lg p-3 rounded-md shadow-lg transition hover:scale-105"
+            onClick={() => {
+              handleMed(selectedItem.ID, quantidade);
+              onClose();
+            }}
+          >
+            Medicar
+          </button>
+          <div className="flex flex-col w-full space-y-4 mt-4"></div>
+        </div>
       </div>
     );
   }

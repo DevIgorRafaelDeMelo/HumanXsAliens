@@ -102,7 +102,7 @@ const Base = () => {
         });
         const data = await res.json();
         if (res.ok) {
-          setListMedKitUnUser(data.listaMedKits);
+          setListMedKitUnUser(data.medKitsCompletos);
           setCharacters(data.characters);
           setDepositoItens(data.characters[0].DEPOSITO);
           setItemEquip(data.characters[0].EQUIPADOS);
@@ -371,7 +371,7 @@ const Base = () => {
             {Array.isArray(listMedKitUnUser) && listMedKitUnUser.length > 0 ? (
               <ul className="grid grid-cols-3 gap-4">
                 {listMedKitUnUser
-                  .filter((medkit) => medkit.quantidade > 0)
+                  .filter((medkit) => medkit.QTD_ITEM > 0)
                   .slice(0, 6)
                   .map((medkit, index) => (
                     <li
@@ -380,8 +380,8 @@ const Base = () => {
                       onClick={() => setSelectedItemMedKit(medkit)}
                     >
                       <img
-                        src={selectImgMedKit(medkit.nome)}
-                        alt={ medkit.nome}
+                        src={selectImgMedKit(medkit.ID)}
+                        alt={medkit.NOME}
                         className="w-16 h-16 object-contain rounded-md border-2 border-red-700 cursor-pointer"
                       />
                     </li>
@@ -396,10 +396,10 @@ const Base = () => {
             {/* Modal de detalhes */}
             {selectedItemMedKit && (
               <ItemModal
-                item={selectedItem}
+                item={selectedItemMedKit}
                 medKit={true}
                 equip={uneQuip}
-                onClose={() => setSelectedItem(null)}
+                onClose={() => setSelectedItemMedKit(null)}
               />
             )}
           </div>

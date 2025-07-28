@@ -42,7 +42,7 @@ const Lobby = () => {
           },
         });
         const data = await res.json();
-         
+
         if (res.ok) {
           setListMedKit(data.medKits);
           setCharacters(data.characters);
@@ -198,6 +198,59 @@ const Lobby = () => {
 
             <p className="text-gray-200 text-lg mt-4"></p>
           </div>
+          {showModal && selectedGun && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
+              <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
+                <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
+                  Confirmar Compra
+                </h2>
+                <div className="flex items-center mb-4">
+                  <img
+                    src={selectImgGund(selectedGun.ID)}
+                    alt={selectedGun.NOME}
+                    className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">
+                      {selectedGun.NOME}
+                    </p>
+                    <p className="text-yellow-400">
+                      ⚔️ Dano: {selectedGun.DANO}
+                    </p>
+                    <p className="text-white font-semibold">
+                      {selectedGun.CRITICO}
+                    </p>
+                    <p className="text-yellow-400">
+                      ⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}
+                    </p>
+                    <p className="text-white font-semibold">
+                      {selectedGun.VIDA}
+                    </p>
+                    <p className="text-yellow-400">
+                      ⚔️ Dano: {selectedGun.DEFESSA}
+                    </p>
+                    <p className="text-green-400">
+                      💰 Valor: ${selectedGun.PRECO}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => handleConfirmPurchase(selectedGun.ID)}
+                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </motion.div>
       )}
       {selectedOption === "Hospital" && (
@@ -259,6 +312,68 @@ const Lobby = () => {
             )}
             <div className="absolute bottom-0 w-[80%] h-[6px] bg-cyan-500  rounded-full" />
           </div>
+          {showModalMedKit && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
+              <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
+                <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
+                  Confirmar Compra
+                </h2>
+                <div className="flex items-center mb-4">
+                  <img
+                    src={selectImgMedKit(selectedMedKit.ID_ITEM_LIFE)}
+                    className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">
+                      {selectedMedKit.ID_ITEM_NOME}
+                    </p>
+                    <p className="text-green-400">
+                      💰 Valor un: ${selectedMedKit.VALOR_ITEM}
+                    </p>
+
+                    {/* 👇 Campo de quantidade */}
+                    <div className="flex items-center mt-2 bg-gradient-to-br from-black/80 via-blue-900 to-black/80 px-3 py-2 rounded-lg border-[2px] border-blue-400 shadow-[0_0_10px_#00ffff88]">
+                      <button
+                        className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+                        onClick={() => setQuantidade((q) => Math.max(q - 1, 1))}
+                      >
+                        −
+                      </button>
+                      <span className="text-white px-4 font-bold tracking-wider">
+                        {quantidade}
+                      </span>
+                      <button
+                        className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
+                        onClick={() => setQuantidade((q) => q + 1)}
+                      >
+                        ＋
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setShowModalMedKit(false)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleConfirmPurchase(
+                        selectedMedKit.ID_ITEM_LIFE,
+                        medKit,
+                        quantidade
+                      )
+                    }
+                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </motion.div>
       )}
       {selectedOption === "Comandante" && (
@@ -324,113 +439,6 @@ const Lobby = () => {
           )
         )}
       </div>
-      {showModal && selectedGun && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
-            <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
-              Confirmar Compra
-            </h2>
-            <div className="flex items-center mb-4">
-              <img
-                src={selectImgGund(selectedGun.ID)}
-                alt={selectedGun.NOME}
-                className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow"
-              />
-              <div>
-                <p className="text-white font-semibold">{selectedGun.NOME}</p>
-                <p className="text-yellow-400">⚔️ Dano: {selectedGun.DANO}</p>
-                <p className="text-white font-semibold">
-                  {selectedGun.CRITICO}
-                </p>
-                <p className="text-yellow-400">
-                  ⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}
-                </p>
-                <p className="text-white font-semibold">{selectedGun.VIDA}</p>
-                <p className="text-yellow-400">
-                  ⚔️ Dano: {selectedGun.DEFESSA}
-                </p>
-                <p className="text-green-400">💰 Valor: ${selectedGun.PRECO}</p>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => handleConfirmPurchase(selectedGun.ID)}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showModalMedKit && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
-          <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
-            <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
-              Confirmar Compra
-            </h2>
-            <div className="flex items-center mb-4">
-              <img
-                src={selectImgMedKit(selectedMedKit.ID_ITEM_LIFE)}
-                className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
-              />
-              <div>
-                <p className="text-white font-semibold">
-                  {selectedMedKit.ID_ITEM_NOME}
-                </p>
-                <p className="text-green-400">
-                  💰 Valor un: ${selectedMedKit.VALOR_ITEM}
-                </p>
-
-                {/* 👇 Campo de quantidade */}
-                <div className="flex items-center mt-2 bg-gradient-to-br from-black/80 via-blue-900 to-black/80 px-3 py-2 rounded-lg border-[2px] border-blue-400 shadow-[0_0_10px_#00ffff88]">
-                  <button
-                    className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
-                    onClick={() => setQuantidade((q) => Math.max(q - 1, 1))}
-                  >
-                    −
-                  </button>
-                  <span className="text-white px-4 font-bold tracking-wider">
-                    {quantidade}
-                  </span>
-                  <button
-                    className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"
-                    onClick={() => setQuantidade((q) => q + 1)}
-                  >
-                    ＋
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <button
-                onClick={() => setShowModalMedKit(false)}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() =>
-                  handleConfirmPurchase(
-                    selectedMedKit.ID_ITEM_LIFE,
-                    medKit,
-                    quantidade
-                  )
-                }
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

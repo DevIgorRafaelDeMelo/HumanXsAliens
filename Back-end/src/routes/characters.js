@@ -23,13 +23,20 @@ router.get("/", authMiddleware, async (req, res) => {
     const itensUser = await getItenUserByIds(userId);
 
     const listaMedKits = [
-      { nome: 1, quantidade: characters[0].DEP_MEDKIT_UM },
-      { nome: 2, quantidade: characters[0].DEP_MEDKIT_DOIS },
-      { nome: 3, quantidade: characters[0].DEP_MEDKIT_TREIS },
-      { nome: 4, quantidade: characters[0].DEP_MEDKIT_QUATRO },
-      { nome: 5, quantidade: characters[0].DEP_MEDKIT_CINCO },
-      { nome: 6, quantidade: characters[0].DEP_MEDKIT_SEIS },
+      { ID: 1, QTD_ITEM: characters[0].DEP_MEDKIT_UM },
+      { ID: 2, QTD_ITEM: characters[0].DEP_MEDKIT_DOIS },
+      { ID: 3, QTD_ITEM: characters[0].DEP_MEDKIT_TREIS },
+      { ID: 4, QTD_ITEM: characters[0].DEP_MEDKIT_QUATRO },
+      { ID: 5, QTD_ITEM: characters[0].DEP_MEDKIT_CINCO },
+      { ID: 6, QTD_ITEM: characters[0].DEP_MEDKIT_SEIS },
     ];
+    const medKitsCompletos = listaMedKits.map((lista) => {
+      const dadosExtra = medKits.find((m) => m.ID === lista.ID);
+      return {
+        ...lista,
+        ...dadosExtra,
+      };
+    });
 
     const itensMap = {};
     itensUser.forEach((item) => {
@@ -111,6 +118,7 @@ router.get("/", authMiddleware, async (req, res) => {
       gunsMescladas,
       medKits,
       listaMedKits,
+      medKitsCompletos,
     });
   } catch (error) {
     res.status(500).json({ message: "Erro interno ao buscar personagens." });
