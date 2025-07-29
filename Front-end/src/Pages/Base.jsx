@@ -362,48 +362,48 @@ const Base = () => {
               />
             )}
           </div>
-
-          <div className="fixed bottom-10 right-10 mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900  w-[30vh] p-4 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
-            <div className="flex justify-between items-end w-full border-b border-cyan-500 pb-2 mb-2">
-              <h3 className="text-xl font-extrabold text-cyan-400">Med Kits</h3>
-            </div>
-
-            {Array.isArray(listMedKitUnUser) && listMedKitUnUser.length > 0 ? (
-              <ul className="grid grid-cols-3 gap-4">
-                {listMedKitUnUser
-                  .filter((medkit) => medkit.QTD_ITEM > 0)
-                  .slice(0, 6)
-                  .map((medkit, index) => (
-                    <li
-                      key={index}
-                      className="flex flex-col items-center justify-between shadow-lg    p-2 h-[8vh]"
-                      onClick={() => setSelectedItemMedKit(medkit)}
-                    >
-                      <img
-                        src={selectImgMedKit(medkit.ID)}
-                        alt={medkit.NOME}
-                        className="w-16 h-16 object-contain rounded-md border-2 border-red-700 cursor-pointer"
-                      />
-                    </li>
-                  ))}
-              </ul>
-            ) : (
-              <div className="text-white text-center py-2">
-                Nenhum MedKit disponível
-              </div>
-            )}
-
-            {/* Modal de detalhes */}
-            {selectedItemMedKit && (
-              <ItemModal
-                item={selectedItemMedKit}
-                medKit={true}
-                equip={uneQuip}
-                onClose={() => setSelectedItemMedKit(null)}
-              />
-            )}
-          </div>
         </motion.div>
+      </div>
+
+      <div className="fixed bottom-10 right-10 mt-10 bg-gradient-to-br from-gray-800 via-black to-gray-900  w-[30vh] p-4 rounded-xl border-2 border-cyan-500 shadow-[0_0_25px_#00ffff55]">
+        <div className="flex justify-between items-end w-full border-b border-cyan-500 pb-2 mb-2">
+          <h3 className="text-xl font-extrabold text-cyan-400">Med Kits</h3>
+        </div>
+
+        {Array.isArray(listMedKitUnUser) && listMedKitUnUser.length > 0 ? (
+          <ul className="grid grid-cols-3 gap-4">
+            {listMedKitUnUser
+              .filter((medkit) => medkit.QTD_ITEM > 0)
+              .slice(0, 6)
+              .map((medkit, index) => (
+                <li
+                  key={index}
+                  className="flex flex-col items-center justify-between shadow-lg    p-2 h-[8vh]"
+                  onClick={() => setSelectedItemMedKit(medkit)}
+                >
+                  <img
+                    src={selectImgMedKit(medkit.ID)}
+                    alt={medkit.NOME}
+                    className="w-16 h-16 object-contain rounded-md border-2 border-red-700 cursor-pointer"
+                  />
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <div className="text-white text-center py-2">
+            Nenhum MedKit disponível
+          </div>
+        )}
+
+        {/* Modal de detalhes */}
+        {selectedItemMedKit && (
+          <ItemModal
+            item={selectedItemMedKit}
+            medKit={true}
+            equip={uneQuip}
+            onClose={() => setSelectedItemMedKit(null)}
+          />
+        )}
       </div>
 
       <div className="fixed top-[50vh] left-10 p-4   w-[20%] rounded-lg shadow-lg  ">

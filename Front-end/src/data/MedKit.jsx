@@ -1,6 +1,6 @@
 import img1 from "../Img//MedKits/Med_Kit_P.png";
-import img2 from "../Img/alien2.jpeg";
-import img3 from "../Img/alien3.jpeg";
+import img2 from "../Img/MedKits/Med_Kit_M.png";
+import img3 from "../Img/MedKits/Med_Kit_G.png";
 import img4 from "../Img/alien4.jpeg";
 import img5 from "../Img/alien5.jpeg";
 
@@ -11,11 +11,11 @@ const medKits = [
   },
   {
     ID: 2,
-    img: img1,
+    img: img2,
   },
   {
     ID: 3,
-    img: img1,
+    img: img3,
   },
   {
     ID: 4,

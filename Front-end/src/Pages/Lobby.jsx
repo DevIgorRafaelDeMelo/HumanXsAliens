@@ -164,8 +164,8 @@ const Lobby = () => {
                     <p className="font-extrabold ms-2 text-cyan-400 tracking-wide">
                       {gun.NOME}
                     </p>
-                    <p className="text-sm absolute bottom-2 right-4 text-green-400 font-semibold">
-                      R$: {gun.PRECO}
+                    <p className="text-green-400 font-bold button-2 fixed bottom-2 right-2  bg-gradient-to-r from-black/60 via-green-700 to-black/60 px-3 py-1 rounded-md border border-green-400 shadow-[0_0_8px_#00ff0077] inline-block">
+                      Valor: ${gun.PRECO}
                     </p>
                   </div>
                 </li>
@@ -200,50 +200,63 @@ const Lobby = () => {
           </div>
           {showModal && selectedGun && (
             <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
-              <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
-                <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
-                  Confirmar Compra
+              <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-8 rounded-2xl border-4 border-cyan-400 shadow-[0_0_30px_#00ffffaa] w-full max-w-xl">
+                <h2 className="text-3xl font-extrabold text-cyan-400 mb-6 text-center drop-shadow-md">
+                  {selectedGun.NOME}
                 </h2>
-                <div className="flex items-center mb-4">
+
+                <div className="flex items-center mb-6 space-x-6">
                   <img
                     src={selectImgGund(selectedGun.ID)}
                     alt={selectedGun.NOME}
-                    className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow"
+                    className="w-44 h-44 rounded-xl border-2 border-cyan-500 shadow-[0_0_15px_#00ffffaa]"
                   />
-                  <div>
-                    <p className="text-white font-semibold">
-                      {selectedGun.NOME}
-                    </p>
-                    <p className="text-yellow-400">
-                      ⚔️ Dano: {selectedGun.DANO}
-                    </p>
-                    <p className="text-white font-semibold">
-                      {selectedGun.CRITICO}
-                    </p>
-                    <p className="text-yellow-400">
-                      ⚔️ Dano: {selectedGun.MULTIPLO_CRITICO}
-                    </p>
-                    <p className="text-white font-semibold">
-                      {selectedGun.VIDA}
-                    </p>
-                    <p className="text-yellow-400">
-                      ⚔️ Dano: {selectedGun.DEFESSA}
-                    </p>
-                    <p className="text-green-400">
-                      💰 Valor: ${selectedGun.PRECO}
+                  <div className="space-y-2 text-sm md:text-base w-full">
+                    <table className="w-full bg-gradient-to-br from-gray-800 via-black to-gray-900 rounded-xl border-2 border-cyan-500 shadow-[0_0_20px_#00ffff55] text-gray-300 text-sm md:text-base">
+                      <tbody>
+                        <tr className="border-b border-gray-600">
+                          <td className="px-4 py-2 font-bold ">Vida</td>
+                          <td className="px-4 py-2">{selectedGun.VIDA}</td>
+                        </tr>
+                        <tr className="border-b border-gray-600">
+                          <td className="px-4 py-2 font-bold  ">Ataque</td>
+                          <td className="px-4 py-2">{selectedGun.DANO}</td>
+                        </tr>
+                        <tr className="border-b border-gray-600">
+                          <td className="px-4 py-2 font-bold  ">Crítico</td>
+                          <td className="px-4 py-2">{selectedGun.CRITICO}</td>
+                        </tr>
+                        <tr className="border-b border-gray-600">
+                          <td className="px-4 py-2 font-bold  ">
+                            Multiplicador
+                          </td>
+                          <td className="px-4 py-2">
+                            {selectedGun.MULTIPLO_CRITICO}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-2 font-bold ">Defesa</td>
+                          <td className="px-4 py-2">{selectedGun.DEFESSA}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <p className="mt-4 text-green-400 font-bold text-md bg-gradient-to-r from-black/60 via-green-700 to-black/60 px-4 py-2 rounded-md border border-green-400 shadow-[0_0_12px_#00ff0077] inline-block">
+                      Preço: ${selectedGun.PRECO}
                     </p>
                   </div>
                 </div>
-                <div className="flex justify-between">
+
+                <div className="flex justify-between mt-4 space-x-4">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
+                    className="flex-grow px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold transition"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={() => handleConfirmPurchase(selectedGun.ID)}
-                    className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md"
+                    className="flex-grow px-4 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md font-semibold transition"
                   >
                     Confirmar
                   </button>
@@ -327,8 +340,8 @@ const Lobby = () => {
                     <p className="text-white font-semibold">
                       {selectedMedKit.ID_ITEM_NOME}
                     </p>
-                    <p className="text-green-400">
-                      💰 Valor un: ${selectedMedKit.VALOR_ITEM}
+                    <p className="text-green-400 font-bold text-lg bg-gradient-to-r from-black/60 via-green-700 to-black/60 px-3 py-1 rounded-md border border-green-400 shadow-[0_0_8px_#00ff0077] inline-block">
+                      Valor: ${selectedMedKit.VALOR_ITEM}
                     </p>
 
                     {/* 👇 Campo de quantidade */}

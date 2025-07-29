@@ -89,7 +89,7 @@ const Navbar = () => {
     }
 
     fetchCharacters();
-  }, [userLogin, navigate, characters]);
+  }, [userLogin, navigate, characters, vidaAtual]);
 
   const getMilitaryImage = (tipoId) => {
     const selectedMilitaryType = [...tiposMilitares.homens].find(

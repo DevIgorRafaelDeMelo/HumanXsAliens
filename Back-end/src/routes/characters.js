@@ -23,12 +23,12 @@ router.get("/", authMiddleware, async (req, res) => {
     const itensUser = await getItenUserByIds(userId);
 
     const listaMedKits = [
-      { ID: 1, QTD_ITEM: characters[0].DEP_MEDKIT_UM },
-      { ID: 2, QTD_ITEM: characters[0].DEP_MEDKIT_DOIS },
-      { ID: 3, QTD_ITEM: characters[0].DEP_MEDKIT_TREIS },
-      { ID: 4, QTD_ITEM: characters[0].DEP_MEDKIT_QUATRO },
-      { ID: 5, QTD_ITEM: characters[0].DEP_MEDKIT_CINCO },
-      { ID: 6, QTD_ITEM: characters[0].DEP_MEDKIT_SEIS },
+      { ID: 1, QTD_ITEM: characters[0].DEP_MEDKIT_UM, LIFE_TOTAL: 1000 },
+      { ID: 2, QTD_ITEM: characters[0].DEP_MEDKIT_DOIS, LIFE_TOTAL: 2000 },
+      { ID: 3, QTD_ITEM: characters[0].DEP_MEDKIT_TREIS, LIFE_TOTAL: 3000 },
+      { ID: 4, QTD_ITEM: characters[0].DEP_MEDKIT_QUATRO, LIFE_TOTAL: 4000 },
+      { ID: 5, QTD_ITEM: characters[0].DEP_MEDKIT_CINCO, LIFE_TOTAL: 5000 },
+      { ID: 6, QTD_ITEM: characters[0].DEP_MEDKIT_SEIS, LIFE_TOTAL: 6000 },
     ];
     const medKitsCompletos = listaMedKits.map((lista) => {
       const dadosExtra = medKits.find((m) => m.ID === lista.ID);

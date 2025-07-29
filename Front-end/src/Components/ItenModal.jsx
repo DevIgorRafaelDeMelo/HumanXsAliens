@@ -25,6 +25,7 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
   const [quantidade, setQuantidade] = useState(1);
 
   useEffect(() => {
+    console.log(selectedItem);
     if (!medKit) {
       setNivelItem(item.NV_ITEM || item.NIVEL);
       setDefItem(item.DEFESA || item.DEFESSA);
@@ -44,7 +45,6 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
           },
         });
         const data = await res.json();
-        console.log(data);
         if (res.ok) {
           setCharacters(data.characters);
         } else {
@@ -359,7 +359,7 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
               {update && (
                 <div className="relative text-sm text-gray-200 rounded-2xl p-6 w-full space-y-6">
                   <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-5xl font-black  drop-shadow-xl animate-pulse z-10">
-                    NV {selectedItem.NV_ITEM}
+                    NV {selectedItem.NIVEL + 1}
                   </div>
                   <div className="relative flex justify-center">
                     <img
@@ -451,10 +451,16 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
             alt={selectedItem.NOME}
             className="w-40 h-40 border-4 border-cyan-500 rounded-xl shadow-xl transition duration-300"
           />
+
+          <div className="text-white text-xl font-bold tracking-wide bg-gradient-to-r from-cyan-700 via-cyan-500 to-cyan-600 px-4 py-2 shadow-lg border border-cyan-400">
+            {selectedItem.QTD_ITEM}{" "}
+            <span className="text-xs text-gray-200 ml-1">UN</span>
+          </div>
+
           <div className="w-full bg-gray-800 text-cyan-300 p-4 rounded-lg shadow-inner mt-2 border border-cyan-600 text-center">
             <p className="text-sm font-semibold">Vida que será recuperada:</p>
             <p className="text-2xl font-bold tracking-wide mt-1">
-              {quantidade * item.LIFE_STATUS} HP
+              {quantidade * item.LIFE_TOTAL} HP
             </p>
           </div>
           <button
