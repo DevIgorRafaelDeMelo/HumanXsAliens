@@ -1,8 +1,9 @@
 import img1 from "../Img//MedKits/Med_Kit_P.png";
 import img2 from "../Img/MedKits/Med_Kit_M.png";
 import img3 from "../Img/MedKits/Med_Kit_G.png";
-import img4 from "../Img/alien4.jpeg";
-import img5 from "../Img/alien5.jpeg";
+import img4 from "../Img/MedKits/Analgésico.png";
+import img5 from "../Img/MedKits/Painkiller.png";
+import img6 from "../Img/MedKits/Epinefrina.png";
 
 const medKits = [
   {
@@ -19,15 +20,15 @@ const medKits = [
   },
   {
     ID: 4,
-    img: img1,
+    img: img4,
   },
   {
     ID: 5,
-    img: img1,
+    img: img5,
   },
   {
     ID: 6,
-    img: img1,
+    img: img6,
   },
 ];
 

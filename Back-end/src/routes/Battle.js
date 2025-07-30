@@ -7,6 +7,7 @@ const { getEnemiesByIds, getCharacterById, pool } = require("../config/DBs");
 router.post("/", authMiddleware, async (req, res) => {
   let exp = 100;
   let money = 1000;
+  let scrap = 100;
   try {
     const { characterId, enemyIds } = req.body;
 
@@ -18,7 +19,17 @@ router.post("/", authMiddleware, async (req, res) => {
 
     const character = await getCharacterById(characterId);
     let enemies = await getEnemiesByIds(enemyIds);
-    const battleResult = await simulateBattle(character, enemies, exp, money);
+
+    scrap = scrap * enemies.nv;
+    money = money * enemies.nv;
+    exp = exp * enemies.nv;
+    const battleResult = await simulateBattle(
+      character,
+      enemies,
+      exp,
+      money,
+      scrap
+    );
     const { turns, winner, playerHP } = battleResult;
 
     await db.execute(
@@ -29,6 +40,7 @@ router.post("/", authMiddleware, async (req, res) => {
     if (winner === "player") {
       enemies = await getEnemiesByIds(enemyIds + 1);
       return res.status(200).json({
+        scrap,
         exp,
         money,
         enemies,
@@ -46,7 +58,7 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-const simulateBattle = async (character, enemy, exp, money) => {
+const simulateBattle = async (character, enemy, exp, money, scrap) => {
   const initialEnemyHP = enemy.vida;
 
   const lifeTotal = character.CHAR_VIDA_ATUAL;
@@ -107,8 +119,8 @@ const simulateBattle = async (character, enemy, exp, money) => {
         [character.user_id]
       );
       await db.execute(
-        "UPDATE characters SET exp_points = exp_points + ?, money = money + ? WHERE user_id = ?",
-        [exp, money, character.user_id]
+        "UPDATE characters SET exp_points = exp_points + ?, money = money + ?, SCRAP = SCRAP + ?  WHERE user_id = ?",
+        [exp, money, scrap, character.user_id]
       );
       break;
     }

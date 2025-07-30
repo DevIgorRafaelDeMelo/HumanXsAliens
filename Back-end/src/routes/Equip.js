@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
-const { getItenByIds, getUserById } = require("../config/DBs");
+const { getItenByIds, getUserById, getItenUserById } = require("../config/DBs");
 
 router.post("/", authMiddleware, async (req, res) => {
+  const { id } = req.body;
+  const userId = req.user.id;
   try {
-    const { id } = req.body;
-    const userId = req.user.id;
-
     if (!id || !userId) {
       return res
         .status(400)
@@ -21,6 +20,7 @@ router.post("/", authMiddleware, async (req, res) => {
     if (!itemUpdate) {
       return res.status(404).json({ error: "Item não encontrado." });
     }
+    const nvItem = await getItenUserById(userId, id);
 
     let queryUpdate = "";
     let valuesUpdate = [];
@@ -34,34 +34,37 @@ router.post("/", authMiddleware, async (req, res) => {
       itemUpdate.MULTIPLO_CRITICO,
     ];
 
+    const valoresMultiplicados = dadosAtualizados.map(
+      (valor) => Number(valor) * nvItem[0].NV_ITEM
+    );
+
     switch (itemUpdate.TYPE) {
       case "Arma":
         queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
-        valuesUpdate = [itemUpdate.ID, userId]; 
+        valuesUpdate = [itemUpdate.ID, userId];
         querySpell = ` UPDATE characters  SET  GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?; `;
-        valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
-
+        valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
         break;
 
       case "Capa":
         queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
         querySpell = ` UPDATE characters  SET  CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[1]', ?) WHERE user_id = ?; `;
-        valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
+        valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
         break;
 
       case "Armadura":
         queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
         querySpell = ` UPDATE characters  SET  TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[2]', ?) WHERE user_id = ?; `;
-        valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
+        valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
         break;
 
       case "Buts":
         queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
         valuesUpdate = [itemUpdate.ID, userId];
         querySpell = ` UPDATE characters  SET  BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[3]', ?) WHERE user_id = ?; `;
-        valuesSpell = [...dadosAtualizados, itemUpdate.ID, userId];
+        valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
         break;
 
       default:
@@ -78,7 +81,7 @@ router.post("/", authMiddleware, async (req, res) => {
       message: `Item ${itemUpdate.ID} equipado com sucesso!`,
       characters: user,
     });
-  } catch (error) { 
+  } catch (error) {
     res.status(500).json({ error: "Erro ao equipar item." });
   }
 });
