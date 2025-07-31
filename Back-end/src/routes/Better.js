@@ -3,22 +3,26 @@ const router = express.Router();
 const db = require("../config/db");
 const authMiddleware = require("../middleware/authMiddleware");
 const { getUserById, getItenByIds, getItenUserById } = require("../config/DBs");
-const { Types } = require("mysql2");
 
 router.post("/", authMiddleware, async (req, res) => {
   const itemId = req.body.id;
   const userId = req.user.id;
   const item = await getItenByIds(itemId);
   const user = await getUserById(userId);
+  const [rows] = await db.execute(
+    `SELECT NV_ITEM FROM ItemUser WHERE ID_USER = ? AND ID_ITEM = ?`,
+    [userId, itemId]
+  );
+
+  const nivelItem = rows.length > 0 ? rows[0].NV_ITEM : item.NIVEL;
+
+  const idItemEquip = [user.GUN, user.BOOT, user.TORSO, user.CAPA];
+
+  if (idItemEquip.includes(itemId)) {
+    equiparItem(itemId, userId, nivelItem);
+  }
 
   try {
-    const [rows] = await db.execute(
-      `SELECT NV_ITEM FROM ItemUser WHERE ID_USER = ? AND ID_ITEM = ?`,
-      [userId, itemId]
-    );
-
-    const nivelItem = rows.length > 0 ? rows[0].NV_ITEM : item.NIVEL;
-
     const updateTotalScrap = 895 * nivelItem;
     const updateTotalMoney = 1230 * nivelItem;
 
@@ -54,7 +58,7 @@ router.post("/", authMiddleware, async (req, res) => {
       const vel1 = (
         parseFloat(item.MULTIPLO_CRITICO) +
         parseFloat(item.MULTIPLO_CRITICO) * nivelItem
-      ).toFixed(2); 
+      ).toFixed(2);
       await db.query(
         `INSERT INTO ItemUser (
         ID_USER, ID_ITEM, NV_ITEM, USER_ITEM_VIDA, DEFESA, USER_ITEM_CRITICO, USER_ITEM_MULTIPLI_CRITICO, DANO
@@ -96,5 +100,64 @@ router.post("/", authMiddleware, async (req, res) => {
     return res.status(500).json({ message: "Erro ao selecionar arma." });
   }
 });
+
+async function equiparItem(id, userId, nivelItem) {
+  const itemUpdate = await getItenByIds(id);
+
+  const dadosAtualizados = [
+    itemUpdate.VIDA,
+    itemUpdate.DANO,
+    itemUpdate.DEFESSA,
+    itemUpdate.CRITICO,
+    itemUpdate.MULTIPLO_CRITICO,
+  ];
+
+  const valoresMultiplicados = dadosAtualizados.map(
+    (valor) => Number(valor) * nivelItem + 1
+  );
+
+  let queryUpdate = "";
+  let valuesUpdate = [];
+  let querySpell = "";
+  let valuesSpell = [];
+
+  switch (itemUpdate.TYPE) {
+    case "Arma":
+      queryUpdate = "UPDATE characters SET GUN = ? WHERE user_id = ?";
+      valuesUpdate = [itemUpdate.ID, userId];
+      querySpell = `UPDATE characters SET GUN_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[0]', ?) WHERE user_id = ?;`;
+      valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
+      break;
+
+    case "Capa":
+      queryUpdate = "UPDATE characters SET CAPA = ? WHERE user_id = ?";
+      valuesUpdate = [itemUpdate.ID, userId];
+      querySpell = `UPDATE characters SET CAPA_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[1]', ?) WHERE user_id = ?;`;
+      valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
+      break;
+
+    case "Armadura":
+      queryUpdate = "UPDATE characters SET TORSO = ? WHERE user_id = ?";
+      valuesUpdate = [itemUpdate.ID, userId];
+      querySpell = `UPDATE characters SET TORSO_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[2]', ?) WHERE user_id = ?;`;
+      valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
+      break;
+
+    case "Buts":
+      queryUpdate = "UPDATE characters SET BOOT = ? WHERE user_id = ?";
+      valuesUpdate = [itemUpdate.ID, userId];
+      querySpell = `UPDATE characters SET BOOT_SPELL = JSON_ARRAY(?, ?, ?, ?, ?), EQUIPADOS = JSON_SET(EQUIPADOS, '$[3]', ?) WHERE user_id = ?;`;
+      valuesSpell = [...valoresMultiplicados, itemUpdate.ID, userId];
+      break;
+
+    default:
+      throw { status: 400, error: "Categoria inválida." };
+  }
+
+  await db.query(queryUpdate, valuesUpdate);
+  if (querySpell) {
+    await db.query(querySpell, valuesSpell);
+  }
+}
 
 module.exports = router;

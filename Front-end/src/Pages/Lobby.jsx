@@ -28,6 +28,8 @@ const Lobby = () => {
   const [showModalMedKit, setShowModalMedKit] = useState(false);
   const medKit = true;
   const [quantidade, setQuantidade] = useState(1);
+  const [filtroType, setFiltroType] = useState("");
+
   useEffect(() => {
     if (!userLogin) {
       navigate("/");
@@ -109,6 +111,10 @@ const Lobby = () => {
     setSelectedMedKit(item);
     setShowModalMedKit(true);
   };
+  const filteredGuns = filtroType
+    ? sortedGuns.filter((gun) => gun.TYPE === filtroType)
+    : sortedGuns;
+
   if (characters.length === 0) {
     return <CharacterCard user={userLogin} />;
   }
@@ -140,11 +146,23 @@ const Lobby = () => {
           }}
         >
           <div className="bg-gradient-to-br from-black/70 via-blue-900 to-black/70 backdrop-blur-md  rounded-xl border-[6px] border-cyan-500/80 border-t-[8px] border-t-blue-500  w-[70%] h-[90%] flex flex-col items-center   relative ">
-            <h2 className="text-3xl font-extrabold text-cyan-400 py-4 tracking-wide">
+            <h2 className="text-3xl mt-4 font-extrabold text-cyan-400 mb-6 tracking-wide">
               {selectedOption}
             </h2>
+
+            <select
+              className="fixed right-4 top-4 px-4 py-2 rounded-md bg-black text-cyan-400 border border-cyan-500 shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              value={filtroType}
+              onChange={(e) => setFiltroType(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="Arma">Armas</option>
+              <option value="Capa">Capas</option>
+              <option value="Armadura">Armaduras</option>
+              <option value="Buts">Buts</option>
+            </select>
             <ul className="w-full pt-10 grid grid-cols-2 gap-4 overflow-y-auto max-h custom-scroll pr-2 scroll-fade-mask py-10">
-              {sortedGuns?.map((gun) => (
+              {filteredGuns?.map((gun) => (
                 <li
                   onClick={() => handleSelectGun(gun)}
                   key={gun.ID}
@@ -329,22 +347,19 @@ const Lobby = () => {
             <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-50">
               <div className="bg-gradient-to-br from-black/80 via-blue-950 to-black/80 p-6 rounded-xl border-4 border-cyan-400 shadow-[0_0_20px_#00ffff88] w-[90%] max-w-md">
                 <h2 className="text-2xl font-bold text-cyan-400 mb-4 text-center">
-                  Confirmar Compra
+                  {selectedMedKit.ID_ITEM_NOME}
                 </h2>
                 <div className="flex items-center mb-4">
                   <img
                     src={selectImgMedKit(selectedMedKit.ID_ITEM_LIFE)}
+                    alt={" "}
                     className="w-40 h-40 mr-4 rounded-md border-2 border-cyan-500 shadow-[0_0_10px_#00ffff88]"
                   />
                   <div>
-                    <p className="text-white font-semibold">
-                      {selectedMedKit.ID_ITEM_NOME}
-                    </p>
                     <p className="text-green-400 font-bold text-lg bg-gradient-to-r from-black/60 via-green-700 to-black/60 px-3 py-1 rounded-md border border-green-400 shadow-[0_0_8px_#00ff0077] inline-block">
                       Valor: ${selectedMedKit.VALOR_ITEM}
                     </p>
 
-                    {/* 👇 Campo de quantidade */}
                     <div className="flex items-center mt-2 bg-gradient-to-br from-black/80 via-blue-900 to-black/80 px-3 py-2 rounded-lg border-[2px] border-blue-400 shadow-[0_0_10px_#00ffff88]">
                       <button
                         className="text-white text-xl px-3 py-1 rounded-md hover:bg-blue-800 transition"

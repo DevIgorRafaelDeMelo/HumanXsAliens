@@ -25,7 +25,6 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
   const [quantidade, setQuantidade] = useState(1);
 
   useEffect(() => {
-    console.log(selectedItem);
     if (!medKit) {
       setNivelItem(item.NV_ITEM || item.NIVEL);
       setDefItem(item.DEFESA || item.DEFESSA);
@@ -359,7 +358,7 @@ const ItemModal = ({ item, onClose, equip, medKit }) => {
               {update && (
                 <div className="relative text-sm text-gray-200 rounded-2xl p-6 w-full space-y-6">
                   <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-5xl font-black  drop-shadow-xl animate-pulse z-10">
-                    NV {selectedItem.NIVEL + 1}
+                    NV {nivelItem}
                   </div>
                   <div className="relative flex justify-center">
                     <img

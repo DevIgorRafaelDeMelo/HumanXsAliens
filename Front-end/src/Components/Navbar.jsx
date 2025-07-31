@@ -224,7 +224,7 @@ const Navbar = () => {
               to="/map"
               className="flex items-center justify-between w-44 font-semibold text-gray-300 bg-gradient-to-r from-blue-900 via-cyan-500 to-blue-900 shadow-[0_4px_15px_#00ffff55] border-2 border-cyan-500 text-lg tracking-wide hover:scale-105 hover:text-yellow-300 transition-all duration-300 ease-in-out rounded-lg px-4 py-3"
             >
-              Mapa
+              Battle
             </Link>
           </li>
         </ul>
